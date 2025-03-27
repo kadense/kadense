@@ -17,6 +17,3 @@ Sometimes the data you need is critical and needs to be updated in real-time, ot
 
 ## Trusted Research Environments using KADENSE
 KADENSE is capable of providing a gateway for trusted research environments using a hybrid containerised solutions and VDI estate.
-
-### Jupyternetes
-Jupyternetes is part of the KADENSE ecosystem and allows users of the solution to provision dynamic compute resources in an isolated workspace environment. Users in one workspace cannot share data with those in another workspace without Data Contracts being issued and approved within the solution.

@@ -1,0 +1,24 @@
+{
+	"image": "mcr.microsoft.com/devcontainers/dotnet:latest",
+	"features": {
+        
+	},
+	"mounts": [],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"mads-hartmann.bash-ide-vscode",
+				"dbaeumer.vscode-eslint",
+				"editorconfig.editorconfig",
+				"github.vscode-github-actions",
+                "ms-dotnettools.csharp",
+                "ms-dotnettools.csdevkit"
+			]
+		}
+	},
+	"workspaceMount": "source=kadense-workspace,target=/workspaces,type=volume",
+	"workspaceFolder": "/workspaces",
+    "postCreateCommand": "sudo chmod 0777 /workspaces && if [ ! -d \"/workspaces/kadense\" ]; then git clone https://github.com/headinthecloudsolutions/kadense.git --recurse-submodules; fi",
+	"postStartCommand": "git config --global --add safe.directory \"*\""
+	
+}

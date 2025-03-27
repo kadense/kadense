@@ -18,7 +18,7 @@
 	},
 	"workspaceMount": "source=kadense-workspace,target=/workspaces,type=volume",
 	"workspaceFolder": "/workspaces",
-    "postCreateCommand": "sudo chmod 0777 /workspaces && if [ ! -d \"/workspaces/kadense\" ]; then git clone https://github.com/headinthecloudsolutions/kadense.git --recurse-submodules; fi",
+    "postCreateCommand": "sudo chmod 0777 /workspaces && if [ ! -d \"/workspaces/kadense\" ]; then git clone https://github.com/headinthecloudsolutions/kadense.git --recurse-submodules; fi; && dotnet new install kadense/c-sharp/templates/library",
 	"postStartCommand": "git config --global --add safe.directory \"*\""
 	
 }

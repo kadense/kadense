@@ -4,7 +4,7 @@ namespace Kadense.Models.Kubernetes
     public class KubernetesCustomResourceAttribute : Attribute
     {
         // The API group of the custom resource
-        public string Group { get; set; } = "{Group}";
+        public string Group { get; set; } = "kadense.io";
 
         // The kind of the custom resource
         public string Kind { get; set; }

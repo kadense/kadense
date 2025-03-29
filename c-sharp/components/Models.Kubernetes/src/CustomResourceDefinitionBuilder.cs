@@ -94,9 +94,18 @@ namespace Kadense.Models.Kubernetes
                 await PadAsync(writer, depth);
                 var jsonPropNames = property.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false);
                 if (jsonPropNames.Length > 0)
+                {
                     await writer.WriteAsync(((JsonPropertyNameAttribute)jsonPropNames.First()).Name);
+                }
                 else
-                    await writer.WriteAsync(property.Name);
+                {
+                    string propertyName = property.Name;
+                    if (propertyName.Length > 1)
+                    {
+                        propertyName = $"{propertyName.Substring(0, 1).ToLower()}{propertyName.Substring(1)}";
+                    }
+                    await writer.WriteAsync(propertyName);
+                }
                 await writer.WriteLineAsync(":");
 
                 // Determine the property type and write its schema.
@@ -126,6 +135,38 @@ namespace Kadense.Models.Kubernetes
                 {
                     // Array types are not yet implemented.
                     throw new NotImplementedException();
+                }
+                else if (property.PropertyType.IsGenericType)
+                {
+                    if (property.PropertyType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                    {
+                        await PadAsync(writer, depth + 1);
+                        await writer.WriteLineAsync("type: object");
+
+                        await PadAsync(writer, depth + 1);
+                        await writer.WriteLineAsync("additionalProperties:");
+
+                        if (property.PropertyType.GetGenericArguments()[0] != typeof(string))
+                            throw new NotImplementedException();
+
+                        if (property.PropertyType.GetGenericArguments()[1] == typeof(string))
+                        {
+                            await PadAsync(writer, depth + 2);
+                            await writer.WriteLineAsync("type: string");
+                        }
+                        else
+                        {
+                            await PadAsync(writer, depth + 2);
+                            await writer.WriteLineAsync("type: object");
+                            await PadAsync(writer, depth + 2);
+                            await writer.WriteLineAsync("properties:");
+                            await ProcessClassAsync(writer, property.PropertyType, depth + 3);
+                        }
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
                 else
                 {

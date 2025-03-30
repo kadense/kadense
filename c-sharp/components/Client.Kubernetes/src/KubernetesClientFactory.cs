@@ -1,4 +1,3 @@
-using k8s;
 using K8sClient = k8s.Kubernetes;
 
 namespace Kadense.Client.Kubernetes
@@ -15,21 +14,30 @@ namespace Kadense.Client.Kubernetes
     public class KubernetesClientFactory
     {
         /// <summary>
+        /// Creates a Kubernetes client configuration based on the current environment.
+        /// </summary>
+        public virtual KubernetesClientConfiguration GetKubernetesClientConfiguration()
+        {
+            if (IsRunningInKubernetes())
+            {
+                return KubernetesClientConfiguration.InClusterConfig();
+            }
+            else
+            {
+                return KubernetesClientConfiguration.BuildConfigFromConfigFile();
+            }
+        }
+
+
+
+        /// <summary>
         /// Creates an instance of <see cref="IKubernetes"/> based on the current environment.
         /// </summary>
         /// <returns>An <see cref="IKubernetes"/> client instance.</returns>
         public virtual IKubernetes CreateClient()
         {
-            if (IsRunningInKubernetes())
-            {
-                var config = KubernetesClientConfiguration.InClusterConfig();
-                return new K8sClient(config);
-            }
-            else
-            {
-                var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
-                return new K8sClient(config);
-            }
+            var config = GetKubernetesClientConfiguration();
+            return new K8sClient(config);
         }
 
         /// <summary>

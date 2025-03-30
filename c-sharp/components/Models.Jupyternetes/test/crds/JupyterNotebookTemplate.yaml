@@ -1,0 +1,3005 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: jupyternotebookinstancetemplates.kadense.io
+spec:
+  scope: Namespaced
+  group: kadense.io
+  names:
+    kind: JupyterNotebookInstanceTemplate
+    plural: jupyternotebookinstancetemplates
+    singular: jupyternotebookinstancetemplate
+  versions:
+  - name: v1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              spec:
+                type: object
+                properties:
+                  pods:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        capacity:
+                          type: integer
+                        count:
+                          type: integer
+                        item:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            annotations:
+                              type: object
+                              additionalProperties:
+                                type: string
+                            labels:
+                              type: object
+                              additionalProperties:
+                                type: string
+                            spec:
+                              type: object
+                              properties:
+                                activeDeadlineSeconds:
+                                affinity:
+                                  type: object
+                                  properties:
+                                    nodeAffinity:
+                                      type: object
+                                      properties:
+                                        preferredDuringSchedulingIgnoredDuringExecution:
+                                          type: array
+                                          items:
+                                            type: object
+                                            properties:
+                                              capacity:
+                                                type: integer
+                                              count:
+                                                type: integer
+                                              item:
+                                                type: object
+                                                properties:
+                                                  weight:
+                                                  preference:
+                                                    type: object
+                                                    properties:
+                                                      matchExpressions:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                key:
+                                                                  type: string
+                                                                operator:
+                                                                  type: string
+                                                                values:
+                                                                  type: array
+                                                                  items:
+                                                                    type: string
+                                                      matchFields:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                key:
+                                                                  type: string
+                                                                operator:
+                                                                  type: string
+                                                                values:
+                                                                  type: array
+                                                                  items:
+                                                                    type: string
+                                        requiredDuringSchedulingIgnoredDuringExecution:
+                                          type: object
+                                          properties:
+                                            nodeSelectorTerms:
+                                              type: array
+                                              items:
+                                                type: object
+                                                properties:
+                                                  capacity:
+                                                    type: integer
+                                                  count:
+                                                    type: integer
+                                                  item:
+                                                    type: object
+                                                    properties:
+                                                      matchExpressions:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                key:
+                                                                  type: string
+                                                                operator:
+                                                                  type: string
+                                                                values:
+                                                                  type: array
+                                                                  items:
+                                                                    type: string
+                                                      matchFields:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                key:
+                                                                  type: string
+                                                                operator:
+                                                                  type: string
+                                                                values:
+                                                                  type: array
+                                                                  items:
+                                                                    type: string
+                                    podAffinity:
+                                      type: object
+                                      properties:
+                                        requiredDuringSchedulingIgnoredDuringExecution:
+                                          type: array
+                                          items:
+                                            type: object
+                                            properties:
+                                              capacity:
+                                                type: integer
+                                              count:
+                                                type: integer
+                                              item:
+                                                type: object
+                                                properties:
+                                                  weight:
+                                                  podAffinityTerm:
+                                                    type: object
+                                                    properties:
+                                                      labelSelector:
+                                                        type: object
+                                                        properties:
+                                                          matchLabels:
+                                                            type: object
+                                                            additionalProperties:
+                                                              type: string
+                                                          matchExpressions:
+                                                            type: object
+                                                            properties:
+                                                              key:
+                                                                type: string
+                                                              operator:
+                                                                type: string
+                                                              values:
+                                                                type: array
+                                                                items:
+                                                                  type: string
+                                                      namespaces:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                      topologyKey:
+                                                        type: string
+                                                      matchLabelKeys:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                      mismatchLabelKeys:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                      namespaceSelector:
+                                                        type: object
+                                                        properties:
+                                                          matchLabels:
+                                                            type: object
+                                                            additionalProperties:
+                                                              type: string
+                                                          matchExpressions:
+                                                            type: object
+                                                            properties:
+                                                              key:
+                                                                type: string
+                                                              operator:
+                                                                type: string
+                                                              values:
+                                                                type: array
+                                                                items:
+                                                                  type: string
+                                        preferredDuringSchedulingIgnoredDuringExecution:
+                                          type: array
+                                          items:
+                                            type: object
+                                            properties:
+                                              capacity:
+                                                type: integer
+                                              count:
+                                                type: integer
+                                              item:
+                                                type: object
+                                                properties:
+                                                  labelSelector:
+                                                    type: object
+                                                    properties:
+                                                      matchLabels:
+                                                        type: object
+                                                        additionalProperties:
+                                                          type: string
+                                                      matchExpressions:
+                                                        type: object
+                                                        properties:
+                                                          key:
+                                                            type: string
+                                                          operator:
+                                                            type: string
+                                                          values:
+                                                            type: array
+                                                            items:
+                                                              type: string
+                                                  namespaces:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                                  topologyKey:
+                                                    type: string
+                                                  matchLabelKeys:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                                  mismatchLabelKeys:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                                  namespaceSelector:
+                                                    type: object
+                                                    properties:
+                                                      matchLabels:
+                                                        type: object
+                                                        additionalProperties:
+                                                          type: string
+                                                      matchExpressions:
+                                                        type: object
+                                                        properties:
+                                                          key:
+                                                            type: string
+                                                          operator:
+                                                            type: string
+                                                          values:
+                                                            type: array
+                                                            items:
+                                                              type: string
+                                    podAntiAffinity:
+                                      type: object
+                                      properties:
+                                        requiredDuringSchedulingIgnoredDuringExecution:
+                                          type: array
+                                          items:
+                                            type: object
+                                            properties:
+                                              capacity:
+                                                type: integer
+                                              count:
+                                                type: integer
+                                              item:
+                                                type: object
+                                                properties:
+                                                  weight:
+                                                  podAffinityTerm:
+                                                    type: object
+                                                    properties:
+                                                      labelSelector:
+                                                        type: object
+                                                        properties:
+                                                          matchLabels:
+                                                            type: object
+                                                            additionalProperties:
+                                                              type: string
+                                                          matchExpressions:
+                                                            type: object
+                                                            properties:
+                                                              key:
+                                                                type: string
+                                                              operator:
+                                                                type: string
+                                                              values:
+                                                                type: array
+                                                                items:
+                                                                  type: string
+                                                      namespaces:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                      topologyKey:
+                                                        type: string
+                                                      matchLabelKeys:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                      mismatchLabelKeys:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                      namespaceSelector:
+                                                        type: object
+                                                        properties:
+                                                          matchLabels:
+                                                            type: object
+                                                            additionalProperties:
+                                                              type: string
+                                                          matchExpressions:
+                                                            type: object
+                                                            properties:
+                                                              key:
+                                                                type: string
+                                                              operator:
+                                                                type: string
+                                                              values:
+                                                                type: array
+                                                                items:
+                                                                  type: string
+                                        preferredDuringSchedulingIgnoredDuringExecution:
+                                          type: array
+                                          items:
+                                            type: object
+                                            properties:
+                                              capacity:
+                                                type: integer
+                                              count:
+                                                type: integer
+                                              item:
+                                                type: object
+                                                properties:
+                                                  labelSelector:
+                                                    type: object
+                                                    properties:
+                                                      matchLabels:
+                                                        type: object
+                                                        additionalProperties:
+                                                          type: string
+                                                      matchExpressions:
+                                                        type: object
+                                                        properties:
+                                                          key:
+                                                            type: string
+                                                          operator:
+                                                            type: string
+                                                          values:
+                                                            type: array
+                                                            items:
+                                                              type: string
+                                                  namespaces:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                                  topologyKey:
+                                                    type: string
+                                                  matchLabelKeys:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                                  mismatchLabelKeys:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                                  namespaceSelector:
+                                                    type: object
+                                                    properties:
+                                                      matchLabels:
+                                                        type: object
+                                                        additionalProperties:
+                                                          type: string
+                                                      matchExpressions:
+                                                        type: object
+                                                        properties:
+                                                          key:
+                                                            type: string
+                                                          operator:
+                                                            type: string
+                                                          values:
+                                                            type: array
+                                                            items:
+                                                              type: string
+                                automountServiceAccountToken:
+                                containers:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          args:
+                                            type: array
+                                            items:
+                                              type: string
+                                          command:
+                                            type: array
+                                            items:
+                                              type: string
+                                          env:
+                                            type: object
+                                            properties:
+                                              name:
+                                                type: string
+                                              value:
+                                                type: string
+                                              valueFrom:
+                                                type: object
+                                                properties:
+                                                  configMapKeyRef:
+                                                    type: object
+                                                    properties:
+                                                      name:
+                                                        type: string
+                                                      key:
+                                                        type: string
+                                                      optional:
+                                                  fieldRef:
+                                                    type: object
+                                                    properties:
+                                                      apiVersion:
+                                                        type: string
+                                                      fieldPath:
+                                                        type: string
+                                                  resourceFieldRef:
+                                                    type: object
+                                                    properties:
+                                                      containerName:
+                                                        type: string
+                                                      divisor:
+                                                        type: string
+                                                      resource:
+                                                        type: string
+                                                  secretKeyRef:
+                                                    type: object
+                                                    properties:
+                                                      name:
+                                                        type: string
+                                                      key:
+                                                        type: string
+                                                      optional:
+                                          envFrom:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    configMapRef:
+                                                      type: object
+                                                      properties:
+                                                        name:
+                                                          type: string
+                                                        optional:
+                                                    secretRef:
+                                                      type: object
+                                                      properties:
+                                                        name:
+                                                          type: string
+                                                        optional:
+                                                    prefix:
+                                                      type: string
+                                          image:
+                                            type: string
+                                          imagePullPolicy:
+                                            type: string
+                                          lifecycle:
+                                            type: object
+                                            properties:
+                                              postStart:
+                                                type: object
+                                                properties:
+                                                  _exec:
+                                                    type: object
+                                                    properties:
+                                                      command:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                  httpGet:
+                                                    type: object
+                                                    properties:
+                                                      path:
+                                                        type: string
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                      scheme:
+                                                        type: string
+                                                      httpHeaders:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                name:
+                                                                  type: string
+                                                                value:
+                                                                  type: string
+                                                  tcpSocket:
+                                                    type: object
+                                                    properties:
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                        type: string
+                                                  sleep:
+                                                    type: object
+                                                    properties:
+                                                      seconds:
+                                              preStop:
+                                                type: object
+                                                properties:
+                                                  _exec:
+                                                    type: object
+                                                    properties:
+                                                      command:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                  httpGet:
+                                                    type: object
+                                                    properties:
+                                                      path:
+                                                        type: string
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                      scheme:
+                                                        type: string
+                                                      httpHeaders:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                name:
+                                                                  type: string
+                                                                value:
+                                                                  type: string
+                                                  tcpSocket:
+                                                    type: object
+                                                    properties:
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                        type: string
+                                                  sleep:
+                                                    type: object
+                                                    properties:
+                                                      seconds:
+                                          livenessProbe:
+                                            type: object
+                                            properties:
+                                              _exec:
+                                                type: object
+                                                properties:
+                                                  command:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              failureThreshold:
+                                              grpc:
+                                                type: object
+                                                properties:
+                                                  port:
+                                                  service:
+                                                    type: string
+                                              httpGet:
+                                                type: object
+                                                properties:
+                                                  path:
+                                                    type: string
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                  scheme:
+                                                    type: string
+                                                  httpHeaders:
+                                                    type: array
+                                                    items:
+                                                      type: object
+                                                      properties:
+                                                        capacity:
+                                                          type: integer
+                                                        count:
+                                                          type: integer
+                                                        item:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            value:
+                                                              type: string
+                                              initialDelaySeconds:
+                                              periodSeconds:
+                                              successThreshold:
+                                              tcpSocket:
+                                                type: object
+                                                properties:
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                    type: string
+                                              timeoutSeconds:
+                                              terminationGracePeriodSeconds:
+                                          name:
+                                            type: string
+                                          ports:
+                                            type: object
+                                            properties:
+                                              containerPort:
+                                              protocol:
+                                                type: string
+                                              hostIP:
+                                                type: string
+                                              hostPort:
+                                              name:
+                                                type: string
+                                          readinessProbe:
+                                            type: object
+                                            properties:
+                                              _exec:
+                                                type: object
+                                                properties:
+                                                  command:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              failureThreshold:
+                                              grpc:
+                                                type: object
+                                                properties:
+                                                  port:
+                                                  service:
+                                                    type: string
+                                              httpGet:
+                                                type: object
+                                                properties:
+                                                  path:
+                                                    type: string
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                  scheme:
+                                                    type: string
+                                                  httpHeaders:
+                                                    type: array
+                                                    items:
+                                                      type: object
+                                                      properties:
+                                                        capacity:
+                                                          type: integer
+                                                        count:
+                                                          type: integer
+                                                        item:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            value:
+                                                              type: string
+                                              initialDelaySeconds:
+                                              periodSeconds:
+                                              successThreshold:
+                                              tcpSocket:
+                                                type: object
+                                                properties:
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                    type: string
+                                              timeoutSeconds:
+                                              terminationGracePeriodSeconds:
+                                          resizePolicy:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                          resources:
+                                            type: object
+                                            properties:
+                                              claims:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  properties:
+                                                    capacity:
+                                                      type: integer
+                                                    count:
+                                                      type: integer
+                                                    item:
+                                                      type: object
+                                                      properties:
+                                                        name:
+                                                          type: string
+                                                        request:
+                                                          type: string
+                                              limits:
+                                                type: object
+                                                additionalProperties:
+                                                  type: string
+                                              requests:
+                                                type: object
+                                                additionalProperties:
+                                                  type: string
+                                          restartPolicy:
+                                            type: string
+                                          securityContext:
+                                            type: object
+                                            properties:
+                                              allowPrivilegeEscalation:
+                                              appArmorProfile:
+                                                type: object
+                                                properties:
+                                                  localhostProfile:
+                                                    type: string
+                                                  type:
+                                                    type: string
+                                              capabilities:
+                                                type: object
+                                                properties:
+                                                  add:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                                  drop:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              privileged:
+                                              procMount:
+                                                type: string
+                                              readOnlyRootFilesystem:
+                                              runAsGroup:
+                                              runAsNonRoot:
+                                              runAsUser:
+                                              seLinuxOptions:
+                                                type: object
+                                                properties:
+                                                  user:
+                                                    type: string
+                                                  role:
+                                                    type: string
+                                                  type:
+                                                    type: string
+                                                  level:
+                                                    type: string
+                                              seccompProfile:
+                                                type: object
+                                                properties:
+                                                  type:
+                                                    type: string
+                                                  localhostProfile:
+                                                    type: string
+                                              windowsOptions:
+                                                type: object
+                                                properties:
+                                                  gMSACredentialSpec:
+                                                    type: string
+                                                  gMSACredentialSpecName:
+                                                    type: string
+                                                  hostProcess:
+                                                    type: string
+                                                  runAsUserName:
+                                                    type: string
+                                          startupProbe:
+                                            type: object
+                                            properties:
+                                              _exec:
+                                                type: object
+                                                properties:
+                                                  command:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              failureThreshold:
+                                              grpc:
+                                                type: object
+                                                properties:
+                                                  port:
+                                                  service:
+                                                    type: string
+                                              httpGet:
+                                                type: object
+                                                properties:
+                                                  path:
+                                                    type: string
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                  scheme:
+                                                    type: string
+                                                  httpHeaders:
+                                                    type: array
+                                                    items:
+                                                      type: object
+                                                      properties:
+                                                        capacity:
+                                                          type: integer
+                                                        count:
+                                                          type: integer
+                                                        item:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            value:
+                                                              type: string
+                                              initialDelaySeconds:
+                                              periodSeconds:
+                                              successThreshold:
+                                              tcpSocket:
+                                                type: object
+                                                properties:
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                    type: string
+                                              timeoutSeconds:
+                                              terminationGracePeriodSeconds:
+                                          stdin:
+                                          stdinOnce:
+                                          terminationMessagePath:
+                                            type: string
+                                          terminationMessagePolicy:
+                                            type: string
+                                          tty:
+                                          volumeDevices:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    name:
+                                                      type: string
+                                                    devicePath:
+                                                      type: string
+                                          volumeMounts:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    name:
+                                                      type: string
+                                                    mountPath:
+                                                      type: string
+                                                    readOnly:
+                                                    mountPropagation:
+                                                      type: string
+                                                    subPath:
+                                                      type: string
+                                                    subPathExpr:
+                                                      type: string
+                                                    recursiveReadOnly:
+                                                      type: string
+                                          workingDir:
+                                            type: string
+                                volumes:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          aWSElasticBlockStore:
+                                            type: object
+                                            properties:
+                                              fsType:
+                                                type: string
+                                              volumeID:
+                                                type: string
+                                              partition:
+                                              readOnly:
+                                          azureDisk:
+                                            type: object
+                                            properties:
+                                              cachingMode:
+                                                type: string
+                                              diskName:
+                                                type: string
+                                              diskURI:
+                                                type: string
+                                              fSType:
+                                                type: string
+                                              kind:
+                                              readOnly:
+                                          azureFile:
+                                            type: object
+                                            properties:
+                                              secretName:
+                                                type: string
+                                              shareName:
+                                                type: string
+                                              readOnly:
+                                          cephFS:
+                                            type: object
+                                            properties:
+                                              monitors:
+                                                type: array
+                                                items:
+                                                  type: string
+                                              path:
+                                                type: string
+                                              user:
+                                                type: string
+                                              secretFile:
+                                                type: string
+                                              secretRef:
+                                                type: object
+                                                properties:
+                                                  name:
+                                                    type: string
+                                              readOnly:
+                                          cinder:
+                                            type: object
+                                            properties:
+                                              fsType:
+                                                type: string
+                                              volumeID:
+                                                type: string
+                                              readOnly:
+                                              secretRef:
+                                                type: string
+                                          configMap:
+                                            type: object
+                                            properties:
+                                              name:
+                                                type: string
+                                              optional:
+                                              defaultMode:
+                                              items:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  properties:
+                                                    capacity:
+                                                      type: integer
+                                                    count:
+                                                      type: integer
+                                                    item:
+                                                      type: object
+                                                      properties:
+                                                        key:
+                                                          type: string
+                                                        path:
+                                                          type: string
+                                                        mode:
+                                                          type: string
+                                          downwardAPI:
+                                            type: object
+                                            properties:
+                                              defaultMode:
+                                              items:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  properties:
+                                                    capacity:
+                                                      type: integer
+                                                    count:
+                                                      type: integer
+                                                    item:
+                                                      type: object
+                                                      properties:
+                                                        path:
+                                                          type: string
+                                                        fieldRef:
+                                                          type: object
+                                                          properties:
+                                                            apiVersion:
+                                                              type: string
+                                                            fieldPath:
+                                                              type: string
+                                                        resourceFieldRef:
+                                                          type: object
+                                                          properties:
+                                                            containerName:
+                                                              type: string
+                                                            divisor:
+                                                              type: string
+                                                            resource:
+                                                              type: string
+                                          emptyDir:
+                                            type: object
+                                            properties:
+                                              medium:
+                                                type: string
+                                              sizeLimit:
+                                                type: string
+                                          ephemeral:
+                                            type: object
+                                            properties:
+                                              volumeClaimTemplate:
+                                                type: object
+                                                properties:
+                                                  metadata:
+                                                    type: object
+                                                    properties:
+                                                      name:
+                                                        type: string
+                                                      namespace:
+                                                        type: string
+                                                      uid:
+                                                        type: string
+                                                      labels:
+                                                        type: object
+                                                        additionalProperties:
+                                                          type: string
+                                                      annotations:
+                                                        type: object
+                                                        additionalProperties:
+                                                          type: string
+                                                      creationTimestamp:
+                                                        type: string
+                                                      resourceVersion:
+                                                        type: string
+                                                      selfLink:
+                                                        type: string
+                                                      generation:
+                                                      deletionGracePeriodSeconds:
+                                                      deletionTimestamp:
+                                                      finalizers:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                      ownerReferences:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                apiVersion:
+                                                                  type: string
+                                                                kind:
+                                                                  type: string
+                                                                name:
+                                                                  type: string
+                                                                uid:
+                                                                  type: string
+                                                                controller:
+                                                                blockOwnerDeletion:
+                                                      generateName:
+                                                        type: string
+                                                      managedFields:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                manager:
+                                                                  type: string
+                                                                operation:
+                                                                  type: string
+                                                                apiVersion:
+                                                                  type: string
+                                                                time:
+                                                                  type: string
+                                                                fieldsType:
+                                                                  type: string
+                                                                fieldsV1:
+                                                                  type: object
+                                                                  properties:
+                                                  spec:
+                                                    type: object
+                                                    properties:
+                                                      accessModes:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                      dataSource:
+                                                        type: object
+                                                        properties:
+                                                          kind:
+                                                            type: string
+                                                          name:
+                                                            type: string
+                                                          apiGroup:
+                                                            type: string
+                                                      dataSourceRef:
+                                                        type: object
+                                                        properties:
+                                                          apiGroup:
+                                                            type: string
+                                                          kind:
+                                                            type: string
+                                                          name:
+                                                            type: string
+                                                          namespace:
+                                                            type: string
+                                                      resources:
+                                                        type: object
+                                                        properties:
+                                                          requests:
+                                                            type: object
+                                                            additionalProperties:
+                                                              type: string
+                                                          limits:
+                                                            type: object
+                                                            additionalProperties:
+                                                              type: string
+                                                      selector:
+                                                        type: object
+                                                        properties:
+                                                          matchLabels:
+                                                            type: object
+                                                            additionalProperties:
+                                                              type: string
+                                                          matchExpressions:
+                                                            type: object
+                                                            properties:
+                                                              key:
+                                                                type: string
+                                                              operator:
+                                                                type: string
+                                                              values:
+                                                                type: array
+                                                                items:
+                                                                  type: string
+                                                      storageClassName:
+                                                        type: string
+                                                      volumeAttributesClassName:
+                                                        type: string
+                                                      volumeMode:
+                                                        type: string
+                                                      volumeName:
+                                                        type: string
+                                          fc:
+                                            type: object
+                                            properties:
+                                              fsType:
+                                                type: string
+                                              lun:
+                                              readOnly:
+                                              targetWWNS:
+                                                type: array
+                                                items:
+                                                  type: string
+                                              wwids:
+                                                type: array
+                                                items:
+                                                  type: string
+                                          flexVolume:
+                                            type: object
+                                            properties:
+                                              driver:
+                                                type: string
+                                              options:
+                                                type: object
+                                                additionalProperties:
+                                                  type: string
+                                              readOnly:
+                                              secretRef:
+                                                type: object
+                                                properties:
+                                                  name:
+                                                    type: string
+                                              fsType:
+                                                type: string
+                                          flocker:
+                                            type: object
+                                            properties:
+                                              datasetName:
+                                                type: string
+                                              datasetUUID:
+                                                type: string
+                                          gCEPersistentDisk:
+                                            type: object
+                                            properties:
+                                              pdName:
+                                                type: string
+                                              fsType:
+                                                type: string
+                                              partition:
+                                              readOnly:
+                                          glusterfs:
+                                            type: object
+                                            properties:
+                                              endpoints:
+                                                type: string
+                                              path:
+                                                type: string
+                                              readOnly:
+                                          hostPath:
+                                            type: object
+                                            properties:
+                                              path:
+                                                type: string
+                                              type:
+                                                type: string
+                                          image:
+                                            type: object
+                                            properties:
+                                              pullPolicy:
+                                                type: string
+                                              reference:
+                                                type: string
+                                          iSCSI:
+                                            type: object
+                                            properties:
+                                              chapAuthDiscovery:
+                                              chapAuthSession:
+                                              fsType:
+                                                type: string
+                                              initiatorName:
+                                                type: string
+                                              iqn:
+                                                type: string
+                                              iscsiInterfaceName:
+                                                type: string
+                                              lun:
+                                              portals:
+                                                type: array
+                                                items:
+                                                  type: string
+                                              readOnly:
+                                              secretRef:
+                                                type: object
+                                                properties:
+                                                  name:
+                                                    type: string
+                                              targetPortal:
+                                                type: string
+                                          name:
+                                            type: string
+                                          nFS:
+                                            type: object
+                                            properties:
+                                              server:
+                                                type: string
+                                              path:
+                                                type: string
+                                              readOnly:
+                                          persistentVolumeClaim:
+                                            type: object
+                                            properties:
+                                              claimName:
+                                                type: string
+                                              readOnly:
+                                          photonPersistentDisk:
+                                            type: object
+                                            properties:
+                                              pdID:
+                                                type: string
+                                              fsType:
+                                                type: string
+                                          portworxVolume:
+                                            type: object
+                                            properties:
+                                              fsType:
+                                                type: string
+                                              volumeID:
+                                                type: string
+                                              readOnly:
+                                          projected:
+                                            type: object
+                                            properties:
+                                              defaultMode:
+                                              sources:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  properties:
+                                                    capacity:
+                                                      type: integer
+                                                    count:
+                                                      type: integer
+                                                    item:
+                                                      type: object
+                                                      properties:
+                                                        clusterTrustBundle:
+                                                          type: object
+                                                          properties:
+                                                            labelSelector:
+                                                              type: object
+                                                              properties:
+                                                                matchLabels:
+                                                                  type: object
+                                                                  additionalProperties:
+                                                                    type: string
+                                                                matchExpressions:
+                                                                  type: object
+                                                                  properties:
+                                                                    key:
+                                                                      type: string
+                                                                    operator:
+                                                                      type: string
+                                                                    values:
+                                                                      type: array
+                                                                      items:
+                                                                        type: string
+                                                            name:
+                                                              type: string
+                                                            optional:
+                                                            path:
+                                                              type: string
+                                                            signerName:
+                                                              type: string
+                                                        configMap:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            optional:
+                                                            items:
+                                                              type: array
+                                                              items:
+                                                                type: object
+                                                                properties:
+                                                                  capacity:
+                                                                    type: integer
+                                                                  count:
+                                                                    type: integer
+                                                                  item:
+                                                                    type: object
+                                                                    properties:
+                                                                      key:
+                                                                        type: string
+                                                                      path:
+                                                                        type: string
+                                                                      mode:
+                                                                        type: string
+                                                        downwardAPI:
+                                                          type: object
+                                                          properties:
+                                                            items:
+                                                              type: array
+                                                              items:
+                                                                type: object
+                                                                properties:
+                                                                  capacity:
+                                                                    type: integer
+                                                                  count:
+                                                                    type: integer
+                                                                  item:
+                                                                    type: object
+                                                                    properties:
+                                                                      path:
+                                                                        type: string
+                                                                      fieldRef:
+                                                                        type: object
+                                                                        properties:
+                                                                          apiVersion:
+                                                                            type: string
+                                                                          fieldPath:
+                                                                            type: string
+                                                                      resourceFieldRef:
+                                                                        type: object
+                                                                        properties:
+                                                                          containerName:
+                                                                            type: string
+                                                                          divisor:
+                                                                            type: string
+                                                                          resource:
+                                                                            type: string
+                                                        secret:
+                                                          type: object
+                                                          properties:
+                                                            items:
+                                                              type: array
+                                                              items:
+                                                                type: object
+                                                                properties:
+                                                                  capacity:
+                                                                    type: integer
+                                                                  count:
+                                                                    type: integer
+                                                                  item:
+                                                                    type: object
+                                                                    properties:
+                                                                      key:
+                                                                        type: string
+                                                                      path:
+                                                                        type: string
+                                                                      mode:
+                                                                        type: string
+                                                            name:
+                                                              type: string
+                                                            optional:
+                                                        serviceAccountToken:
+                                                          type: object
+                                                          properties:
+                                                            path:
+                                                              type: string
+                                                            expirationSeconds:
+                                                            audience:
+                                                              type: string
+                                          quobyte:
+                                            type: object
+                                            properties:
+                                              registry:
+                                                type: string
+                                              readOnly:
+                                              user:
+                                                type: string
+                                              group:
+                                                type: string
+                                              tenant:
+                                                type: string
+                                          rBD:
+                                            type: object
+                                            properties:
+                                              fsType:
+                                                type: string
+                                              keyring:
+                                                type: string
+                                              monitors:
+                                                type: array
+                                                items:
+                                                  type: string
+                                              pool:
+                                                type: string
+                                              readOnly:
+                                              secretRef:
+                                                type: object
+                                                properties:
+                                                  name:
+                                                    type: string
+                                              user:
+                                                type: string
+                                          scaleIO:
+                                            type: object
+                                            properties:
+                                              fsType:
+                                                type: string
+                                              gateway:
+                                                type: string
+                                              protectionDomain:
+                                                type: string
+                                              readOnly:
+                                              secretRef:
+                                                type: object
+                                                properties:
+                                                  name:
+                                                    type: string
+                                              sslEnabled:
+                                              storageMode:
+                                                type: string
+                                              storagePool:
+                                                type: string
+                                              system:
+                                                type: string
+                                              volumeName:
+                                                type: string
+                                          secret:
+                                            type: object
+                                            properties:
+                                              secretName:
+                                                type: string
+                                              optional:
+                                              defaultMode:
+                                              items:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  properties:
+                                                    capacity:
+                                                      type: integer
+                                                    count:
+                                                      type: integer
+                                                    item:
+                                                      type: object
+                                                      properties:
+                                                        key:
+                                                          type: string
+                                                        path:
+                                                          type: string
+                                                        mode:
+                                                          type: string
+                                          storageOS:
+                                            type: object
+                                            properties:
+                                              volumeName:
+                                                type: string
+                                              volumeNamespace:
+                                                type: string
+                                              readOnly:
+                                              fsType:
+                                                type: string
+                                              secretRef:
+                                                type: object
+                                                properties:
+                                                  name:
+                                                    type: string
+                                          vsphereVolume:
+                                            type: object
+                                            properties:
+                                              volumePath:
+                                                type: string
+                                              fsType:
+                                                type: string
+                                              storagePolicyName:
+                                                type: string
+                                              storagePolicyID:
+                                                type: string
+                                dnsConfig:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          nameserver:
+                                            type: string
+                                          searches:
+                                            type: array
+                                            items:
+                                              type: string
+                                          options:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    name:
+                                                      type: string
+                                                    value:
+                                                      type: string
+                                dnsPolicy:
+                                  type: array
+                                  items:
+                                    type: string
+                                enableServiceLinks:
+                                ephemeralContainers:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          args:
+                                            type: array
+                                            items:
+                                              type: string
+                                          command:
+                                            type: array
+                                            items:
+                                              type: string
+                                          env:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    name:
+                                                      type: string
+                                                    value:
+                                                      type: string
+                                                    valueFrom:
+                                                      type: object
+                                                      properties:
+                                                        configMapKeyRef:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            key:
+                                                              type: string
+                                                            optional:
+                                                        fieldRef:
+                                                          type: object
+                                                          properties:
+                                                            apiVersion:
+                                                              type: string
+                                                            fieldPath:
+                                                              type: string
+                                                        resourceFieldRef:
+                                                          type: object
+                                                          properties:
+                                                            containerName:
+                                                              type: string
+                                                            divisor:
+                                                              type: string
+                                                            resource:
+                                                              type: string
+                                                        secretKeyRef:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            key:
+                                                              type: string
+                                                            optional:
+                                          envFrom:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    configMapRef:
+                                                      type: object
+                                                      properties:
+                                                        name:
+                                                          type: string
+                                                        optional:
+                                                    secretRef:
+                                                      type: object
+                                                      properties:
+                                                        name:
+                                                          type: string
+                                                        optional:
+                                                    prefix:
+                                                      type: string
+                                          image:
+                                            type: string
+                                          imagePullPolicy:
+                                            type: string
+                                          name:
+                                            type: string
+                                          lifecycle:
+                                            type: object
+                                            properties:
+                                              postStart:
+                                                type: object
+                                                properties:
+                                                  _exec:
+                                                    type: object
+                                                    properties:
+                                                      command:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                  httpGet:
+                                                    type: object
+                                                    properties:
+                                                      path:
+                                                        type: string
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                      scheme:
+                                                        type: string
+                                                      httpHeaders:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                name:
+                                                                  type: string
+                                                                value:
+                                                                  type: string
+                                                  tcpSocket:
+                                                    type: object
+                                                    properties:
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                        type: string
+                                                  sleep:
+                                                    type: object
+                                                    properties:
+                                                      seconds:
+                                              preStop:
+                                                type: object
+                                                properties:
+                                                  _exec:
+                                                    type: object
+                                                    properties:
+                                                      command:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                  httpGet:
+                                                    type: object
+                                                    properties:
+                                                      path:
+                                                        type: string
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                      scheme:
+                                                        type: string
+                                                      httpHeaders:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                name:
+                                                                  type: string
+                                                                value:
+                                                                  type: string
+                                                  tcpSocket:
+                                                    type: object
+                                                    properties:
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                        type: string
+                                                  sleep:
+                                                    type: object
+                                                    properties:
+                                                      seconds:
+                                          livenessProbe:
+                                            type: object
+                                            properties:
+                                              _exec:
+                                                type: object
+                                                properties:
+                                                  command:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              failureThreshold:
+                                              grpc:
+                                                type: object
+                                                properties:
+                                                  port:
+                                                  service:
+                                                    type: string
+                                              httpGet:
+                                                type: object
+                                                properties:
+                                                  path:
+                                                    type: string
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                  scheme:
+                                                    type: string
+                                                  httpHeaders:
+                                                    type: array
+                                                    items:
+                                                      type: object
+                                                      properties:
+                                                        capacity:
+                                                          type: integer
+                                                        count:
+                                                          type: integer
+                                                        item:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            value:
+                                                              type: string
+                                              initialDelaySeconds:
+                                              periodSeconds:
+                                              successThreshold:
+                                              tcpSocket:
+                                                type: object
+                                                properties:
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                    type: string
+                                              timeoutSeconds:
+                                              terminationGracePeriodSeconds:
+                                          ports:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    containerPort:
+                                                    protocol:
+                                                      type: string
+                                                    hostIP:
+                                                      type: string
+                                                    hostPort:
+                                                    name:
+                                                      type: string
+                                          readinessProbe:
+                                            type: object
+                                            properties:
+                                              _exec:
+                                                type: object
+                                                properties:
+                                                  command:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              failureThreshold:
+                                              grpc:
+                                                type: object
+                                                properties:
+                                                  port:
+                                                  service:
+                                                    type: string
+                                              httpGet:
+                                                type: object
+                                                properties:
+                                                  path:
+                                                    type: string
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                  scheme:
+                                                    type: string
+                                                  httpHeaders:
+                                                    type: array
+                                                    items:
+                                                      type: object
+                                                      properties:
+                                                        capacity:
+                                                          type: integer
+                                                        count:
+                                                          type: integer
+                                                        item:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            value:
+                                                              type: string
+                                              initialDelaySeconds:
+                                              periodSeconds:
+                                              successThreshold:
+                                              tcpSocket:
+                                                type: object
+                                                properties:
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                    type: string
+                                              timeoutSeconds:
+                                              terminationGracePeriodSeconds:
+                                          resizePolicy:
+                                            type: object
+                                            properties:
+                                              resourceName:
+                                                type: string
+                                              restartPolicy:
+                                                type: string
+                                          resources:
+                                            type: object
+                                            properties:
+                                              claims:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  properties:
+                                                    capacity:
+                                                      type: integer
+                                                    count:
+                                                      type: integer
+                                                    item:
+                                                      type: object
+                                                      properties:
+                                                        name:
+                                                          type: string
+                                                        request:
+                                                          type: string
+                                              limits:
+                                                type: object
+                                                additionalProperties:
+                                                  type: string
+                                              requests:
+                                                type: object
+                                                additionalProperties:
+                                                  type: string
+                                          securityContext:
+                                            type: object
+                                            properties:
+                                              allowPrivilegeEscalation:
+                                              appArmorProfile:
+                                                type: object
+                                                properties:
+                                                  localhostProfile:
+                                                    type: string
+                                                  type:
+                                                    type: string
+                                              capabilities:
+                                                type: object
+                                                properties:
+                                                  add:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                                  drop:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              privileged:
+                                              procMount:
+                                                type: string
+                                              readOnlyRootFilesystem:
+                                              runAsGroup:
+                                              runAsNonRoot:
+                                              runAsUser:
+                                              seLinuxOptions:
+                                                type: object
+                                                properties:
+                                                  user:
+                                                    type: string
+                                                  role:
+                                                    type: string
+                                                  type:
+                                                    type: string
+                                                  level:
+                                                    type: string
+                                              seccompProfile:
+                                                type: object
+                                                properties:
+                                                  type:
+                                                    type: string
+                                                  localhostProfile:
+                                                    type: string
+                                              windowsOptions:
+                                                type: object
+                                                properties:
+                                                  gMSACredentialSpec:
+                                                    type: string
+                                                  gMSACredentialSpecName:
+                                                    type: string
+                                                  hostProcess:
+                                                    type: string
+                                                  runAsUserName:
+                                                    type: string
+                                          startupProbe:
+                                            type: object
+                                            properties:
+                                              _exec:
+                                                type: object
+                                                properties:
+                                                  command:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              failureThreshold:
+                                              grpc:
+                                                type: object
+                                                properties:
+                                                  port:
+                                                  service:
+                                                    type: string
+                                              httpGet:
+                                                type: object
+                                                properties:
+                                                  path:
+                                                    type: string
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                  scheme:
+                                                    type: string
+                                                  httpHeaders:
+                                                    type: array
+                                                    items:
+                                                      type: object
+                                                      properties:
+                                                        capacity:
+                                                          type: integer
+                                                        count:
+                                                          type: integer
+                                                        item:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            value:
+                                                              type: string
+                                              initialDelaySeconds:
+                                              periodSeconds:
+                                              successThreshold:
+                                              tcpSocket:
+                                                type: object
+                                                properties:
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                    type: string
+                                              timeoutSeconds:
+                                              terminationGracePeriodSeconds:
+                                          restartPolicy:
+                                            type: string
+                                          stdin:
+                                          stdinOnce:
+                                          targetContainerName:
+                                            type: string
+                                          terminationMessagePath:
+                                            type: string
+                                          terminationMessagePolicy:
+                                            type: string
+                                          tty:
+                                          volumeDevices:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    name:
+                                                      type: string
+                                                    devicePath:
+                                                      type: string
+                                          volumeMounts:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    name:
+                                                      type: string
+                                                    mountPath:
+                                                      type: string
+                                                    readOnly:
+                                                    mountPropagation:
+                                                      type: string
+                                                    subPath:
+                                                      type: string
+                                                    subPathExpr:
+                                                      type: string
+                                                    recursiveReadOnly:
+                                                      type: string
+                                          workingDir:
+                                            type: string
+                                hostAliases:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          ip:
+                                            type: string
+                                          hostnames:
+                                            type: array
+                                            items:
+                                              type: string
+                                hostIPC:
+                                hostNetwork:
+                                hostPID:
+                                hostUsers:
+                                hostName:
+                                  type: string
+                                imagePullSecrets:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          name:
+                                            type: string
+                                initContainers:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          args:
+                                            type: array
+                                            items:
+                                              type: string
+                                          command:
+                                            type: array
+                                            items:
+                                              type: string
+                                          env:
+                                            type: object
+                                            properties:
+                                              name:
+                                                type: string
+                                              value:
+                                                type: string
+                                              valueFrom:
+                                                type: object
+                                                properties:
+                                                  configMapKeyRef:
+                                                    type: object
+                                                    properties:
+                                                      name:
+                                                        type: string
+                                                      key:
+                                                        type: string
+                                                      optional:
+                                                  fieldRef:
+                                                    type: object
+                                                    properties:
+                                                      apiVersion:
+                                                        type: string
+                                                      fieldPath:
+                                                        type: string
+                                                  resourceFieldRef:
+                                                    type: object
+                                                    properties:
+                                                      containerName:
+                                                        type: string
+                                                      divisor:
+                                                        type: string
+                                                      resource:
+                                                        type: string
+                                                  secretKeyRef:
+                                                    type: object
+                                                    properties:
+                                                      name:
+                                                        type: string
+                                                      key:
+                                                        type: string
+                                                      optional:
+                                          envFrom:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    configMapRef:
+                                                      type: object
+                                                      properties:
+                                                        name:
+                                                          type: string
+                                                        optional:
+                                                    secretRef:
+                                                      type: object
+                                                      properties:
+                                                        name:
+                                                          type: string
+                                                        optional:
+                                                    prefix:
+                                                      type: string
+                                          image:
+                                            type: string
+                                          imagePullPolicy:
+                                            type: string
+                                          lifecycle:
+                                            type: object
+                                            properties:
+                                              postStart:
+                                                type: object
+                                                properties:
+                                                  _exec:
+                                                    type: object
+                                                    properties:
+                                                      command:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                  httpGet:
+                                                    type: object
+                                                    properties:
+                                                      path:
+                                                        type: string
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                      scheme:
+                                                        type: string
+                                                      httpHeaders:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                name:
+                                                                  type: string
+                                                                value:
+                                                                  type: string
+                                                  tcpSocket:
+                                                    type: object
+                                                    properties:
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                        type: string
+                                                  sleep:
+                                                    type: object
+                                                    properties:
+                                                      seconds:
+                                              preStop:
+                                                type: object
+                                                properties:
+                                                  _exec:
+                                                    type: object
+                                                    properties:
+                                                      command:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                  httpGet:
+                                                    type: object
+                                                    properties:
+                                                      path:
+                                                        type: string
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                      scheme:
+                                                        type: string
+                                                      httpHeaders:
+                                                        type: array
+                                                        items:
+                                                          type: object
+                                                          properties:
+                                                            capacity:
+                                                              type: integer
+                                                            count:
+                                                              type: integer
+                                                            item:
+                                                              type: object
+                                                              properties:
+                                                                name:
+                                                                  type: string
+                                                                value:
+                                                                  type: string
+                                                  tcpSocket:
+                                                    type: object
+                                                    properties:
+                                                      host:
+                                                        type: string
+                                                      port:
+                                                        type: string
+                                                  sleep:
+                                                    type: object
+                                                    properties:
+                                                      seconds:
+                                          livenessProbe:
+                                            type: object
+                                            properties:
+                                              _exec:
+                                                type: object
+                                                properties:
+                                                  command:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              failureThreshold:
+                                              grpc:
+                                                type: object
+                                                properties:
+                                                  port:
+                                                  service:
+                                                    type: string
+                                              httpGet:
+                                                type: object
+                                                properties:
+                                                  path:
+                                                    type: string
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                  scheme:
+                                                    type: string
+                                                  httpHeaders:
+                                                    type: array
+                                                    items:
+                                                      type: object
+                                                      properties:
+                                                        capacity:
+                                                          type: integer
+                                                        count:
+                                                          type: integer
+                                                        item:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            value:
+                                                              type: string
+                                              initialDelaySeconds:
+                                              periodSeconds:
+                                              successThreshold:
+                                              tcpSocket:
+                                                type: object
+                                                properties:
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                    type: string
+                                              timeoutSeconds:
+                                              terminationGracePeriodSeconds:
+                                          name:
+                                            type: string
+                                          ports:
+                                            type: object
+                                            properties:
+                                              containerPort:
+                                              protocol:
+                                                type: string
+                                              hostIP:
+                                                type: string
+                                              hostPort:
+                                              name:
+                                                type: string
+                                          readinessProbe:
+                                            type: object
+                                            properties:
+                                              _exec:
+                                                type: object
+                                                properties:
+                                                  command:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              failureThreshold:
+                                              grpc:
+                                                type: object
+                                                properties:
+                                                  port:
+                                                  service:
+                                                    type: string
+                                              httpGet:
+                                                type: object
+                                                properties:
+                                                  path:
+                                                    type: string
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                  scheme:
+                                                    type: string
+                                                  httpHeaders:
+                                                    type: array
+                                                    items:
+                                                      type: object
+                                                      properties:
+                                                        capacity:
+                                                          type: integer
+                                                        count:
+                                                          type: integer
+                                                        item:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            value:
+                                                              type: string
+                                              initialDelaySeconds:
+                                              periodSeconds:
+                                              successThreshold:
+                                              tcpSocket:
+                                                type: object
+                                                properties:
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                    type: string
+                                              timeoutSeconds:
+                                              terminationGracePeriodSeconds:
+                                          resizePolicy:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                          resources:
+                                            type: object
+                                            properties:
+                                              claims:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  properties:
+                                                    capacity:
+                                                      type: integer
+                                                    count:
+                                                      type: integer
+                                                    item:
+                                                      type: object
+                                                      properties:
+                                                        name:
+                                                          type: string
+                                                        request:
+                                                          type: string
+                                              limits:
+                                                type: object
+                                                additionalProperties:
+                                                  type: string
+                                              requests:
+                                                type: object
+                                                additionalProperties:
+                                                  type: string
+                                          restartPolicy:
+                                            type: string
+                                          securityContext:
+                                            type: object
+                                            properties:
+                                              allowPrivilegeEscalation:
+                                              appArmorProfile:
+                                                type: object
+                                                properties:
+                                                  localhostProfile:
+                                                    type: string
+                                                  type:
+                                                    type: string
+                                              capabilities:
+                                                type: object
+                                                properties:
+                                                  add:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                                  drop:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              privileged:
+                                              procMount:
+                                                type: string
+                                              readOnlyRootFilesystem:
+                                              runAsGroup:
+                                              runAsNonRoot:
+                                              runAsUser:
+                                              seLinuxOptions:
+                                                type: object
+                                                properties:
+                                                  user:
+                                                    type: string
+                                                  role:
+                                                    type: string
+                                                  type:
+                                                    type: string
+                                                  level:
+                                                    type: string
+                                              seccompProfile:
+                                                type: object
+                                                properties:
+                                                  type:
+                                                    type: string
+                                                  localhostProfile:
+                                                    type: string
+                                              windowsOptions:
+                                                type: object
+                                                properties:
+                                                  gMSACredentialSpec:
+                                                    type: string
+                                                  gMSACredentialSpecName:
+                                                    type: string
+                                                  hostProcess:
+                                                    type: string
+                                                  runAsUserName:
+                                                    type: string
+                                          startupProbe:
+                                            type: object
+                                            properties:
+                                              _exec:
+                                                type: object
+                                                properties:
+                                                  command:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                              failureThreshold:
+                                              grpc:
+                                                type: object
+                                                properties:
+                                                  port:
+                                                  service:
+                                                    type: string
+                                              httpGet:
+                                                type: object
+                                                properties:
+                                                  path:
+                                                    type: string
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                  scheme:
+                                                    type: string
+                                                  httpHeaders:
+                                                    type: array
+                                                    items:
+                                                      type: object
+                                                      properties:
+                                                        capacity:
+                                                          type: integer
+                                                        count:
+                                                          type: integer
+                                                        item:
+                                                          type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            value:
+                                                              type: string
+                                              initialDelaySeconds:
+                                              periodSeconds:
+                                              successThreshold:
+                                              tcpSocket:
+                                                type: object
+                                                properties:
+                                                  host:
+                                                    type: string
+                                                  port:
+                                                    type: string
+                                              timeoutSeconds:
+                                              terminationGracePeriodSeconds:
+                                          stdin:
+                                          stdinOnce:
+                                          terminationMessagePath:
+                                            type: string
+                                          terminationMessagePolicy:
+                                            type: string
+                                          tty:
+                                          volumeDevices:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    name:
+                                                      type: string
+                                                    devicePath:
+                                                      type: string
+                                          volumeMounts:
+                                            type: array
+                                            items:
+                                              type: object
+                                              properties:
+                                                capacity:
+                                                  type: integer
+                                                count:
+                                                  type: integer
+                                                item:
+                                                  type: object
+                                                  properties:
+                                                    name:
+                                                      type: string
+                                                    mountPath:
+                                                      type: string
+                                                    readOnly:
+                                                    mountPropagation:
+                                                      type: string
+                                                    subPath:
+                                                      type: string
+                                                    subPathExpr:
+                                                      type: string
+                                                    recursiveReadOnly:
+                                                      type: string
+                                          workingDir:
+                                            type: string
+                                nodeName:
+                                  type: string
+                                nodeSelector:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                os:
+                                  type: object
+                                  properties:
+                                    name:
+                                      type: string
+                                overhead:
+                                  type: object
+                                  additionalProperties:
+                                    type: string
+                                preemptionPolicy:
+                                  type: string
+                                priority:
+                                priorityClassName:
+                                  type: string
+                                readinessGates:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          conditionType:
+                                            type: string
+                                resourceClaims:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          name:
+                                            type: string
+                                          resourceClaimName:
+                                            type: string
+                                          resourceClaimTemplateName:
+                                            type: string
+                                resources:
+                                  type: object
+                                  properties:
+                                    claims:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          capacity:
+                                            type: integer
+                                          count:
+                                            type: integer
+                                          item:
+                                            type: object
+                                            properties:
+                                              name:
+                                                type: string
+                                              request:
+                                                type: string
+                                    limits:
+                                      type: object
+                                      additionalProperties:
+                                        type: string
+                                    requests:
+                                      type: object
+                                      additionalProperties:
+                                        type: string
+                                restartPolicy:
+                                  type: string
+                                runtimeClassName:
+                                  type: string
+                                schedulerName:
+                                  type: string
+                                schedulingGates:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          name:
+                                            type: string
+                                securityContext:
+                                  type: object
+                                  properties:
+                                    appArmorProfile:
+                                      type: object
+                                      properties:
+                                        localhostProfile:
+                                          type: string
+                                        type:
+                                          type: string
+                                    seccompProfile:
+                                      type: object
+                                      properties:
+                                        type:
+                                          type: string
+                                        localhostProfile:
+                                          type: string
+                                    windowsOptions:
+                                      type: object
+                                      properties:
+                                        gMSACredentialSpec:
+                                          type: string
+                                        gMSACredentialSpecName:
+                                          type: string
+                                        hostProcess:
+                                          type: string
+                                        runAsUserName:
+                                          type: string
+                                    sysctls:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          capacity:
+                                            type: integer
+                                          count:
+                                            type: integer
+                                          item:
+                                            type: object
+                                            properties:
+                                              name:
+                                                type: string
+                                              value:
+                                                type: string
+                                    fsGroup:
+                                    fsGroupChangePolicy:
+                                      type: string
+                                    runAsGroup:
+                                    runAsNonRoot:
+                                    runAsUser:
+                                    seLinuxOptions:
+                                      type: object
+                                      properties:
+                                        user:
+                                          type: string
+                                        role:
+                                          type: string
+                                        type:
+                                          type: string
+                                        level:
+                                          type: string
+                                    supplementalGroups:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          capacity:
+                                            type: integer
+                                          count:
+                                            type: integer
+                                          item:
+                                            type: integer
+                                    supplementalGroupsPolicy:
+                                      type: string
+                                serviceAccount:
+                                  type: string
+                                serviceAccountName:
+                                  type: string
+                                setHostnameAsFQDN:
+                                shareProcessNamespace:
+                                subdomain:
+                                  type: string
+                                terminationGracePeriodSeconds:
+                                tolerations:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          key:
+                                            type: string
+                                          operator:
+                                            type: string
+                                          value:
+                                            type: string
+                                          effect:
+                                            type: string
+                                          tolerationSeconds:
+                                topologySpreadConstraints:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          topologyKey:
+                                            type: string
+                                          maxSkew:
+                                          whenUnsatisfiable:
+                                            type: string
+                                          labelSelector:
+                                            type: object
+                                            properties:
+                                              matchLabels:
+                                                type: object
+                                                additionalProperties:
+                                                  type: string
+                                              matchExpressions:
+                                                type: object
+                                                properties:
+                                                  key:
+                                                    type: string
+                                                  operator:
+                                                    type: string
+                                                  values:
+                                                    type: array
+                                                    items:
+                                                      type: string
+                                          matchLabelKeys:
+                                            type: array
+                                            items:
+                                              type: string
+                                          minDomains:
+                                          nodeAffinityPolicy:
+                                            type: string
+                                          nodeTaintsPolicy:
+                                            type: string
+                                volumeMounts:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      capacity:
+                                        type: integer
+                                      count:
+                                        type: integer
+                                      item:
+                                        type: object
+                                        properties:
+                                          name:
+                                            type: string
+                                          mountPath:
+                                            type: string
+                                          readOnly:
+                                          mountPropagation:
+                                            type: string
+                                          subPath:
+                                            type: string
+                                          subPathExpr:
+                                            type: string
+                                          recursiveReadOnly:
+                                            type: string

@@ -1,14 +1,15 @@
+using Kadense.Models.Jupyternetes;
 using Kadense.Models.Kubernetes;
 using System.Reflection;
 
-namespace Kadense.Models.Kubernetes.Tests {
-    public class CustomResourceDefinitionBuilderTest
+namespace Kadense.Models.Jupyternetes.Tests {
+    public class JupyterNotebookTemplateTest
     {
         // Test method to verify the generation of a CustomResourceDefinition YAML
         // for a given Kubernetes object type.
         [Theory]
-        [InlineData(new object[] { typeof(TestKubernetesObject) })]
-        public async Task GenerateAsync(Type inputType)
+        [InlineData(new object[] { typeof(JupyterNotebookTemplate) })]
+        public async Task GenerateCrdAsync(Type inputType)
         {
             // Create a memory stream to hold the generated YAML.
             using (var stream = new MemoryStream())
@@ -19,8 +20,8 @@ namespace Kadense.Models.Kubernetes.Tests {
                 // Read the generated YAML from the stream.
                 var reader = new StreamReader(stream);
                 string yaml = await reader.ReadToEndAsync();
-                string expectedYaml = GetEmbeddedResourceAsString("Kadense.Models.Kubernetes.Tests.crds.TestKubernetesObject.yaml");
-
+                string expectedYaml = GetEmbeddedResourceAsString("Kadense.Models.Jupyternetes.Tests.crds.JupyterNotebookTemplate.yaml");
+                
                 // Assert that the generated YAML matches the expected value.
                 Assert.Equal(expectedYaml, yaml);
 

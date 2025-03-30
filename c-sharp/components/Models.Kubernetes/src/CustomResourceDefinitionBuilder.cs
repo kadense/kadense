@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using System.Reflection;
 
 namespace Kadense.Models.Kubernetes
 {
@@ -7,16 +8,6 @@ namespace Kadense.Models.Kubernetes
     /// </summary>
     public class CustomResourceDefinitionBuilder
     {
-        /// <summary>
-        /// Builds a CRD YAML file for a given generic type and writes it to the provided stream.
-        /// </summary>
-        /// <typeparam name="T">The type representing the custom resource.</typeparam>
-        /// <param name="stream">The stream to write the CRD YAML to.</param>
-        public static async Task BuildAsync<T>(Stream stream)
-        {
-            Type type = typeof(T);
-        }
-
         /// <summary>
         /// Builds a CRD YAML file for a given type and writes it to the provided stream.
         /// </summary>
@@ -36,10 +27,26 @@ namespace Kadense.Models.Kubernetes
             await writer.WriteLineAsync("kind: CustomResourceDefinition");
             await writer.WriteLineAsync("metadata:");
             await PadAsync(writer, 1);
-            await writer.WriteLineAsync($"name: {crdHeaders.PluralName}.{crdHeaders.Group}");
+            await writer.WriteLineAsync($"name: {crdHeaders.PluralName.ToLower()}.{crdHeaders.Group}");
             await writer.WriteLineAsync("spec:");
+            
+            await PadAsync(writer, 1);
+            await writer.WriteLineAsync($"scope: Namespaced");
+
             await PadAsync(writer, 1);
             await writer.WriteLineAsync($"group: {crdHeaders.Group}");
+
+            await PadAsync(writer, 1);
+            await writer.WriteLineAsync($"names:");
+            await PadAsync(writer, 2);
+            await writer.WriteLineAsync($"kind: {crdHeaders.Kind}");
+            await PadAsync(writer, 2);
+            await writer.WriteLineAsync($"plural: {crdHeaders.PluralName.ToLower()}");
+            await PadAsync(writer, 2);
+            await writer.WriteLineAsync($"singular: {crdHeaders.Kind.ToLower()}");
+
+
+
             await PadAsync(writer, 1);
             await writer.WriteLineAsync($"versions:");
 
@@ -59,7 +66,7 @@ namespace Kadense.Models.Kubernetes
             await writer.WriteLineAsync($"openAPIV3Schema:");
 
             await PadAsync(writer, 4);
-            await writer.WriteLineAsync($"type: object:");
+            await writer.WriteLineAsync($"type: object");
 
             await PadAsync(writer, 4);
             await writer.WriteLineAsync($"properties:");
@@ -109,74 +116,108 @@ namespace Kadense.Models.Kubernetes
                 await writer.WriteLineAsync(":");
 
                 // Determine the property type and write its schema.
-                if (property.PropertyType.Equals(typeof(string)))
+                await ProcessPropertyAsync(writer, property, depth);
+            }
+        }
+
+        private static async Task ProcessPropertyAsync(StreamWriter writer, PropertyInfo property, int depth)
+        {
+            Type propertyType = property.PropertyType;
+
+            if (property.PropertyType.Equals(typeof(string)))
+            {
+                await PadAsync(writer, depth + 1);
+                await writer.WriteLineAsync("type: string");
+            }
+            else if (property.PropertyType.Equals(typeof(int)))
+            {
+                await PadAsync(writer, depth + 1);
+                await writer.WriteLineAsync("type: integer");
+            }
+            else if (property.PropertyType.IsEnum)
+            {
+                await PadAsync(writer, depth + 1);
+                await writer.WriteLineAsync("type: string");
+                await PadAsync(writer, depth + 1);
+                await writer.WriteLineAsync("enum:");
+                foreach (string? enumName in property.PropertyType.GetEnumNames())
                 {
                     await PadAsync(writer, depth + 1);
-                    await writer.WriteLineAsync("type: string");
+                    await writer.WriteLineAsync($"- {enumName}");
                 }
-                else if (property.PropertyType.Equals(typeof(int)))
+            }
+            else if (property.PropertyType.IsArray)
+            {
+                // Array types are not yet implemented.
+                throw new NotImplementedException();
+            }
+            else if (property.PropertyType.IsGenericType)
+            {
+                Type genericTypeDefinition = property.PropertyType.GetGenericTypeDefinition();
+                if (genericTypeDefinition == typeof(Dictionary<,>)) 
                 {
                     await PadAsync(writer, depth + 1);
-                    await writer.WriteLineAsync("type: integer");
-                }
-                else if (property.PropertyType.IsEnum)
-                {
+                    await writer.WriteLineAsync("type: object");
+
                     await PadAsync(writer, depth + 1);
-                    await writer.WriteLineAsync("type: string");
-                    await PadAsync(writer, depth + 1);
-                    await writer.WriteLineAsync("enum:");
-                    foreach (string? enumName in property.PropertyType.GetEnumNames())
+                    await writer.WriteLineAsync("additionalProperties:");
+
+                    if (property.PropertyType.GetGenericArguments()[0] != typeof(string))
+                        throw new NotImplementedException();
+
+                    if (property.PropertyType.GetGenericArguments()[1] == typeof(string))
                     {
-                        await PadAsync(writer, depth + 1);
-                        await writer.WriteLineAsync($"- {enumName}");
-                    }
-                }
-                else if (property.PropertyType.IsArray)
-                {
-                    // Array types are not yet implemented.
-                    throw new NotImplementedException();
-                }
-                else if (property.PropertyType.IsGenericType)
-                {
-                    if (property.PropertyType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-                    {
-                        await PadAsync(writer, depth + 1);
-                        await writer.WriteLineAsync("type: object");
-
-                        await PadAsync(writer, depth + 1);
-                        await writer.WriteLineAsync("additionalProperties:");
-
-                        if (property.PropertyType.GetGenericArguments()[0] != typeof(string))
-                            throw new NotImplementedException();
-
-                        if (property.PropertyType.GetGenericArguments()[1] == typeof(string))
-                        {
-                            await PadAsync(writer, depth + 2);
-                            await writer.WriteLineAsync("type: string");
-                        }
-                        else
-                        {
-                            await PadAsync(writer, depth + 2);
-                            await writer.WriteLineAsync("type: object");
-                            await PadAsync(writer, depth + 2);
-                            await writer.WriteLineAsync("properties:");
-                            await ProcessClassAsync(writer, property.PropertyType, depth + 3);
-                        }
+                        await PadAsync(writer, depth + 2);
+                        await writer.WriteLineAsync("type: string");
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        await PadAsync(writer, depth + 2);
+                        await writer.WriteLineAsync("type: object");
+                        await PadAsync(writer, depth + 2);
+                        await writer.WriteLineAsync("properties:");
+                        await ProcessClassAsync(writer, property.PropertyType, depth + 3);
                     }
+                }
+                else if(genericTypeDefinition == typeof(List<>))
+                {
+                    await PadAsync(writer, depth + 1);
+                    await writer.WriteLineAsync("type: array");
+
+                    await PadAsync(writer, depth + 1);
+                    await writer.WriteLineAsync("items:");
+
+                    if (property.PropertyType.GetGenericArguments()[0] == typeof(string))
+                    {
+                        await PadAsync(writer, depth + 2);
+                        await writer.WriteLineAsync("type: string");
+                    }
+                    else
+                    {
+                        await PadAsync(writer, depth + 2);
+                        await writer.WriteLineAsync("type: object");
+                        await PadAsync(writer, depth + 2);
+                        await writer.WriteLineAsync("properties:");
+                        await ProcessClassAsync(writer, property.PropertyType, depth + 3);
+                    }
+                }
+                else if(genericTypeDefinition == typeof(Nullable<>))
+                {
+                    
                 }
                 else
                 {
-                    // For complex types, recursively process their properties.
-                    await PadAsync(writer, depth + 1);
-                    await writer.WriteLineAsync("type: object");
-                    await PadAsync(writer, depth + 1);
-                    await writer.WriteLineAsync("properties:");
-                    await ProcessClassAsync(writer, property.PropertyType, depth + 2);
+                    throw new NotImplementedException();
                 }
+            }
+            else
+            {
+                // For complex types, recursively process their properties.
+                await PadAsync(writer, depth + 1);
+                await writer.WriteLineAsync("type: object");
+                await PadAsync(writer, depth + 1);
+                await writer.WriteLineAsync("properties:");
+                await ProcessClassAsync(writer, property.PropertyType, depth + 2);
             }
         }
 

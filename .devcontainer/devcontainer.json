@@ -1,8 +1,8 @@
 {
-	"image": "mcr.microsoft.com/devcontainers/dotnet:8.0",
-	"features": {
-        
+	"build": {
+		"dockerfile": "Dockerfile"
 	},
+	"features": {},
 	"mounts": [],
 	"customizations": {
 		"vscode": {
@@ -11,14 +11,14 @@
 				"dbaeumer.vscode-eslint",
 				"editorconfig.editorconfig",
 				"github.vscode-github-actions",
-                "ms-dotnettools.csharp",
-                "ms-dotnettools.csdevkit"
+				"ms-dotnettools.csharp",
+				"ms-dotnettools.csdevkit",
+				"ms-azuretools.vscode-docker"
 			]
 		}
 	},
 	"workspaceMount": "source=kadense-workspace,target=/workspaces,type=volume",
 	"workspaceFolder": "/workspaces",
-    "postCreateCommand": "sudo chmod 0777 /workspaces; if [ ! -d \"/workspaces/kadense\" ]; then git clone https://github.com/headinthecloudsolutions/kadense.git --recurse-submodules; fi; chmod 0777 /workspaces/kadense/.devcontainer/setup.sh; /workspaces/kadense/.devcontainer/setup.sh",
+	"postCreateCommand": "sudo chmod 0777 /workspaces; if [ ! -d \"/workspaces/kadense\" ]; then git clone https://github.com/headinthecloudsolutions/kadense.git --recurse-submodules; fi; chmod 0777 /workspaces/kadense/.devcontainer/setup.sh; /workspaces/kadense/.devcontainer/setup.sh",
 	"postStartCommand": "git config --global --add safe.directory \"*\""
-	
 }

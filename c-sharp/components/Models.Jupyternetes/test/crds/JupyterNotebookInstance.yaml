@@ -9,6 +9,11 @@ spec:
     kind: JupyterNotebookInstance
     plural: jupyternotebookinstances
     singular: jupyternotebookinstance
+    categories:
+    - jupyternetes
+    - kadense
+    shortNames:
+    - jni
   versions:
   - name: v1
     served: true

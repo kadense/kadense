@@ -45,6 +45,30 @@ namespace Kadense.Models.Kubernetes
             await PadAsync(writer, 2);
             await writer.WriteLineAsync($"singular: {crdHeaders.Kind.ToLower()}");
 
+            var categories = type.GetCustomAttributes(typeof(KubernetesCategoryNameAttribute), false);
+            if(categories.Length > 0)
+            {
+                await PadAsync(writer, 2);
+                await writer.WriteLineAsync($"categories:");
+            }
+            foreach (KubernetesCategoryNameAttribute category in categories)
+            {
+                await PadAsync(writer, 2);
+                await writer.WriteLineAsync($"- {category.Name}");
+            }
+
+            
+            var shortNames = type.GetCustomAttributes(typeof(KubernetesShortNameAttribute), false);
+            if(shortNames.Length > 0)
+            {
+                await PadAsync(writer, 2);
+                await writer.WriteLineAsync($"shortNames:");
+            }
+            foreach (KubernetesShortNameAttribute shortName in shortNames)
+            {
+                await PadAsync(writer, 2);
+                await writer.WriteLineAsync($"- {shortName.Name}");
+            }
 
 
             await PadAsync(writer, 1);

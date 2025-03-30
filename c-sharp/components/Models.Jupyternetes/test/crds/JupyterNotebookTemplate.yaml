@@ -1,14 +1,19 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: jupyternotebookinstancetemplates.kadense.io
+  name: jupyternotebooktemplates.kadense.io
 spec:
   scope: Namespaced
   group: kadense.io
   names:
-    kind: JupyterNotebookInstanceTemplate
-    plural: jupyternotebookinstancetemplates
-    singular: jupyternotebookinstancetemplate
+    kind: JupyterNotebookTemplate
+    plural: jupyternotebooktemplates
+    singular: jupyternotebooktemplate
+    categories:
+    - jupyternetes
+    - kadense
+    shortNames:
+    - jnt
   versions:
   - name: v1
     served: true

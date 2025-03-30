@@ -21,10 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\Kadense.Models.Jupyternetes.csproj" />
+    <ProjectReference Include="..\..\Client.Kubernetes\src\Kadense.Client.Kubernetes.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="crds\*.yaml" />
-  </ItemGroup>
-
 </Project>

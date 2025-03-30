@@ -1,6 +1,6 @@
 namespace Kadense.Models.Jupyternetes
 {
-    [KubernetesCustomResourceAttribute("JupyterNotebookInstances", "JupyterNotebookInstance")]
+    [KubernetesCustomResource("JupyterNotebookInstances", "JupyterNotebookInstance")]
     [KubernetesCategoryName("jupyternetes")]
     [KubernetesCategoryName("kadense")]
     [KubernetesShortName("jni")]

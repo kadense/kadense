@@ -27,5 +27,7 @@
 
   <ItemGroup>
     <Using Include="k8s" />
+    <Using Include="Kadense.Models.Kubernetes" />
+    <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>
 </Project>

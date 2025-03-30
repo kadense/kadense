@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\Kadense.Client.Kubernetes.csproj" />
+    <ProjectReference Include="..\..\Models.Kubernetes\test\Kadense.Models.Kubernetes.Tests.csproj" />
   </ItemGroup>
 
 </Project>

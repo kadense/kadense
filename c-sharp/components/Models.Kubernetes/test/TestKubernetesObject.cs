@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Kadense.Models.Kubernetes.Tests
 {
 
-    [KubernetesCustomResourceAttribute("tests", "test")]
+    [KubernetesCustomResourceAttribute("kadensetests", "kadensetest")]
     public class TestKubernetesObject
     {
         // The name of the Kubernetes object, serialized as "myName".

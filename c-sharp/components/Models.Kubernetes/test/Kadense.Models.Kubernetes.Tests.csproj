@@ -17,9 +17,11 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Using Include="Kadense.Testing" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\components\Testing\src\Kadense.Testing.csproj" />
     <ProjectReference Include="..\src\Kadense.Models.Kubernetes.csproj" />
   </ItemGroup>
 

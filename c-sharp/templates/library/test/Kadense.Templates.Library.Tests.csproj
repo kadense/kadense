@@ -17,10 +17,12 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Using Include="Kadense.Testing" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\src\Kadense.Templates.Library.csproj" />
+    <ProjectReference Include="..\..\..\components\Testing\src\Kadense.Testing.csproj" />
   </ItemGroup>
 
 </Project>

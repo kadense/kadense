@@ -6,14 +6,16 @@ using k8s;
 using k8s.Models;
 
 namespace Kadense.Models.Jupyternetes.Tests {
-    public class CustomResourceTests
+    public class CustomResourceTests : KadenseTest
     {
+        [TestOrder(1)]
         [Fact]
         public async Task GenerateCrdTemplateAsync()
         {
             await CreateAsync<JupyterNotebookTemplate>();
         }
 
+        [TestOrder(2)]
         [Fact]
         public async Task GenerateCrdInstanceAsync()
         {
@@ -44,23 +46,6 @@ namespace Kadense.Models.Jupyternetes.Tests {
             else
             {
                 var createdCrd = await genericClient.CreateAsync<V1CustomResourceDefinition>(crd);
-            }
-        }
-
-        private string GetEmbeddedResourceAsString(string resourceName)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            using (var stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                if (stream == null)
-                {
-                    throw new InvalidOperationException($"Resource '{resourceName}' not found.");
-                }
-
-                using (var reader = new StreamReader(stream))
-                {
-                    return reader.ReadToEnd();
-                }
             }
         }
     }

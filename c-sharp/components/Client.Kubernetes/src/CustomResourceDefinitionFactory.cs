@@ -6,13 +6,18 @@ namespace Kadense.Client.Kubernetes
 {
     public class CustomResourceDefinitionFactory
     {
-        public IDictionary<string, V1JSONSchemaProps> ProcessProperties(Type type){
+        /// <summary>
+        /// Processes the properties of a given type and generates a dictionary of JSON schema properties.
+        /// </summary>
+        /// <param name="type">The type whose properties are to be processed.</param>
+        /// <returns>A dictionary mapping property names to their corresponding JSON schema properties.</returns>
+        public IDictionary<string, V1JSONSchemaProps> ProcessProperties(Type type)
+        {
             var properties = new Dictionary<string, V1JSONSchemaProps>();
 
             foreach (var property in type.GetProperties())
             {
-                var ignoreFlags = property.GetCustomAttributes(typeof(IgnoreOnCrdGenerationAttribute), false);
-                if(ignoreFlags.Length == 0)
+                if (!this.IgnoreProperty(type, property))
                 {
                     string propertyName = property.Name;
                     if (propertyName.Length > 1)
@@ -31,11 +36,56 @@ namespace Kadense.Client.Kubernetes
             return properties;
         }
 
-        public V1JSONSchemaProps ProcessProperty(PropertyInfo property){
+        /// <summary>
+        /// Determines whether a property should be ignored during CRD generation.
+        /// </summary>
+        /// <param name="classType">The type of the class containing the property.</param>
+        /// <param name="property">The property to check.</param>
+        /// <returns>True if the property should be ignored; otherwise, false.</returns>
+        private bool IgnoreProperty(Type classType, PropertyInfo property)
+        {
+            var ignoreFlags = property.GetCustomAttributes(typeof(IgnoreOnCrdGenerationAttribute), false);
+            if (ignoreFlags.Length > 0)
+                return true;
+
+            var crdAttributes = classType.GetCustomAttributes(typeof(KubernetesCustomResourceAttribute), false);
+            if (crdAttributes.Length > 0)
+            {
+                switch (property.Name.ToLower())
+                {
+                    case "apiversion":
+                        return true;
+
+                    case "kind":
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Processes a property and generates its corresponding JSON schema property.
+        /// </summary>
+        /// <param name="property">The property to process.</param>
+        /// <returns>The JSON schema property for the given property.</returns>
+        public V1JSONSchemaProps ProcessProperty(PropertyInfo property)
+        {
             return ProcessProperty(property.PropertyType);
         }
 
-        public V1JSONSchemaProps ProcessProperty(Type propertyType){
+        /// <summary>
+        /// Processes a type and generates its corresponding JSON schema property.
+        /// </summary>
+        /// <param name="propertyType">The type to process.</param>
+        /// <returns>The JSON schema property for the given type.</returns>
+        public V1JSONSchemaProps ProcessProperty(Type propertyType)
+        {
             V1JSONSchemaProps result = new V1JSONSchemaProps();
 
             if (propertyType.Equals(typeof(string)))
@@ -63,7 +113,7 @@ namespace Kadense.Client.Kubernetes
             else if (propertyType.IsGenericType)
             {
                 Type genericTypeDefinition = propertyType.GetGenericTypeDefinition();
-                if (genericTypeDefinition == typeof(Dictionary<,>)) 
+                if (genericTypeDefinition == typeof(Dictionary<,>))
                 {
                     result.Type = "object";
                     var additionalProperties = new V1JSONSchemaProps();
@@ -81,14 +131,14 @@ namespace Kadense.Client.Kubernetes
                         additionalProperties.Type = "object";
                         additionalProperties.Properties = ProcessProperties(propertyType);
                     }
-                    result.AdditionalProperties = additionalProperties;                    
+                    result.AdditionalProperties = additionalProperties;
                 }
-                else if(genericTypeDefinition == typeof(List<>))
+                else if (genericTypeDefinition == typeof(List<>))
                 {
                     result.Type = "array";
                     var items = new V1JSONSchemaProps();
-                    
-                    
+
+
                     if (propertyType.GetGenericArguments()[0] == typeof(string))
                     {
                         items.Type = "string";
@@ -100,7 +150,7 @@ namespace Kadense.Client.Kubernetes
                     }
                     result.Items = items;
                 }
-                else if(genericTypeDefinition == typeof(Nullable<>))
+                else if (genericTypeDefinition == typeof(Nullable<>))
                 {
                     return ProcessProperty(propertyType.GetGenericArguments()[0]);
                 }
@@ -118,20 +168,28 @@ namespace Kadense.Client.Kubernetes
             return result;
         }
 
-        public V1CustomResourceDefinition Create<T>(){
+        /// <summary>
+        /// Creates a custom resource definition (CRD) for a given type.
+        /// </summary>
+        /// <typeparam name="T">The type for which the CRD is to be created.</typeparam>
+        /// <returns>The custom resource definition for the given type.</returns>
+        public V1CustomResourceDefinition Create<T>()
+        {
             Type type = typeof(T);
             var attribute = (KubernetesCustomResourceAttribute)type.GetCustomAttributes(typeof(KubernetesCustomResourceAttribute), false).First();
 
-            var names = new V1CustomResourceDefinitionNames(){
+            var names = new V1CustomResourceDefinitionNames()
+            {
                 Kind = attribute.Kind,
                 Plural = attribute.PluralName.ToLower(),
                 Singular = attribute.Kind.ToLower(),
             };
-            
-            var spec = new V1CustomResourceDefinitionSpec(){
+
+            var spec = new V1CustomResourceDefinitionSpec()
+            {
                 Scope = "Namespaced",
                 Group = attribute.Group,
-                Names = names        
+                Names = names
             };
 
             var categories = type.GetCustomAttributes(typeof(KubernetesCategoryNameAttribute), false);
@@ -164,12 +222,14 @@ namespace Kadense.Client.Kubernetes
 
 
 
-            return new V1CustomResourceDefinition(){
+            return new V1CustomResourceDefinition()
+            {
                 Spec = spec,
-                Metadata = new V1ObjectMeta(){
+                Metadata = new V1ObjectMeta()
+                {
                     Name = $"{attribute.PluralName.ToLower()}.{attribute.Group}"
                 }
             };
-        } 
+        }
     }
 }

@@ -9,9 +9,9 @@ namespace Kadense.Models.Kubernetes
         where T : KadenseCustomResource
     {
         [JsonPropertyName("metadata")]
-        public V1ListMeta Metadata { get; set; }
+        public V1ListMeta Metadata { get; set; } = new V1ListMeta();
 
         [JsonPropertyName("items")]
-        public List<T> Items { get; set; }
+        public List<T> Items { get; set; } = new List<T>();
     }
 }

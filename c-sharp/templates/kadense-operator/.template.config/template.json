@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Head in the Cloud Solutions Ltd",
+    "classifications": [ "HITCS", "Operator", "KADENSE" ],
+    "identity": "Template.Operator",
+    "name": "KADENSE Operator",
+    "sourceName" : "Template.Operator",
+    "shortName": "kadenseop",
+    "tags": {
+      "language": "C#",
+      "type":"project"
+    }
+}

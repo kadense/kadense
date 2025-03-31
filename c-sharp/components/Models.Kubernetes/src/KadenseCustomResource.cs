@@ -1,0 +1,23 @@
+using System;
+using k8s;
+using k8s.Models;
+using System.Text.Json.Serialization;
+using System.Reflection;
+
+namespace Kadense.Models.Kubernetes
+{
+    public class KadenseCustomResource : KubernetesObject, IMetadata<V1ObjectMeta>
+    {
+        [IgnoreOnCrdGeneration]
+        [JsonPropertyName("metadata")]
+        public V1ObjectMeta Metadata { get; set; }
+
+        public KadenseCustomResource()
+        {
+            this.Metadata = new V1ObjectMeta();
+            var attribute = this.GetType().GetCustomAttributes<KubernetesCustomResourceAttribute>().First();
+            this.ApiVersion = $"{attribute.Group}/{attribute.Version}";
+            this.Kind = attribute.Kind;
+        }
+    }
+}

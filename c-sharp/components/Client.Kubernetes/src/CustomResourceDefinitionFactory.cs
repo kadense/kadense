@@ -11,17 +11,21 @@ namespace Kadense.Client.Kubernetes
 
             foreach (var property in type.GetProperties())
             {
-                string propertyName = property.Name;
-                if (propertyName.Length > 1)
+                var ignoreFlags = property.GetCustomAttributes(typeof(IgnoreOnCrdGenerationAttribute), false);
+                if(ignoreFlags.Length == 0)
                 {
-                    propertyName = $"{propertyName.Substring(0, 1).ToLower()}{propertyName.Substring(1)}";
+                    string propertyName = property.Name;
+                    if (propertyName.Length > 1)
+                    {
+                        propertyName = $"{propertyName.Substring(0, 1).ToLower()}{propertyName.Substring(1)}";
+                    }
+                    var jsonPropNames = property.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false);
+                    if (jsonPropNames.Length > 0)
+                    {
+                        propertyName = ((JsonPropertyNameAttribute)jsonPropNames[0]).Name;
+                    }
+                    properties.Add(propertyName, ProcessProperty(property));
                 }
-                var jsonPropNames = property.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false);
-                if (jsonPropNames.Length > 0)
-                {
-                    propertyName = ((JsonPropertyNameAttribute)jsonPropNames[0]).Name;
-                }
-                properties.Add(propertyName, ProcessProperty(property));
             }
 
             return properties;

@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="KubernetesClient" Version="16.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>
 </Project>

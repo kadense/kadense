@@ -4,7 +4,7 @@ namespace Kadense.Models.Jupyternetes
     [KubernetesCategoryName("jupyternetes")]
     [KubernetesCategoryName("kadense")]
     [KubernetesShortName("jni")]
-    public class JupyterNotebookInstance
+    public class JupyterNotebookInstance : KadenseCustomResource
     {
         /// <summary>
         /// Specification for this instance

@@ -1,6 +1,7 @@
+
 namespace Kadense.Models.Kubernetes.CoreApi
 {
-    public class V1Volume
+    public class V1Volume : KadenseTemplatedCopiedResource<k8s.Models.V1Volume>
     {
         public V1AWSElasticBlockStoreVolumeSource? AWSElasticBlockStore { get; set; }
         public V1AzureDiskVolumeSource? AzureDisk { get; set; }
@@ -31,5 +32,40 @@ namespace Kadense.Models.Kubernetes.CoreApi
         public V1SecretVolumeSource? Secret { get; set; }
         public V1StorageOSVolumeSource? StorageOS { get; set; }
         public V1VsphereVirtualDiskVolumeSource? VsphereVolume { get; set; }
+
+        public override k8s.Models.V1Volume ToOriginal(Dictionary<string, string> variables)
+        {
+            return new k8s.Models.V1Volume(
+                name: this.GetValue(this.Name, variables),
+                awsElasticBlockStore: this.AWSElasticBlockStore != null ? this.AWSElasticBlockStore.ToOriginal(variables) : null,
+                azureDisk: this.AzureDisk != null ? this.AzureDisk.ToOriginal(variables) : null,
+                azureFile: this.AzureFile != null ? this.AzureFile.ToOriginal(variables) : null,
+                cephfs: this.CephFS != null ? this.CephFS.ToOriginal(variables) : null,
+                cinder: this.Cinder != null ? this.Cinder.ToOriginal(variables) : null,
+                configMap: this.ConfigMap != null ? this.ConfigMap.ToOriginal(variables) : null,
+                downwardAPI: this.DownwardAPI != null ? this.DownwardAPI.ToOriginal(variables) : null,
+                emptyDir: this.EmptyDir != null ? this.EmptyDir.ToOriginal(variables) : null,
+                ephemeral: this.Ephemeral != null ? this.Ephemeral.ToOriginal(variables) : null,
+                fc: this.Fc != null ? this.Fc.ToOriginal(variables) : null,
+                flexVolume: this.FlexVolume != null ? this.FlexVolume.ToOriginal(variables) : null,
+                flocker: this.Flocker != null ? this.Flocker.ToOriginal(variables) : null,
+                gcePersistentDisk: this.GCEPersistentDisk != null ? this.GCEPersistentDisk.ToOriginal(variables) : null,
+                glusterfs: this.Glusterfs != null ? this.Glusterfs.ToOriginal(variables) : null,
+                hostPath: this.HostPath != null ? this.HostPath.ToOriginal(variables) : null,
+                image: this.Image != null ? this.Image.ToOriginal(variables) : null,
+                iscsi: this.ISCSI != null ? this.ISCSI.ToOriginal(variables) : null,
+                nfs: this.NFS != null ? this.NFS.ToOriginal(variables) : null,
+                persistentVolumeClaim: this.PersistentVolumeClaim != null ? this.PersistentVolumeClaim.ToOriginal(variables) : null,
+                photonPersistentDisk: this.PhotonPersistentDisk != null ? this.PhotonPersistentDisk.ToOriginal(variables) : null,
+                portworxVolume: this.PortworxVolume != null ? this.PortworxVolume.ToOriginal(variables) : null,
+                projected: this.Projected != null ? this.Projected.ToOriginal(variables) : null,
+                quobyte: this.Quobyte != null ? this.Quobyte.ToOriginal(variables) : null,
+                rbd: this.RBD != null ? this.RBD.ToOriginal(variables) : null,
+                scaleIO: this.ScaleIO != null ? this.ScaleIO.ToOriginal(variables) : null,
+                secret: this.Secret != null ? this.Secret.ToOriginal(variables) : null,
+                storageos: this.StorageOS != null ? this.StorageOS.ToOriginal(variables) : null,
+                vsphereVolume: this.VsphereVolume != null ? this.VsphereVolume.ToOriginal(variables) : null
+            );
+        }
     }
 }

@@ -1,36 +1,92 @@
-
 namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1Volume : KadenseTemplatedCopiedResource<k8s.Models.V1Volume>
     {
+        [JsonPropertyName("awsElasticBlockStore")]
         public V1AWSElasticBlockStoreVolumeSource? AWSElasticBlockStore { get; set; }
+
+        [JsonPropertyName("azureDisk")]
         public V1AzureDiskVolumeSource? AzureDisk { get; set; }
+
+        [JsonPropertyName("azureFile")]
         public V1AzureFileVolumeSource? AzureFile { get; set; }
+
+        [JsonPropertyName("cephfs")]
         public V1CephFSVolumeSource? CephFS { get; set; }
+
+        [JsonPropertyName("cinder")]
         public V1CinderVolumeSource? Cinder { get; set; }
+
+        [JsonPropertyName("configMap")]
         public V1ConfigMapVolumeSource? ConfigMap { get; set; }
+
+        [JsonPropertyName("downwardAPI")]
         public V1DownwardAPIVolumeSource? DownwardAPI { get; set; }
+
+        [JsonPropertyName("emptyDir")]
         public V1EmptyDirVolumeSource? EmptyDir { get; set; }
+
+        [JsonPropertyName("ephemeral")]
         public V1EphemeralVolumeSource? Ephemeral { get; set; }
+
+        [JsonPropertyName("fc")]
         public V1FCVolumeSource? Fc { get; set; }
+
+        [JsonPropertyName("flexVolume")]
         public V1FlexVolumeSource? FlexVolume { get; set; }
+
+        [JsonPropertyName("flocker")]
         public V1FlockerVolumeSource? Flocker { get; set; }
+
+        [JsonPropertyName("gcePersistentDisk")]
         public V1GCEPersistentDiskVolumeSource? GCEPersistentDisk { get; set; }
+
+        [JsonPropertyName("glusterfs")]
         public V1GlusterfsVolumeSource? Glusterfs { get; set; }
+
+        [JsonPropertyName("hostPath")]
         public V1HostPathVolumeSource? HostPath { get; set; }
+
+        [JsonPropertyName("image")]
         public V1ImageVolumeSource? Image { get; set; }
+
+        [JsonPropertyName("iscsi")]
         public V1ISCSIVolumeSource? ISCSI { get; set; }
+
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
+
+        [JsonPropertyName("nfs")]
         public V1NFSVolumeSource? NFS { get; set; }
+
+        [JsonPropertyName("persistentVolumeClaim")]
         public V1PersistentVolumeClaimVolumeSource? PersistentVolumeClaim { get; set; }
+
+        [JsonPropertyName("photonPersistentDisk")]
         public V1PhotonPersistentDiskVolumeSource? PhotonPersistentDisk { get; set; }
+
+        [JsonPropertyName("portworxVolume")]
         public V1PortworxVolumeSource? PortworxVolume { get; set; }
+
+        [JsonPropertyName("projected")]
         public V1ProjectedVolumeSource? Projected { get; set; }
+
+        [JsonPropertyName("quobyte")]
         public V1QuobyteVolumeSource? Quobyte { get; set; }
+
+        [JsonPropertyName("rbd")]
         public V1RBDVolumeSource? RBD { get; set; }
+
+        [JsonPropertyName("scaleIO")]
         public V1ScaleIOVolumeSource? ScaleIO { get; set; }
+
+        [JsonPropertyName("secret")]
         public V1SecretVolumeSource? Secret { get; set; }
+
+        [JsonPropertyName("storageos")]
         public V1StorageOSVolumeSource? StorageOS { get; set; }
+
+        [JsonPropertyName("vsphereVolume")]
         public V1VsphereVirtualDiskVolumeSource? VsphereVolume { get; set; }
 
         public override k8s.Models.V1Volume ToOriginal(Dictionary<string, string> variables)

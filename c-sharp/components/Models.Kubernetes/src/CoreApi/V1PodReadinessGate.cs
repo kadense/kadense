@@ -1,8 +1,8 @@
-
 namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1PodReadinessGate : KadenseTemplatedCopiedResource<k8s.Models.V1PodReadinessGate>
     {
+        [JsonPropertyName("conditionType")]
         public string? ConditionType { get; set; }
 
         public override k8s.Models.V1PodReadinessGate ToOriginal(Dictionary<string, string> variables)

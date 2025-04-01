@@ -11,6 +11,7 @@ namespace Kadense.Models.Jupyternetes
         /// <summary>
         /// Specification for this instance
         /// </summary>
+        [JsonPropertyName("spec")]
         public JupyterNotebookTemplateSpec? Spec { get; set; }
     }
 }

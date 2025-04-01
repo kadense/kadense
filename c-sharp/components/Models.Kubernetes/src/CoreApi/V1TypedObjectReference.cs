@@ -1,11 +1,17 @@
-
 namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1TypedObjectReference : KadenseTemplatedCopiedResource<k8s.Models.V1TypedObjectReference>
     {
+        [JsonPropertyName("apiGroup")]
         public string? ApiGroup { get; set; }
+
+        [JsonPropertyName("kind")]
         public string? Kind { get; set; }
+
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
+
+        [JsonPropertyName("namespace")]
         public string? Namespace { get; set; }
 
         public override k8s.Models.V1TypedObjectReference ToOriginal(Dictionary<string, string> variables)

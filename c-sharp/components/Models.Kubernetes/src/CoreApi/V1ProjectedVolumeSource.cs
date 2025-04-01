@@ -2,7 +2,10 @@ namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1ProjectedVolumeSource : KadenseTemplatedCopiedResource<k8s.Models.V1ProjectedVolumeSource>
     {
+        [JsonPropertyName("defaultMode")]
         public int? DefaultMode { get; set; }
+
+        [JsonPropertyName("sources")]
         public List<V1VolumeProjection>? Sources { get; set; }
 
         public override k8s.Models.V1ProjectedVolumeSource ToOriginal(Dictionary<string, string> variables)

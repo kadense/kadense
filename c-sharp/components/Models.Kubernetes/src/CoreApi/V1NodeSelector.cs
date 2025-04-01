@@ -2,6 +2,7 @@ namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1NodeSelector : KadenseTemplatedCopiedResource<k8s.Models.V1NodeSelector>
     {
+        [JsonPropertyName("nodeSelectorTerms")]
         public List<V1NodeSelectorTerm>? NodeSelectorTerms { get; set; }
 
         public override k8s.Models.V1NodeSelector ToOriginal(Dictionary<string, string> variables)

@@ -1,10 +1,14 @@
-
 namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1TypedLocalObjectReference : KadenseTemplatedCopiedResource<k8s.Models.V1TypedLocalObjectReference>
     {
+        [JsonPropertyName("kind")]
         public string? Kind { get; set; }
+
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
+
+        [JsonPropertyName("apiGroup")]
         public string? ApiGroup { get; set; }
 
         public override k8s.Models.V1TypedLocalObjectReference ToOriginal(Dictionary<string, string> variables)

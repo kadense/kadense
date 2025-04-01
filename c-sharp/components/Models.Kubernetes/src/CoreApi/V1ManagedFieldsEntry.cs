@@ -1,13 +1,23 @@
-
 namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1ManagedFieldsEntry : KadenseTemplatedCopiedResource<k8s.Models.V1ManagedFieldsEntry>
     {
+        [JsonPropertyName("manager")]
         public string? Manager { get; set; }
+
+        [JsonPropertyName("operation")]
         public string? Operation { get; set; }
+
+        [JsonPropertyName("apiVersion")]
         public string? ApiVersion { get; set; }
+
+        [JsonPropertyName("time")]
         public string? Time { get; set; }
+
+        [JsonPropertyName("fieldsType")]
         public string? FieldsType { get; set; }
+
+        [JsonPropertyName("fieldsV1")]
         public object? FieldsV1 { get; set; }
 
         public override k8s.Models.V1ManagedFieldsEntry ToOriginal(Dictionary<string, string> variables)

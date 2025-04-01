@@ -2,30 +2,79 @@ namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1EphemeralContainer : KadenseTemplatedCopiedResource<k8s.Models.V1EphemeralContainer>
     {
+        [JsonPropertyName("args")]
         public List<string>? Args { get; set; }
+
+        [JsonPropertyName("command")]
         public List<string>? Command { get; set; }
+
+        [JsonPropertyName("env")]
         public List<V1EnvVar>? Env { get; set; }
+
+        [JsonPropertyName("envFrom")]
         public List<V1EnvFromSource>? EnvFrom { get; set; }
+
+        [JsonPropertyName("image")]
         public string? Image { get; set; }
+
+        [JsonPropertyName("imagePullPolicy")]
         public string? ImagePullPolicy { get; set; }
+
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
+
+        [JsonPropertyName("lifecycle")]
         public V1Lifecycle? Lifecycle { get; set; }
+
+        [JsonPropertyName("livenessProbe")]
         public V1Probe? LivenessProbe { get; set; }
+
+        [JsonPropertyName("ports")]
         public List<V1ContainerPort>? Ports { get; set; }
+
+        [JsonPropertyName("readinessProbe")]
         public V1Probe? ReadinessProbe { get; set; }
+
+        [JsonPropertyName("resizePolicy")]
         public List<V1ContainerResizePolicy>? ResizePolicy { get; set; }
+
+        [JsonPropertyName("resources")]
         public V1ResourceRequirements? Resources { get; set; }
+
+        [JsonPropertyName("securityContext")]
         public V1SecurityContext? SecurityContext { get; set; }
+
+        [JsonPropertyName("startupProbe")]
         public V1Probe? StartupProbe { get; set; }
+
+        [JsonPropertyName("restartPolicy")]
         public string? RestartPolicy { get; set; }
+
+        [JsonPropertyName("stdin")]
         public bool? Stdin { get; set; }
+
+        [JsonPropertyName("stdinOnce")]
         public bool? StdinOnce { get; set; }
+
+        [JsonPropertyName("targetContainerName")]
         public string? TargetContainerName { get; set; }
+
+        [JsonPropertyName("terminationMessagePath")]
         public string? TerminationMessagePath { get; set; }
+
+        [JsonPropertyName("terminationMessagePolicy")]
         public string? TerminationMessagePolicy { get; set; }
+
+        [JsonPropertyName("tty")]
         public bool? Tty { get; set; }
+
+        [JsonPropertyName("volumeDevices")]
         public List<V1VolumeDevice>? VolumeDevices { get; set; }
+
+        [JsonPropertyName("volumeMounts")]
         public List<V1VolumeMount>? VolumeMounts { get; set; }
+
+        [JsonPropertyName("workingDir")]
         public string? WorkingDir { get; set; }
 
         public override k8s.Models.V1EphemeralContainer ToOriginal(Dictionary<string, string> variables)

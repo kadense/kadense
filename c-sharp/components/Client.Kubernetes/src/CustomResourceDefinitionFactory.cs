@@ -20,10 +20,6 @@ namespace Kadense.Client.Kubernetes
                 if (!this.IgnoreProperty(type, property))
                 {
                     string propertyName = property.Name;
-                    if (propertyName.Length > 1)
-                    {
-                        propertyName = $"{propertyName.Substring(0, 1).ToLower()}{propertyName.Substring(1)}";
-                    }
                     var jsonPropNames = property.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false);
                     if (jsonPropNames.Length > 0)
                     {
@@ -93,6 +89,10 @@ namespace Kadense.Client.Kubernetes
                 result.Type = "string";
             }
             else if (propertyType.Equals(typeof(int)))
+            {
+                result.Type = "integer";
+            }
+            else if (propertyType.Equals(typeof(long)))
             {
                 result.Type = "integer";
             }

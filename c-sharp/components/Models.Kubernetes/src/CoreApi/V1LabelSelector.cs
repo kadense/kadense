@@ -2,7 +2,10 @@ namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1LabelSelector : KadenseTemplatedCopiedResource<k8s.Models.V1LabelSelector>
     {
+        [JsonPropertyName("matchLabels")]
         public Dictionary<string, string>? MatchLabels { get; set; }
+
+        [JsonPropertyName("matchExpressions")]
         public List<V1LabelSelectorRequirement>? MatchExpressions { get; set; }
 
         public override k8s.Models.V1LabelSelector ToOriginal(Dictionary<string, string> variables)

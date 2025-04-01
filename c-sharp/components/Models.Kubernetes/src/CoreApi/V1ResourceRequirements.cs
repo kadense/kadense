@@ -2,8 +2,13 @@ namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1ResourceRequirements : KadenseTemplatedCopiedResource<k8s.Models.V1ResourceRequirements>
     {
+        [JsonPropertyName("claims")]
         public List<V1ResourceClaim>? Claims { get; set; }
+
+        [JsonPropertyName("limits")]
         public Dictionary<string, string>? Limits { get; set; }
+
+        [JsonPropertyName("requests")]
         public Dictionary<string, string>? Requests { get; set; }
 
         public override k8s.Models.V1ResourceRequirements ToOriginal(Dictionary<string, string> variables)

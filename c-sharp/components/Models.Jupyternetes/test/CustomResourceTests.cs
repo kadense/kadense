@@ -3,11 +3,58 @@ using Kadense.Models.Kubernetes;
 using Kadense.Client.Kubernetes;
 using System.Reflection;
 using k8s;
-using k8s.Models;
+using Kadense.Models.Kubernetes.CoreApi;
 
 namespace Kadense.Models.Jupyternetes.Tests {
     public class CustomResourceTests : KadenseTest
     {
+        private JupyterNotebookTemplate CreateTemplate()
+        {
+            return new JupyterNotebookTemplate()
+            {
+                Metadata = new k8s.Models.V1ObjectMeta(){
+                    Name = "test-template",
+                    NamespaceProperty = "default"
+                },
+                Spec = new JupyterNotebookTemplateSpec()
+                {
+                    Pods = new List<NotebookTemplatePodSpec>(){
+                        new NotebookTemplatePodSpec(){
+                            Name = "test-pod",
+                            Labels = new Dictionary<string, string>()
+                            {
+                                { "jupyternetes.kadense.io/" , "{test}-instance" }
+                            },
+                            Spec = new V1PodSpec()
+                            {
+                                Containers = new List<V1Container>()
+                                {
+                                    new V1Container() {
+                                        Name = "test-container",
+                                        Image = "who-knows" 
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
+        [TestOrder(0)]
+        [Fact]
+        public void SerializeTemplateTest()
+        {
+            var template = CreateTemplate();
+            var json = System.Text.Json.JsonSerializer.Serialize<JupyterNotebookTemplate>(
+                value: template, 
+                options: new System.Text.Json.JsonSerializerOptions(){
+                    WriteIndented = true,
+                    MaxDepth = 0
+                });
+            Assert.NotEmpty(json);
+        }
+
         [TestOrder(1)]
         [Fact]
         public async Task GenerateCrdTemplateAsync()
@@ -24,6 +71,16 @@ namespace Kadense.Models.Jupyternetes.Tests {
 
         
 
+        
+
+        [TestOrder(3)]
+        [Fact]
+        public async Task GenerateTemplateAsync()
+        {
+            var item = CreateTemplate();
+            await CreateOrUpdateItem<JupyterNotebookTemplate>(item);
+        }
+
         [TestOrder(4)]
         [Fact]
         public async Task GenerateInstanceAsync()
@@ -33,7 +90,7 @@ namespace Kadense.Models.Jupyternetes.Tests {
 
             var item = new JupyterNotebookInstance()
             {
-                Metadata = new V1ObjectMeta(){
+                Metadata = new k8s.Models.V1ObjectMeta(){
                     Name = "test-instance",
                     NamespaceProperty = "default"
                 },
@@ -82,7 +139,7 @@ namespace Kadense.Models.Jupyternetes.Tests {
             var crd = crdFactory.Create<T>();
 
             GenericClient genericClient = new GenericClient(client, "apiextensions.k8s.io","v1","customresourcedefinitions");
-            var crds = await genericClient.ListAsync<V1CustomResourceDefinitionList>();
+            var crds = await genericClient.ListAsync<k8s.Models.V1CustomResourceDefinitionList>();
             
             var items = crds.Items
                 .Where(x => x.Metadata.Name == crd.Metadata.Name)
@@ -92,11 +149,11 @@ namespace Kadense.Models.Jupyternetes.Tests {
             {
                 // Delete the CRD
                 crd.Metadata.ResourceVersion = items.First().Metadata.ResourceVersion;
-                await genericClient.ReplaceAsync<V1CustomResourceDefinition>(crd, crd.Metadata.Name);
+                await genericClient.ReplaceAsync<k8s.Models.V1CustomResourceDefinition>(crd, crd.Metadata.Name);
             }
             else
             {
-                var createdCrd = await genericClient.CreateAsync<V1CustomResourceDefinition>(crd);
+                var createdCrd = await genericClient.CreateAsync<k8s.Models.V1CustomResourceDefinition>(crd);
             }
         }
     }

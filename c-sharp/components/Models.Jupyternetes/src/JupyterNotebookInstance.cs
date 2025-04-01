@@ -9,6 +9,7 @@ namespace Kadense.Models.Jupyternetes
         /// <summary>
         /// Specification for this instance
         /// </summary>
+        [JsonPropertyName("spec")]
         public JupyterNotebookInstanceSpec? Spec { get; set; }
     }
 }

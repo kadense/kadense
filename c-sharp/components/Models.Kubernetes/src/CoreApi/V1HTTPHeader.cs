@@ -1,9 +1,11 @@
-
 namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1HTTPHeader : KadenseTemplatedCopiedResource<k8s.Models.V1HTTPHeader>
     {
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
+
+        [JsonPropertyName("value")]
         public string? Value { get; set; }
 
         public override k8s.Models.V1HTTPHeader ToOriginal(Dictionary<string, string> variables)

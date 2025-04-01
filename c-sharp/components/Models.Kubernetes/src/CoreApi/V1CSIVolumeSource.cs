@@ -2,10 +2,19 @@ namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1CSIVolumeSource : KadenseTemplatedCopiedResource<k8s.Models.V1CSIVolumeSource>
     {
+        [JsonPropertyName("driver")]
         public string? Driver { get; set; }
+
+        [JsonPropertyName("fsType")]
         public string? FsType { get; set; }
+
+        [JsonPropertyName("nodePublishSecretRef")]
         public V1LocalObjectReference? NodePublishSecretRef { get; set; }
+
+        [JsonPropertyName("readOnly")]
         public bool? ReadOnly { get; set; }
+
+        [JsonPropertyName("volumeAttributes")]
         public Dictionary<string, string>? VolumeAttributes { get; set; }
 
         public override k8s.Models.V1CSIVolumeSource ToOriginal(Dictionary<string, string> variables)

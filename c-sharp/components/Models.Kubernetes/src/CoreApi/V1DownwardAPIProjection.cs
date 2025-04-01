@@ -2,6 +2,7 @@ namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1DownwardAPIProjection : KadenseTemplatedCopiedResource<k8s.Models.V1DownwardAPIProjection>
     {
+        [JsonPropertyName("items")]
         public List<V1DownwardAPIVolumeFile>? Items { get; set; }
 
         public override k8s.Models.V1DownwardAPIProjection ToOriginal(Dictionary<string, string> variables)

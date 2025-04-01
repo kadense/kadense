@@ -1,11 +1,17 @@
-
 namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1EnvVarSource : KadenseTemplatedCopiedResource<k8s.Models.V1EnvVarSource>
     {
+        [JsonPropertyName("configMapKeyRef")]
         public V1ConfigMapKeySelector? ConfigMapKeyRef { get; set; }
+
+        [JsonPropertyName("fieldRef")]
         public V1ObjectFieldSelector? FieldRef { get; set; }
+
+        [JsonPropertyName("resourceFieldRef")]
         public V1ResourceFieldSelector? ResourceFieldRef { get; set; }
+
+        [JsonPropertyName("secretKeyRef")]
         public V1SecretKeySelector? SecretKeyRef { get; set; }
 
         public override k8s.Models.V1EnvVarSource ToOriginal(Dictionary<string, string> variables)

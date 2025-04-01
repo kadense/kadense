@@ -1,10 +1,19 @@
+using System.Text.Json.Serialization;
+
 namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1ConfigMapVolumeSource : KadenseTemplatedCopiedResource<k8s.Models.V1ConfigMapVolumeSource>
     {
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
+
+        [JsonPropertyName("optional")]
         public bool? Optional { get; set; }
+
+        [JsonPropertyName("defaultMode")]
         public int? DefaultMode { get; set; }
+
+        [JsonPropertyName("items")]
         public List<V1KeyToPath>? Items { get; set; }
 
         public override k8s.Models.V1ConfigMapVolumeSource ToOriginal(Dictionary<string, string> variables)

@@ -5,6 +5,7 @@ namespace Kadense.Models.Jupyternetes
         /// <summary>
         /// List of pod specifications for this template
         /// </summary>
+        [JsonPropertyName("pods")]
         public List<NotebookTemplatePodSpec>? Pods { get; set; }
     }
 }

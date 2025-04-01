@@ -1,9 +1,11 @@
-
 namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1EmptyDirVolumeSource : KadenseTemplatedCopiedResource<k8s.Models.V1EmptyDirVolumeSource>
     {
+        [JsonPropertyName("medium")]
         public string? Medium { get; set; }
+
+        [JsonPropertyName("sizeLimit")]
         public string? SizeLimit { get; set; }
 
         public override k8s.Models.V1EmptyDirVolumeSource ToOriginal(Dictionary<string, string> variables)

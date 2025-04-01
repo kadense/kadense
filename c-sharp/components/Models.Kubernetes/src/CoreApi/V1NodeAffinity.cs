@@ -2,7 +2,10 @@ namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1NodeAffinity : KadenseTemplatedCopiedResource<k8s.Models.V1NodeAffinity>
     {
+        [JsonPropertyName("preferredDuringSchedulingIgnoredDuringExecution")]
         public List<V1PreferredSchedulingTerm>? PreferredDuringSchedulingIgnoredDuringExecution { get; set; }
+
+        [JsonPropertyName("requiredDuringSchedulingIgnoredDuringExecution")]
         public V1NodeSelector? RequiredDuringSchedulingIgnoredDuringExecution { get; set; }
 
         public override k8s.Models.V1NodeAffinity ToOriginal(Dictionary<string, string> variables)

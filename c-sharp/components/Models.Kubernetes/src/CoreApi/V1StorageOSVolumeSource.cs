@@ -1,12 +1,20 @@
-
 namespace Kadense.Models.Kubernetes.CoreApi
 {
     public class V1StorageOSVolumeSource : KadenseTemplatedCopiedResource<k8s.Models.V1StorageOSVolumeSource>
     {
+        [JsonPropertyName("volumeName")]
         public string? VolumeName { get; set; }
+
+        [JsonPropertyName("volumeNamespace")]
         public string? VolumeNamespace { get; set; }
+
+        [JsonPropertyName("readOnly")]
         public bool? ReadOnly { get; set; }
+
+        [JsonPropertyName("fsType")]
         public string? FsType { get; set; }
+
+        [JsonPropertyName("secretRef")]
         public V1LocalObjectReference? SecretRef { get; set; }
 
         public override k8s.Models.V1StorageOSVolumeSource ToOriginal(Dictionary<string, string> variables)

@@ -23,7 +23,7 @@ namespace Kadense.Models.Jupyternetes.Tests {
                             Name = "test-pod",
                             Labels = new Dictionary<string, string>()
                             {
-                                { "jupyternetes.kadense.io/" , "{test}-instance" }
+                                { "jupyternetes.kadense.io/testProperty" , "{test}-instance" }
                             },
                             Spec = new V1PodSpec()
                             {
@@ -104,6 +104,33 @@ namespace Kadense.Models.Jupyternetes.Tests {
             };
             await CreateOrUpdateItem<JupyterNotebookInstance>(item);
         }
+
+        [TestOrder(5)]
+        [Fact]
+        public async Task GeneratePodAsync()
+        {
+            var client = CreateClient();
+            var crFactory = new CustomResourceClientFactory();
+            var templateClient = crFactory.Create<JupyterNotebookTemplate>(client);
+            var instanceClient = crFactory.Create<JupyterNotebookInstance>(client);
+            var template = await templateClient.ReadNamespacedAsync<JupyterNotebookTemplate>("default", "test-template"); 
+            var instance = await instanceClient.ReadNamespacedAsync<JupyterNotebookInstance>("default", "test-instance");
+            var pods = template.Spec!.CreatePods(instance);
+            var newPod = pods.First();
+            var existingPods = await client.CoreV1.ListNamespacedPodAsync("default"); 
+            var filteredPods = existingPods.Items.Where(x => x.Metadata.Name == "test-pod");
+            if(filteredPods.Count() > 0)
+            {
+                var existingPod = filteredPods.First();
+                newPod.Metadata.ResourceVersion = existingPod.Metadata.ResourceVersion;
+                var updatedPod = await client.CoreV1.ReplaceNamespacedPodAsync(newPod, "default", newPod.Metadata.Name);
+            }
+            else
+            {
+                var createdPod = await client.CoreV1.CreateNamespacedPodAsync(newPod, "default");
+                Assert.NotNull(createdPod);
+            }
+        }
         
         private IKubernetes CreateClient()
         {
@@ -120,7 +147,6 @@ namespace Kadense.Models.Jupyternetes.Tests {
             var existingItems = await genericClient.ListNamespacedAsync<KadenseCustomResourceList<T>>(item.Metadata.NamespaceProperty);
             if (existingItems.Items.Count > 0)
             {
-                // Delete the CRD
                 item.Metadata.ResourceVersion = existingItems.Items.First().Metadata.ResourceVersion;
                 await genericClient.ReplaceNamespacedAsync<T>(item, item.Metadata.NamespaceProperty, item.Metadata.Name);
             }

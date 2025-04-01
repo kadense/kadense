@@ -1,4 +1,4 @@
-﻿namespace Kadense.Jupyternetes.Operator
+﻿namespace Kadense.Jupyternetes.Pods.Operator
 {
     public class Operator
     {

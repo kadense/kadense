@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Kadense.Jupyternetes.Operator.csproj" />
+    <ProjectReference Include="..\src\Kadense.Jupyternetes.Pods.Operator.csproj" />
     <ProjectReference Include="..\..\..\components\Testing\src\Kadense.Testing.csproj" />
   </ItemGroup>
 

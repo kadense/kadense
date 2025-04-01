@@ -2,23 +2,28 @@
 using Kadense.Models.Kubernetes;
 using Kadense.Models.Jupyternetes;
 
-namespace Kadense.Jupyternetes.Operator 
+namespace Kadense.Jupyternetes.Pods.Operator 
 {
     public class WatcherService : KadenseCustomResourceWatcher<JupyterNotebookInstance>
     {
+        public WatcherService() : base()
+        {
+            
+        }
+        
         protected override void OnAdded(JupyterNotebookInstance resource)
         {
-            // Handle resource added logic here
+            var template = resource.Spec!.Template.Name;
+            
         }
 
         protected override void OnUpdated(JupyterNotebookInstance resource)
         {
-            // Handle resource updated logic here
         }
 
         protected override void OnDeleted(JupyterNotebookInstance resource)
         {
-            // Handle resource deleted logic here
+            
         }
     }
 }

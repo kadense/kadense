@@ -2,7 +2,7 @@ using Kadense.Models.Kubernetes.CoreApi;
 
 namespace Kadense.Models.Jupyternetes
 {
-    public class NotebookTemplatePodSpec
+    public class NotebookTemplatePodSpec : KadenseTemplatedCopiedResource<k8s.Models.V1Pod>
     {
         /// <summary>
         /// If specified, then the pod will only be created if the conditions are met
@@ -33,5 +33,19 @@ namespace Kadense.Models.Jupyternetes
         /// </summary>
         [JsonPropertyName("spec")]
         public V1PodSpec? Spec { get; set; }
+
+        public override k8s.Models.V1Pod ToOriginal(Dictionary<string, string> variables)
+        {
+            return new k8s.Models.V1Pod()
+            {
+                Metadata = new k8s.Models.V1ObjectMeta()
+                {
+                    Name = GetValue(this.Name, variables),
+                    Annotations = GetValue(this.Annotations, variables),
+                    Labels = GetValue(this.Labels, variables)
+                },
+                Spec = this.Spec?.ToOriginal(variables)
+            };
+        }
     }
 }

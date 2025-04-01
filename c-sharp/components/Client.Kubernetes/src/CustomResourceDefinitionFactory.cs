@@ -138,15 +138,15 @@ namespace Kadense.Client.Kubernetes
                     result.Type = "array";
                     var items = new V1JSONSchemaProps();
 
-
-                    if (propertyType.GetGenericArguments()[0] == typeof(string))
+                    var listType = propertyType.GetGenericArguments()[0]; 
+                    if (listType == typeof(string))
                     {
                         items.Type = "string";
                     }
                     else
                     {
                         items.Type = "object";
-                        items.Properties = ProcessProperties(propertyType);
+                        items.Properties = ProcessProperties(listType);
                     }
                     result.Items = items;
                 }

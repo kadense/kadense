@@ -3,7 +3,7 @@ namespace Kadense.Client.Kubernetes
     public abstract class KadenseCustomResourceWatcher<T>
         where T : KadenseCustomResource
     {
-        protected GenericClient Client;
+        protected KadenseCustomResourceClient<T> Client;
 
         public KadenseCustomResourceWatcher()
         {
@@ -14,18 +14,18 @@ namespace Kadense.Client.Kubernetes
             this.Client = this.InitialiseClient(client);
         }
 
-        public KadenseCustomResourceWatcher(GenericClient client)
+        public KadenseCustomResourceWatcher(KadenseCustomResourceClient<T> client)
         {
             this.Client = client;
         }
 
-        protected virtual GenericClient InitialiseClient()
+        protected virtual KadenseCustomResourceClient<T> InitialiseClient()
         {
             var clientFactory = new KubernetesClientFactory();
             return this.InitialiseClient(clientFactory.CreateClient()); 
         }
 
-        protected virtual GenericClient InitialiseClient(IKubernetes k8sClient)
+        protected virtual KadenseCustomResourceClient<T> InitialiseClient(IKubernetes k8sClient)
         {
             var clientFactory = new CustomResourceClientFactory();
             return clientFactory.Create<T>(k8sClient);
@@ -34,7 +34,7 @@ namespace Kadense.Client.Kubernetes
 
         public void Start()
         {
-            this.Client.Watch<T>(onEvent: OnWatchEvent, onError: OnWatchError, onClosed: OnWatchStopped);
+            this.Client.Watch(onEvent: OnWatchEvent, onError: OnWatchError, onClosed: OnWatchStopped);
         }
 
         protected void OnWatchError(Exception ex)
@@ -52,15 +52,15 @@ namespace Kadense.Client.Kubernetes
             switch (watchEventType)
             {
                 case WatchEventType.Added:
-                    OnAdded(item);
+                    OnAddedAsync(item).Start();
                     break;
 
                 case WatchEventType.Modified:
-                    OnUpdated(item);
+                    OnUpdatedAsync(item).Start();
                     break;
 
                 case WatchEventType.Deleted:
-                    OnDeleted(item);
+                    OnDeletedAsync(item).Start();
                     break;
 
                 case WatchEventType.Error:
@@ -72,9 +72,9 @@ namespace Kadense.Client.Kubernetes
             }
         }
 
-        protected abstract void OnAdded(T item);
-        protected abstract void OnUpdated(T item);
-        protected abstract void OnDeleted(T item);
+        protected abstract Task OnAddedAsync(T item);
+        protected abstract Task OnUpdatedAsync(T item);
+        protected abstract Task OnDeletedAsync(T item);
         protected virtual void OnError()
         {
             // Default implementation for handling errors

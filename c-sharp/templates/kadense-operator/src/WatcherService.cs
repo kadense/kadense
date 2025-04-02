@@ -6,19 +6,22 @@ namespace Kadense.Template.Operator
 {
     public class WatcherService : KadenseCustomResourceWatcher<ExampleResource>
     {
-        protected override void OnAdded(ExampleResource resource)
+        protected override async Task OnAddedAsync(ExampleResource resource)
         {
             // Handle resource added logic here
+            await Task.Run(() => { });
         }
 
-        protected override void OnUpdated(ExampleResource resource)
+        protected override async Task OnUpdatedAsync(ExampleResource resource)
         {
             // Handle resource updated logic here
+            await Task.Run(() => { });
         }
 
-        protected override void OnDeleted(ExampleResource resource)
+        protected override async Task OnDeletedAsync(ExampleResource resource)
         {
             // Handle resource deleted logic here
+            await Task.Run(() => { });
         }
     }
 }

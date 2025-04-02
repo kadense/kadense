@@ -113,8 +113,8 @@ namespace Kadense.Models.Jupyternetes.Tests {
             var crFactory = new CustomResourceClientFactory();
             var templateClient = crFactory.Create<JupyterNotebookTemplate>(client);
             var instanceClient = crFactory.Create<JupyterNotebookInstance>(client);
-            var template = await templateClient.ReadNamespacedAsync<JupyterNotebookTemplate>("default", "test-template"); 
-            var instance = await instanceClient.ReadNamespacedAsync<JupyterNotebookInstance>("default", "test-instance");
+            var template = await templateClient.ReadNamespacedAsync("default", "test-template"); 
+            var instance = await instanceClient.ReadNamespacedAsync("default", "test-instance");
             var pods = template.Spec!.CreatePods(instance);
             var newPod = pods.First();
             var existingPods = await client.CoreV1.ListNamespacedPodAsync("default"); 
@@ -122,14 +122,14 @@ namespace Kadense.Models.Jupyternetes.Tests {
             if(filteredPods.Count() > 0)
             {
                 var existingPod = filteredPods.First();
-                newPod.Metadata.ResourceVersion = existingPod.Metadata.ResourceVersion;
-                var updatedPod = await client.CoreV1.ReplaceNamespacedPodAsync(newPod, "default", newPod.Metadata.Name);
+                await client.CoreV1.DeleteNamespacedPodAsync(
+                    namespaceParameter: "default", 
+                    name: newPod.Metadata.Name
+                    );
             }
-            else
-            {
-                var createdPod = await client.CoreV1.CreateNamespacedPodAsync(newPod, "default");
-                Assert.NotNull(createdPod);
-            }
+            
+            var createdPod = await client.CoreV1.CreateNamespacedPodAsync(newPod, "default");
+            Assert.NotNull(createdPod);
         }
         
         private IKubernetes CreateClient()
@@ -144,15 +144,15 @@ namespace Kadense.Models.Jupyternetes.Tests {
             var client = CreateClient();
             var crFactory = new CustomResourceClientFactory();
             var genericClient = crFactory.Create<T>(client);
-            var existingItems = await genericClient.ListNamespacedAsync<KadenseCustomResourceList<T>>(item.Metadata.NamespaceProperty);
+            var existingItems = await genericClient.ListNamespacedAsync(item.Metadata.NamespaceProperty);
             if (existingItems.Items.Count > 0)
             {
                 item.Metadata.ResourceVersion = existingItems.Items.First().Metadata.ResourceVersion;
-                await genericClient.ReplaceNamespacedAsync<T>(item, item.Metadata.NamespaceProperty, item.Metadata.Name);
+                await genericClient.ReplaceNamespacedAsync(item);
             }
             else
             {
-                var createdItem = await genericClient.CreateNamespacedAsync<T>(item, item.Metadata.NamespaceProperty);
+                var createdItem = await genericClient.CreateNamespacedAsync(item);
             } 
         }
         

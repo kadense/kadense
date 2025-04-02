@@ -115,10 +115,10 @@ namespace Kadense.Models.Jupyternetes.Tests {
             var instanceClient = crFactory.Create<JupyterNotebookInstance>(client);
             var template = await templateClient.ReadNamespacedAsync("default", "test-template"); 
             var instance = await instanceClient.ReadNamespacedAsync("default", "test-instance");
-            var pods = template.Spec!.CreatePods(instance);
+            var pods = template.CreatePods(instance);
             var newPod = pods.First();
             var existingPods = await client.CoreV1.ListNamespacedPodAsync("default"); 
-            var filteredPods = existingPods.Items.Where(x => x.Metadata.Name == "test-pod");
+            var filteredPods = existingPods.Items.Where(x => x.Metadata.Name == newPod.Metadata.Name);
             if(filteredPods.Count() > 0)
             {
                 var existingPod = filteredPods.First();
@@ -126,8 +126,10 @@ namespace Kadense.Models.Jupyternetes.Tests {
                     namespaceParameter: "default", 
                     name: newPod.Metadata.Name
                     );
+
+                Thread.Sleep(1000);
             }
-            
+
             var createdPod = await client.CoreV1.CreateNamespacedPodAsync(newPod, "default");
             Assert.NotNull(createdPod);
         }

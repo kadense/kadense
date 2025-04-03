@@ -1,68 +1,55 @@
+using Kadense.Logging;
 using Kadense.Models.Jupyternetes;
 using Kadense.Models.Kubernetes.CoreApi;
+using Kadense.Models.Jupyternetes.Tests;
+using Microsoft.Extensions.Logging;
 
-namespace Kadense.Jupyternetes.Operator.Tests {
+namespace Kadense.Jupyternetes.Pods.Operator.Tests {
+
     public class PodTests : KadenseTest
     {
-        private JupyterNotebookInstance CreateInstance()
-        {
-            var variables = new Dictionary<string, string>();
-            variables.Add("test", "test2");
-
-            return new JupyterNotebookInstance()
-            {
-                Metadata = new k8s.Models.V1ObjectMeta(){
-                    Name = "test-instance",
-                    NamespaceProperty = "default"
-                },
-                Spec = new JupyterNotebookInstanceSpec()
-                {
-                    Template = new NotebookTemplate(){
-                        Name = "test-template"
-                    },
-                    Variables = variables
-                }
-            };
-        }
-
-        private JupyterNotebookTemplate CreateTemplate()
-        {
-            return new JupyterNotebookTemplate()
-            {
-                Metadata = new k8s.Models.V1ObjectMeta(){
-                    Name = "test-template",
-                    NamespaceProperty = "default"
-                },
-                Spec = new JupyterNotebookTemplateSpec()
-                {
-                    Pods = new List<NotebookTemplatePodSpec>(){
-                        new NotebookTemplatePodSpec(){
-                            Name = "test-pod",
-                            Labels = new Dictionary<string, string>()
-                            {
-                                { "jupyternetes.kadense.io/testProperty" , "{test}-instance" }
-                            },
-                            Spec = new V1PodSpec()
-                            {
-                                Containers = new List<V1Container>()
-                                {
-                                    new V1Container() {
-                                        Name = "test-container",
-                                        Image = "who-knows" 
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-        }
-
+        public CustomResourceTestUtils TestUtils = new CustomResourceTestUtils();
+    
         [TestOrder(0)]
         [Fact]
-        public  Task CreateJupyternetesInstance()
+        public async Task CreateJupyternetesInstanceAndTemplate()
         {
-            return Task.CompletedTask;
+            var instance = TestUtils.CreateInstance(instanceName: "jo-test-instance", templateName: "jo-test-template");
+            await TestUtils.CreateOrUpdateItem<JupyterNotebookInstance>(instance);
+
+            
+            var template = TestUtils.CreateTemplate(templateName: "jo-test-template");
+            await TestUtils.CreateOrUpdateItem<JupyterNotebookTemplate>(template);
+        }
+
+        [TestOrder(1)]
+        [Fact]
+        public async Task OnAddedTest()
+        {
+            var instance = TestUtils.CreateInstance(instanceName: "jo-test-instance", templateName: "jo-test-template");
+            KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
+            var watcherService = new PodWatcherService(logger);
+            await watcherService.OnAddedAsync(instance);
+        }
+
+        [TestOrder(2)]
+        [Fact]
+        public async Task OnUpdatedTest()
+        {
+            var instance = TestUtils.CreateInstance(instanceName: "jo-test-instance", templateName: "jo-test-template");
+            KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
+            var watcherService = new PodWatcherService(logger);
+            await watcherService.OnUpdatedAsync(instance);
+        }
+
+        [TestOrder(3)]
+        [Fact]
+        public async Task OnDeletedTest()
+        {
+            var instance = TestUtils.CreateInstance(instanceName: "jo-test-instance", templateName: "jo-test-template");
+            KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
+            var watcherService = new PodWatcherService(logger);
+            await watcherService.OnDeletedAsync(instance);
         }
     }
 }

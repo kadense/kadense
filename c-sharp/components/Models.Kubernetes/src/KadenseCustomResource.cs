@@ -19,5 +19,17 @@ namespace Kadense.Models.Kubernetes
             this.ApiVersion = $"{attribute.Group}/{attribute.Version}";
             this.Kind = attribute.Kind;
         }
+
+        public k8s.Models.V1ObjectReference ToV1ObjectReference()
+        {
+            return new k8s.Models.V1ObjectReference
+            {
+                ApiVersion = this.ApiVersion,
+                Kind = this.Kind,
+                Name = this.Metadata.Name,
+                NamespaceProperty = this.Metadata.NamespaceProperty,
+                ResourceVersion = this.Metadata.ResourceVersion
+            };
+        }
     }
 }

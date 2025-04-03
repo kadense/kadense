@@ -1,36 +1,27 @@
+using k8s.Models;
+
 namespace Kadense.Client.Kubernetes
 {
     public abstract class KadenseCustomResourceWatcher<T>
         where T : KadenseCustomResource
     {
         protected KadenseCustomResourceClient<T> Client;
+        protected IKubernetes K8sClient { get; set; }
 
         public KadenseCustomResourceWatcher()
         {
-            this.Client = this.InitialiseClient();
+            var k8sClientFactory = new KubernetesClientFactory();
+            this.K8sClient = k8sClientFactory.CreateClient();
+
+            var clientFactory = new CustomResourceClientFactory();
+            this.Client = clientFactory.Create<T>(this.K8sClient);
         }
         public KadenseCustomResourceWatcher(IKubernetes client)
         {
-            this.Client = this.InitialiseClient(client);
-        }
-
-        public KadenseCustomResourceWatcher(KadenseCustomResourceClient<T> client)
-        {
-            this.Client = client;
-        }
-
-        protected virtual KadenseCustomResourceClient<T> InitialiseClient()
-        {
-            var clientFactory = new KubernetesClientFactory();
-            return this.InitialiseClient(clientFactory.CreateClient()); 
-        }
-
-        protected virtual KadenseCustomResourceClient<T> InitialiseClient(IKubernetes k8sClient)
-        {
+            this.K8sClient = client;
             var clientFactory = new CustomResourceClientFactory();
-            return clientFactory.Create<T>(k8sClient);
+            this.Client = clientFactory.Create<T>(this.K8sClient);
         }
-
 
         public void Start()
         {
@@ -72,12 +63,38 @@ namespace Kadense.Client.Kubernetes
             }
         }
 
-        protected abstract Task OnAddedAsync(T item);
-        protected abstract Task OnUpdatedAsync(T item);
-        protected abstract Task OnDeletedAsync(T item);
+        public abstract Task<(T?, k8s.Models.Corev1Event?)> OnAddedAsync(T item);
+        public abstract Task<(T?, k8s.Models.Corev1Event?)> OnUpdatedAsync(T item);
+        public abstract Task<(T?, k8s.Models.Corev1Event?)> OnDeletedAsync(T item);
         protected virtual void OnError()
         {
             // Default implementation for handling errors
+        }
+
+        protected virtual async Task<Corev1Event> CreateEventAsync(V1ObjectReference involvedObject, string action, string reason, Corev1EventSeries? series = null, V1ObjectReference? related = null, string type = "Normal", string? message = null)
+        {
+            var body = new k8s.Models.Corev1Event(
+                    metadata: new V1ObjectMeta(
+                        generateName: $"{involvedObject.Name}.",
+                        namespaceProperty: involvedObject.NamespaceProperty
+                    ),
+                    reportingComponent: System.Reflection.Assembly.GetEntryAssembly()!.GetName().Name,
+                    reportingInstance: Environment.MachineName,
+                    eventTime: DateTime.UtcNow,
+                    action: action,
+                    involvedObject: involvedObject,
+                    related: related,
+                    reason: reason,
+                    message: message,
+                    type: type
+                );
+
+            var evt = await this.K8sClient.CoreV1.CreateNamespacedEventAsync(
+                namespaceParameter: involvedObject.NamespaceProperty,
+                body: body
+            );
+
+            return evt;
         }
     }
 }

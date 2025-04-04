@@ -41,9 +41,9 @@ namespace Kadense.Models.Jupyternetes.Tests {
             CustomResourceDefinitionFactory crdFactory = new CustomResourceDefinitionFactory();
             var crd = crdFactory.Create<T>();
 
-            GenericClient genericClient = new GenericClient(client, "apiextensions.k8s.io","v1","customresourcedefinitions");
-            var crds = await genericClient.ListAsync<k8s.Models.V1CustomResourceDefinitionList>();
-            
+            //GenericClient genericClient = new GenericClient(client, "apiextensions.k8s.io","v1","customresourcedefinitions");
+            //var crds = await genericClient.ListAsync<k8s.Models.V1CustomResourceDefinitionList>();
+            var crds = await client.ApiextensionsV1.ListCustomResourceDefinitionAsync();
             var items = crds.Items
                 .Where(x => x.Metadata.Name == crd.Metadata.Name)
                 .ToList();
@@ -52,11 +52,13 @@ namespace Kadense.Models.Jupyternetes.Tests {
             {
                 // Delete the CRD
                 crd.Metadata.ResourceVersion = items.First().Metadata.ResourceVersion;
-                await genericClient.ReplaceAsync<k8s.Models.V1CustomResourceDefinition>(crd, crd.Metadata.Name);
+                //await genericClient.ReplaceAsync<k8s.Models.V1CustomResourceDefinition>(crd, crd.Metadata.Name);
+                await client.ApiextensionsV1.ReplaceCustomResourceDefinitionAsync(crd, crd.Metadata.Name);
             }
             else
             {
-                var createdCrd = await genericClient.CreateAsync<k8s.Models.V1CustomResourceDefinition>(crd);
+                // var createdCrd = await genericClient.CreateAsync<k8s.Models.V1CustomResourceDefinition>(crd);
+                await client.ApiextensionsV1.CreateCustomResourceDefinitionAsync(crd);
             }
         }
 

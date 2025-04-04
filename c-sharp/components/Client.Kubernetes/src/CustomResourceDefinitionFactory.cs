@@ -206,6 +206,16 @@ namespace Kadense.Client.Kubernetes
                 spec.Names.ShortNames = shortNameList;
             }
 
+            
+            V1CustomResourceSubresources? subresources = null;
+            if(attribute.HasStatusField)
+            {
+                subresources = new V1CustomResourceSubresources()
+                {
+                    Status = new object()
+                };
+            }
+
             spec.Versions = new List<V1CustomResourceDefinitionVersion>(){
                 new V1CustomResourceDefinitionVersion(){
                     Name = attribute.Version,
@@ -216,7 +226,8 @@ namespace Kadense.Client.Kubernetes
                             Type = "object",
                             Properties = ProcessProperties(type)
                         }
-                    }
+                    },
+                    Subresources = subresources
                 }
             };
 

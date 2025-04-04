@@ -9,5 +9,9 @@ namespace Kadense.Models.Jupyternetes
         /// </summary>
         [JsonPropertyName("pods")]
         public List<NotebookTemplatePodSpec>? Pods { get; set; }
+
+        [JsonPropertyName("pvcs")]
+        public List<NotebookTemplatePvcSpec>? Pvcs { get; set; }
+
     }
 }

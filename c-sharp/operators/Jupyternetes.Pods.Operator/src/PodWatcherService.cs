@@ -5,6 +5,7 @@ using k8s;
 using Kadense.Logging;
 using k8s.Models;
 using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace Kadense.Jupyternetes.Pods.Operator 
 {
@@ -14,8 +15,12 @@ namespace Kadense.Jupyternetes.Pods.Operator
 
         public KadenseCustomResourceClient<JupyterNotebookTemplate> TemplateClient { get; set; }
 
+        public Kadense.Models.Kubernetes.KubernetesCustomResourceAttribute CustomResourceAttribute { get; set; }
+
         public PodWatcherService(IKadenseLogger logger) : base()
         {
+            var type = typeof(JupyterNotebookInstance);
+            this.CustomResourceAttribute = type.GetCustomAttributes<Kadense.Models.Kubernetes.KubernetesCustomResourceAttribute>(true).First()!;
             _logger = logger.Create<PodWatcherService>();
             var k8sClientFactory = new KubernetesClientFactory();
             this.K8sClient = k8sClientFactory.CreateClient();
@@ -66,26 +71,83 @@ namespace Kadense.Jupyternetes.Pods.Operator
                 return;
             }
 
+
             _logger.LogInformation("Building pods for resource {ResourceName}.", resource.Metadata.Name);
-            await BuildPodsAsync(resource, template);
+            bool updated = await BuildPodsAsync(resource, template);
+
+            if(!resource.Status.PodsProvisioningState.Equals("Completed"))
+            {
+                resource.Status.PodsProvisioningState = "Completed";
+                updated = true;
+            }
+
+            if (updated)
+            {
+                _logger.LogInformation("Updating resource {ResourceName} status.", resource.Metadata.Name);
+                await UpdateStatusAsync(resource);
+            }
+            else
+            {
+                _logger.LogInformation("No updates needed for resource {ResourceName}.", resource.Metadata.Name);
+            }
         }
 
-        private async Task BuildPodsAsync(JupyterNotebookInstance resource, JupyterNotebookTemplate template)
+        private async Task UpdateStatusAsync(JupyterNotebookInstance resource){
+            await this.K8sClient.CustomObjects.PatchNamespacedCustomObjectStatusAsync(
+                body: new k8s.Models.V1Patch(
+                    new Dictionary<string, object>()
+                    {
+                        { "status", resource.Status }
+                    },
+                    type: V1Patch.PatchType.MergePatch
+                ),
+                group: this.CustomResourceAttribute.Group,
+                version: this.CustomResourceAttribute.Version,
+                plural: this.CustomResourceAttribute.PluralName.ToLower(),
+                namespaceParameter: resource.Metadata.NamespaceProperty!,
+                name: resource.Metadata.Name!
+            );
+            _logger.LogInformation("Patched Status {ResourceName}.", resource.Metadata.Name);
+
+        }
+
+        private async Task<bool> BuildPodsAsync(JupyterNotebookInstance resource, JupyterNotebookTemplate template)
         {
+            bool updated = false;
+            List<string> podNames = new List<string>();
+
             _logger.LogInformation("Creating pods for resource {ResourceName} using template {TemplateName}.", resource.Metadata.Name, template.Metadata.Name);
 
             var pods = template.CreatePods(resource);
             foreach (var pod in pods)
             {
-                var evt = await CreatePodIfNotExists(resource, pod, resource.Metadata.NamespaceProperty!);
-                if (evt != null)
+                string podName = pod.Metadata.Labels["jupyternetes.kadense.io/podName"];
+                var podInK8s = await CreatePodIfNotExists(resource, pod, resource.Metadata.NamespaceProperty!);
+                podNames.Add(podName);
+                if(resource.Status!.Pods!.ContainsKey(podName))
                 {
-                    _logger.LogInformation("Event created for pod {PodName} in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, resource.Metadata.NamespaceProperty);
+                    if (resource.Status.Pods[podName] != podInK8s!.Metadata.Name)
+                    {
+                        resource.Status.Pods[podName] = podInK8s!.Metadata.Name;
+                        updated = true;
+                    }
                 }
+                else
+                {
+                    resource.Status.Pods.Add(podName, podInK8s!.Metadata.Name);
+                    updated = true;
+                }   
             }
+
+            resource.Status!.Pods!.Where(x => !podNames.Contains(x.Key)).ToList().ForEach(x => {
+                resource.Status.Pods!.Remove(x.Key);
+                updated = true;
+            });
+
+            return updated;
         }
 
-        private async Task<Corev1Event?> CreatePodIfNotExists(JupyterNotebookInstance resource, k8s.Models.V1Pod pod, string namespaceName)
+        private async Task<k8s.Models.V1Pod?> CreatePodIfNotExists(JupyterNotebookInstance resource, k8s.Models.V1Pod pod, string namespaceName)
         {
             _logger.LogInformation("Checking if pod {PodName} exists in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, namespaceName);
 
@@ -95,13 +157,13 @@ namespace Kadense.Jupyternetes.Pods.Operator
             if (filteredPods.Count() > 0)
             {
                 _logger.LogInformation("Pod {PodName} already exists in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, namespaceName);
-                return null;
+                return filteredPods.First();
             }
 
             _logger.LogInformation("Creating pod {PodName} in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, namespaceName);
             pod = await this.K8sClient.CoreV1.CreateNamespacedPodAsync(pod, namespaceName);
             
-            return await this.CreateEventAsync(
+            await this.CreateEventAsync(
                 action: "Pod Created",
                 related: resource.ToV1ObjectReference(),
                 reason: "Pod Creation Triggered",
@@ -112,6 +174,8 @@ namespace Kadense.Jupyternetes.Pods.Operator
                 ),
                 message: $"Created from JupyterNotebookInstance/{resource.Metadata.Name}"
             );
+
+            return pod;
         }
 
         private async Task<JupyterNotebookTemplate?> GetTemplateAsync(JupyterNotebookInstance resource)

@@ -35,21 +35,6 @@ namespace Kadense.Models.Jupyternetes
         [JsonPropertyName("spec")]
         public V1PodSpec? Spec { get; set; }
 
-        public string GeneratePodName(Dictionary<string, string> variables)
-        {
-            var inputString = $"{variables["template.name"]}-{variables["instance.name"]}";
-            var stringBuilder = new System.Text.StringBuilder();
-            using(var md5 = MD5.Create())
-            {
-                byte[] data = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(inputString));
-                for (int i = 0; i < data.Length; i++)
-                {
-                    stringBuilder.Append(data[i].ToString("x2"));
-                }
-            }
-            var podName = $"{stringBuilder.ToString()}-{this.GetValue(this.Name, variables)}";
-            return podName;
-        }
         public override k8s.Models.V1Pod ToOriginal(Dictionary<string, string> variables)
         {
             var labels = this.GetValue(this.Labels, variables)!;
@@ -60,7 +45,7 @@ namespace Kadense.Models.Jupyternetes
             {
                 Metadata = new k8s.Models.V1ObjectMeta()
                 {
-                    Name = this.GeneratePodName(variables),
+                    GenerateName = $"{podName}-",
                     Annotations = this.GetValue(this.Annotations, variables),
                     Labels = labels
                 },

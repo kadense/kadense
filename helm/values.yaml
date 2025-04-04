@@ -1,0 +1,26 @@
+image:
+  repository: localhost:5000
+
+jupyternetes:
+  pods:
+    operator:
+      enabled: true
+      image:
+        repository: ""
+        name: jupyter-pods-operator
+        tag: latest
+        pullPolicy: Always
+      serviceAccount:
+        create: true
+        name: ""
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      

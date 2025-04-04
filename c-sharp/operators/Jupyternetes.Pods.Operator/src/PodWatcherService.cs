@@ -80,26 +80,26 @@ namespace Kadense.Jupyternetes.Pods.Operator
                 var evt = await CreatePodIfNotExists(resource, pod, resource.Metadata.NamespaceProperty!);
                 if (evt != null)
                 {
-                    _logger.LogInformation("Event created for pod {PodName} in namespace {Namespace}.", pod.Metadata.Name, resource.Metadata.NamespaceProperty);
+                    _logger.LogInformation("Event created for pod {PodName} in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, resource.Metadata.NamespaceProperty);
                 }
             }
         }
 
         private async Task<Corev1Event?> CreatePodIfNotExists(JupyterNotebookInstance resource, k8s.Models.V1Pod pod, string namespaceName)
         {
-            _logger.LogInformation("Checking if pod {PodName} exists in namespace {Namespace}.", pod.Metadata.Name, namespaceName);
+            _logger.LogInformation("Checking if pod {PodName} exists in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, namespaceName);
 
             var labelSelector = $"jupyternetes.kadense.io/template={pod.Metadata.Labels["jupyternetes.kadense.io/template"]},jupyternetes.kadense.io/templateNamespace={pod.Metadata.Labels["jupyternetes.kadense.io/templateNamespace"]},jupyternetes.kadense.io/instance={pod.Metadata.Labels["jupyternetes.kadense.io/instance"]},jupyternetes.kadense.io/instanceNamespace={pod.Metadata.Labels["jupyternetes.kadense.io/instanceNamespace"]}";
             var existingPods = await this.K8sClient.CoreV1.ListNamespacedPodAsync(namespaceName, labelSelector: labelSelector);
             var filteredPods = existingPods.Items.Where(x => x.Metadata.Name == pod.Metadata.Name);
             if (filteredPods.Count() > 0)
             {
-                _logger.LogInformation("Pod {PodName} already exists in namespace {Namespace}.", pod.Metadata.Name, namespaceName);
+                _logger.LogInformation("Pod {PodName} already exists in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, namespaceName);
                 return null;
             }
 
-            _logger.LogInformation("Creating pod {PodName} in namespace {Namespace}.", pod.Metadata.Name, namespaceName);
-            await this.K8sClient.CoreV1.CreateNamespacedPodAsync(pod, namespaceName);
+            _logger.LogInformation("Creating pod {PodName} in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, namespaceName);
+            pod = await this.K8sClient.CoreV1.CreateNamespacedPodAsync(pod, namespaceName);
             
             return await this.CreateEventAsync(
                 action: "Pod Created",

@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Models.Kubernetes\src\Kadense.Models.Kubernetes.csproj" />
+    <ProjectReference Include="..\..\Logging\src\Kadense.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -25,7 +25,14 @@ namespace Kadense.Client.Kubernetes
                     {
                         propertyName = ((JsonPropertyNameAttribute)jsonPropNames[0]).Name;
                     }
-                    properties.Add(propertyName, ProcessProperty(property));
+                    try
+                    {
+                        properties.Add(propertyName, ProcessProperty(property));
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Error processing property {property.Name} of type {type.Name}", ex);
+                    }
                 }
             }
 
@@ -118,7 +125,6 @@ namespace Kadense.Client.Kubernetes
                     result.Type = "object";
                     var additionalProperties = new V1JSONSchemaProps();
 
-
                     if (propertyType.GetGenericArguments()[0] != typeof(string))
                         throw new NotImplementedException();
 
@@ -129,7 +135,14 @@ namespace Kadense.Client.Kubernetes
                     else
                     {
                         additionalProperties.Type = "object";
-                        additionalProperties.Properties = ProcessProperties(propertyType);
+                        try
+                        {
+                            additionalProperties.Properties = ProcessProperties(propertyType);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception($"Error processing dictionary type {propertyType.Name}", ex);
+                        }
                     }
                     result.AdditionalProperties = additionalProperties;
                 }
@@ -146,13 +159,31 @@ namespace Kadense.Client.Kubernetes
                     else
                     {
                         items.Type = "object";
-                        items.Properties = ProcessProperties(listType);
+                        try
+                        {
+                            items.Properties = ProcessProperties(listType);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception($"Error processing list type {listType.Name}", ex);
+                        }
                     }
                     result.Items = items;
                 }
                 else if (genericTypeDefinition == typeof(Nullable<>))
                 {
-                    return ProcessProperty(propertyType.GetGenericArguments()[0]);
+                    try 
+                    {
+                        return ProcessProperty(propertyType.GetGenericArguments()[0]);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Error processing nullable type {propertyType.Name}", ex);
+                    }
+                }
+                else if(genericTypeDefinition == typeof(System.Collections.Generic.IEqualityComparer<>))
+                {
+                    // do nothing
                 }
                 else
                 {

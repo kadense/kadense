@@ -64,7 +64,7 @@ namespace Kadense.Models.Jupyternetes.Tests {
             var instanceClient = crFactory.Create<JupyterNotebookInstance>(client);
             var template = await templateClient.ReadNamespacedAsync("default", "test-template"); 
             var instance = await instanceClient.ReadNamespacedAsync("default", "test-instance");
-            var pods = template.CreatePods(instance);
+            var (pods, conversionIssues) = template.CreatePods(instance);
             var newPod = pods.First();
             var existingPods = await client.CoreV1.ListNamespacedPodAsync("default"); 
             var filteredPods = existingPods.Items.Where(x => x.Metadata.Name == newPod.Metadata.Name);

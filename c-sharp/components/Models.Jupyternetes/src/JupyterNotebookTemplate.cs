@@ -14,24 +14,69 @@ namespace Kadense.Models.Jupyternetes
         [JsonPropertyName("spec")]
         public JupyterNotebookTemplateSpec? Spec { get; set; }
 
-        public virtual IList<k8s.Models.V1Pod> CreatePods(JupyterNotebookInstance instance)
+        public virtual (IList<k8s.Models.V1Pod>, IDictionary<string, Exception>) CreatePods(JupyterNotebookInstance instance)
         {
             instance.Spec!.Variables!["template.name"] = this.Metadata.Name!;
             instance.Spec!.Variables!["template.namespace"] = this.Metadata.NamespaceProperty!;
             instance.Spec!.Variables!["instance.name"] = instance.Metadata.Name!;
             instance.Spec!.Variables!["instance.namespace"] = instance.Metadata.NamespaceProperty!;
             
+            var conversionIssues = new Dictionary<string, Exception>();
             var pods = new List<k8s.Models.V1Pod>();
             foreach (var podSpec in this.Spec!.Pods!)
             {
-                var pod = podSpec.ToOriginal(instance.Spec!.Variables!);
-                pod.Metadata.Labels["jupyternetes.kadense.io/instance"] = instance.Metadata.Name!;
-                pod.Metadata.Labels["jupyternetes.kadense.io/instanceNamespace"] = instance.Metadata.NamespaceProperty!;
-                pod.Metadata.Labels["jupyternetes.kadense.io/template"] = this.Metadata.Name!;
-                pod.Metadata.Labels["jupyternetes.kadense.io/templateNamespace"] = this.Metadata.NamespaceProperty!;
-                pods.Add(pod);
+                try 
+                {
+                    var pod = podSpec.ToOriginal(instance.Spec!.Variables!);
+                    pod.Metadata.Labels["jupyternetes.kadense.io/instance"] = instance.Metadata.Name!;
+                    pod.Metadata.Labels["jupyternetes.kadense.io/instanceNamespace"] = instance.Metadata.NamespaceProperty!;
+                    pod.Metadata.Labels["jupyternetes.kadense.io/template"] = this.Metadata.Name!;
+                    pod.Metadata.Labels["jupyternetes.kadense.io/templateNamespace"] = this.Metadata.NamespaceProperty!;
+                    pods.Add(pod);
+                }
+                catch(AwaitingDependencyException adEx)
+                {
+                    conversionIssues.Add(podSpec.Name!, adEx);
+                }
+                catch(VariableNotPopulatedException vnpEx)
+                {
+                    conversionIssues.Add(podSpec.Name!, vnpEx);
+                }
             }
-            return pods;
+            return (pods, conversionIssues);
+        }
+
+        
+        public virtual (IList<k8s.Models.V1PersistentVolumeClaim>, IDictionary<string, Exception>) CreatePvcs(JupyterNotebookInstance instance)
+        {
+            instance.Spec!.Variables!["template.name"] = this.Metadata.Name!;
+            instance.Spec!.Variables!["template.namespace"] = this.Metadata.NamespaceProperty!;
+            instance.Spec!.Variables!["instance.name"] = instance.Metadata.Name!;
+            instance.Spec!.Variables!["instance.namespace"] = instance.Metadata.NamespaceProperty!;
+            
+            var conversionIssues = new Dictionary<string, Exception>();
+            var pvcs = new List<k8s.Models.V1PersistentVolumeClaim>();
+            foreach (var pvcSpec in this.Spec!.Pvcs!)
+            {
+                try
+                {
+                    var pvc = pvcSpec.ToOriginal(instance.Spec!.Variables!);
+                    pvc.Metadata.Labels["jupyternetes.kadense.io/instance"] = instance.Metadata.Name!;
+                    pvc.Metadata.Labels["jupyternetes.kadense.io/instanceNamespace"] = instance.Metadata.NamespaceProperty!;
+                    pvc.Metadata.Labels["jupyternetes.kadense.io/template"] = this.Metadata.Name!;
+                    pvc.Metadata.Labels["jupyternetes.kadense.io/templateNamespace"] = this.Metadata.NamespaceProperty!;
+                    pvcs.Add(pvc);
+                }
+                catch(AwaitingDependencyException adEx)
+                {
+                    conversionIssues.Add(pvcSpec.Name!, adEx);
+                }
+                catch(VariableNotPopulatedException vnpEx)
+                {
+                    conversionIssues.Add(pvcSpec.Name!, vnpEx);
+                }
+            }
+            return (pvcs, conversionIssues);
         }
     }
 }

@@ -13,10 +13,19 @@ namespace Kadense.Models.Kubernetes
             if(templateValue == null)
                 return null;
                 
-            return Regex.Replace(templateValue, @"\{(\w+)\}", match =>
+            return Regex.Replace(templateValue, @"\{([^{}]*)\}", match =>
             {
-                var key = match.Groups[1].Value;
-                return variables.TryGetValue(key, out var value) ? value : match.Value;
+                var key = match.Groups[1].Value.Trim().ToLower();
+
+                if(!variables.ContainsKey(key))
+                {
+                    if(key.StartsWith("jupyternetes."))
+                        throw new AwaitingDependencyException($"Awaiting Dependency '{key}'.", key);
+                    else
+                        throw new VariableNotPopulatedException($"Variable '{key}' not found in the provided variables.", key);
+                }
+
+                return variables[key];
             });
         }
 

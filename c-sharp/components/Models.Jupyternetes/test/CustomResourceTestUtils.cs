@@ -83,7 +83,7 @@ namespace Kadense.Models.Jupyternetes.Tests {
             };
         }
 
-        public virtual JupyterNotebookTemplate CreateTemplate(string templateName = "test-template")
+        public virtual JupyterNotebookTemplate CreateTemplate(string templateName = "test-template", bool withPvcs = false)
         {
             return new JupyterNotebookTemplate()
             {
@@ -106,10 +106,49 @@ namespace Kadense.Models.Jupyternetes.Tests {
                                 {
                                     new V1Container() {
                                         Name = "test-container",
-                                        Image = "who-knows" 
+                                        Image = "who-knows",
+                                        VolumeMounts = withPvcs ? new List<V1VolumeMount>()
+                                        {
+                                            new V1VolumeMount()
+                                            {
+                                                Name = "test-pvc",
+                                                MountPath = "/mnt/test"
+                                            }
+                                        } : null
+                                    },
+                                },
+                                Volumes = withPvcs ? new List<V1Volume>()
+                                {
+                                    new V1Volume()
+                                    {
+                                        Name = "test-pvc",
+                                        PersistentVolumeClaim = new V1PersistentVolumeClaimVolumeSource()
+                                        {
+                                            ClaimName = "{jupyternetes.pvcs.test-pvc}"
+                                        }
+                                    }
+                                } : null
+                            },
+                        }
+                    },
+                    Pvcs = new List<NotebookTemplatePvcSpec>(){
+                        new NotebookTemplatePvcSpec(){
+                            Name = "test-pvc",
+                            Labels = new Dictionary<string, string>()
+                            {
+                                { "jupyternetes.kadense.io/testProperty" , "{test}-instance" }
+                            },
+                            Spec = new V1PersistentVolumeClaimSpec()
+                            {
+                                AccessModes = new List<string>() { "ReadWriteOnce" },
+                                Resources = new V1VolumeResourceRequirements()
+                                {
+                                    Requests = new Dictionary<string, string>()
+                                    {
+                                        { "storage", "1Gi" }
                                     }
                                 }
-                            }
+                            },
                         }
                     }
                 }

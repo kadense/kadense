@@ -1,0 +1,33 @@
+{{- if .Values.jupyternetes.pvcs.operator.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jupyternetes.pvcs.operator.fullname" . }}
+  labels:
+    product: kadense
+    app: {{ include "jupyternetes.pvcs.operator.fullname" . }}
+    component: jupyternetes-pod-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "jupyternetes.pvcs.operator.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "jupyternetes.pvcs.operator.fullname" . }}
+    spec:
+      serviceAccountName: {{ include "jupyternetes.pvcs.operator.serviceAccountName" . }}
+      nodeSelector: 
+        {{ toYaml .Values.jupyternetes.pvcs.operator.nodeSelector | nindent 8 }}
+      tolerations: 
+        {{ toYaml .Values.jupyternetes.pvcs.operator.tolerations | nindent 8 }}
+      affinity: 
+        {{ toYaml .Values.jupyternetes.pvcs.operator.affinity | nindent 8 }}
+      containers:
+      - name: controller
+        image: {{ include "jupyternetes.pvcs.operator.image.name" . }}
+        imagePullPolicy: {{ .Values.jupyternetes.pvcs.operator.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.jupyternetes.pvcs.operator.resources | nindent 10 }}
+{{- end -}}

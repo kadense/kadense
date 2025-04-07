@@ -3,10 +3,10 @@ namespace Kadense.Models.Jupyternetes
     public class JupyterNotebookInstanceStatus
     {
         [JsonPropertyName("pvcs")]
-        public Dictionary<string, string> Pvcs { get; set; } = new Dictionary<string, string>();
+        public List<JupyterResourceState> Pvcs { get; set; } = new List<JupyterResourceState>();
 
         [JsonPropertyName("pods")]
-        public Dictionary<string, string> Pods { get; set; } = new Dictionary<string, string>();
+        public List<JupyterResourceState> Pods { get; set; } = new List<JupyterResourceState>();
 
         [JsonPropertyName("podsProvisioned")]
         public string PodsProvisioningState { get; set; } = "Pending";

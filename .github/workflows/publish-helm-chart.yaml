@@ -50,6 +50,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: headinthecloudsolutions/helm-charts
+        token: ${{ secrets.HELM_REPO_TOKEN }}
 
     - name: Install Helm
       run: |

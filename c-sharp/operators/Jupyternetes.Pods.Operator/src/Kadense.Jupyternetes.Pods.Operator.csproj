@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\components\Models.Kubernetes\src\Kadense.Models.Kubernetes.csproj" />
     <ProjectReference Include="..\..\..\components\Models.Jupyternetes\src\Kadense.Models.Jupyternetes.csproj" />
+    <ProjectReference Include="..\..\..\components\Jupyternetes.Watchers\src\Kadense.Jupyternetes.Watchers.csproj" />
     <ProjectReference Include="..\..\..\components\Client.Kubernetes\src\Kadense.Client.Kubernetes.csproj" />
     <ProjectReference Include="..\..\..\components\Logging\src\Kadense.Logging.csproj" />
   </ItemGroup>

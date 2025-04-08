@@ -1,8 +1,8 @@
-{{- if .Values.jupyternetes.pods.operator.enabled -}}
+{{- if .Values.jupyternetes.pvcs.operator.enabled -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "jupyternetes.pods.operator.fullname" . }} 
+  name: {{ include "jupyternetes.pvcs.operator.fullname" . }} 
 rules:
 - apiGroups: [ "kadense.io" ]
   resources: ["jupyternotebookinstances", "jupyternotebooktemplates", "jupyternotebookinstances/status", "jupyternotebooktemplates/status"]
@@ -13,7 +13,7 @@ rules:
   verbs: [ "patch" ]
 
 - apiGroups: [""]
-  resources: ["pods", "pods/status"]
+  resources: ["persistentvolumeclaims", "persistentvolumeclaims/status"]
   verbs: ["get", "list", "create", "delete"]
 
 {{- end -}}

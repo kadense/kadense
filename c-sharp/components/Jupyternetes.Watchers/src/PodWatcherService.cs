@@ -7,10 +7,12 @@ using k8s.Models;
 using System.Runtime.InteropServices;
 using System.Reflection;
 
-namespace Kadense.Jupyternetes.Pods.Operator 
+namespace Kadense.Jupyternetes.Watchers
 {
     public class PodWatcherService : KadenseCustomResourceWatcher<JupyterNotebookInstance>
     {
+        private readonly string STATE_COMPLETED = "Completed";
+        private readonly string STATE_PARTIALLY_PROCESSED = "Partially Processed";
         private readonly KadenseLogger<PodWatcherService> _logger;
 
         public KadenseCustomResourceClient<JupyterNotebookTemplate> TemplateClient { get; set; }
@@ -32,13 +34,18 @@ namespace Kadense.Jupyternetes.Pods.Operator
         {
             _logger.LogInformation("Resource created: {ResourceName}", resource.Metadata.Name);
 
-            await this.ProcessAsync(resource);
+            var processed = await this.ProcessAsync(resource);
 
-            var evt = await this.CreateEventAsync(
-                involvedObject: resource.ToV1ObjectReference(),
-                action: "Processed Resource Created",
-                reason: $"Resource Created"
-            );
+            Corev1Event? evt = null;
+
+            if(processed)
+            {
+                evt = await this.CreateEventAsync(
+                    involvedObject: resource.ToV1ObjectReference(),
+                    action: "Processed Resource Created",
+                    reason: $"Resource Created"
+                );
+            }
 
             return (resource, evt);
         }
@@ -47,20 +54,33 @@ namespace Kadense.Jupyternetes.Pods.Operator
         {
             _logger.LogInformation("Resource updated: {ResourceName}", resource.Metadata.Name);
 
-            var evt = await this.CreateEventAsync(
-                involvedObject: resource.ToV1ObjectReference(),
-                action: "Processed Resource Updated",
-                reason: "Resource Updated"
-            );
+            var processed = await this.ProcessAsync(resource);
+            Corev1Event? evt = null;
+
+            if(processed)
+            {
+                evt = await this.CreateEventAsync(
+                    involvedObject: resource.ToV1ObjectReference(),
+                    action: "Processed Resource Updated",
+                    reason: "Resource Updated"
+                );
+            }
+
             return (resource, evt);
         }
 
-        public async Task ProcessAsync(JupyterNotebookInstance resource)
+        public async Task<bool> ProcessAsync(JupyterNotebookInstance resource)
         {
+            if(resource.Status.PvcsProvisionedState != STATE_COMPLETED)
+            {
+                _logger.LogWarning("Awaiting PVC watcher completion on Resource {ResourceName}.", resource.Metadata.Name);
+                return false;
+            }
+
             if (resource.Spec!.Template == null)
             {
                 _logger.LogWarning("Resource {ResourceName} has no template specified.", resource.Metadata.Name);
-                return;
+                return false;
             }
 
             var template = await this.GetTemplateAsync(resource);
@@ -68,16 +88,15 @@ namespace Kadense.Jupyternetes.Pods.Operator
             if (template == null)
             {
                 _logger.LogError("Template not found for resource {ResourceName}.", resource.Metadata.Name);
-                return;
+                return false;
             }
 
-
             _logger.LogInformation("Building pods for resource {ResourceName}.", resource.Metadata.Name);
-            bool updated = await BuildPodsAsync(resource, template);
+            var (updated, provisioningState) = await BuildPodsAsync(resource, template);
 
-            if(!resource.Status.PodsProvisioningState.Equals("Completed"))
+            if(!resource.Status.PodsProvisioningState.Equals(provisioningState))
             {
-                resource.Status.PodsProvisioningState = "Completed";
+                resource.Status.PodsProvisioningState = provisioningState;
                 updated = true;
             }
 
@@ -90,6 +109,8 @@ namespace Kadense.Jupyternetes.Pods.Operator
             {
                 _logger.LogInformation("No updates needed for resource {ResourceName}.", resource.Metadata.Name);
             }
+
+            return true;
         }
 
         private async Task UpdateStatusAsync(JupyterNotebookInstance resource){
@@ -115,7 +136,7 @@ namespace Kadense.Jupyternetes.Pods.Operator
         {
             bool updated = false;
             bool statusExists = false;
-            resource.Status!.Pods!.Where(x => x.Name.Equals(name)).ToList().ForEach(x => {
+            resource.Status!.Pods!.Where(x => x.Name!.Equals(name)).ToList().ForEach(x => {
                 if (x.ResourceName != resourceName)
                 {
                     x.ResourceName = resourceName;
@@ -124,16 +145,17 @@ namespace Kadense.Jupyternetes.Pods.Operator
                     updated = true;
                 }
                 statusExists = true;
-            };
+            });
+
             if(!statusExists)
             {
-                resource.Status.Pods.Add(new JupyterResourceState(name: name, resourceName: resourceName, state: state, errorMessage: errorMessage));
+                resource.Status.Pods.Add(new JupyterResourceState(name: name, resourceName: resourceName!, state: state!, errorMessage: errorMessage));
                 updated = true;
             }
             return updated;
         }
 
-        private async Task<bool> BuildPodsAsync(JupyterNotebookInstance resource, JupyterNotebookTemplate template)
+        private async Task<(bool, string)> BuildPodsAsync(JupyterNotebookInstance resource, JupyterNotebookTemplate template)
         {
             bool updated = false;
             List<string> podNames = new List<string>();
@@ -152,34 +174,42 @@ namespace Kadense.Jupyternetes.Pods.Operator
                 } 
             }
 
-            resource.Status!.Pods!.Where(x => !podNames.Contains(x.Key)).ToList().ForEach(x => {
-                resource.Status.Pods!.Remove(x.Key);
+            resource.Status!.Pods!.Where(x => !podNames.Contains(x.Name!)).ToList().ForEach(x => {
+                resource.Status.Pods!.Remove(x);
                 updated = true;
             });
 
             
             foreach(var issue in conversionIssues)
             {
-                if(UpdateResourceState(resource, podName, podInK8s?.Metadata.Name, "Error", errorMessage: issue.Value.Message))
+                if(UpdateResourceState(resource, issue.Key, null, "Error", errorMessage: issue.Value.Message))
                 {
                     updated = true;
                 }    
             }
 
-            return updated;
+            string provisioningState = conversionIssues.Count > 0 ? STATE_PARTIALLY_PROCESSED : STATE_COMPLETED;
+
+            return (updated, provisioningState);
         }
 
         private async Task<k8s.Models.V1Pod?> CreatePodIfNotExists(JupyterNotebookInstance resource, k8s.Models.V1Pod pod, string namespaceName)
         {
             _logger.LogInformation("Checking if pod {PodName} exists in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, namespaceName);
 
-            var labelSelector = $"jupyternetes.kadense.io/template={pod.Metadata.Labels["jupyternetes.kadense.io/template"]},jupyternetes.kadense.io/templateNamespace={pod.Metadata.Labels["jupyternetes.kadense.io/templateNamespace"]},jupyternetes.kadense.io/instance={pod.Metadata.Labels["jupyternetes.kadense.io/instance"]},jupyternetes.kadense.io/instanceNamespace={pod.Metadata.Labels["jupyternetes.kadense.io/instanceNamespace"]}";
-            var existingPods = await this.K8sClient.CoreV1.ListNamespacedPodAsync(namespaceName, labelSelector: labelSelector);
-            var filteredPods = existingPods.Items.Where(x => x.Metadata.Name == pod.Metadata.Name);
-            if (filteredPods.Count() > 0)
+            var labelSelector = new KubernetesLabelSelector()
+            {
+                { "jupyternetes.kadense.io/template", pod.Metadata.Labels["jupyternetes.kadense.io/template"] },
+                { "jupyternetes.kadense.io/templateNamespace", pod.Metadata.Labels["jupyternetes.kadense.io/templateNamespace"] },
+                { "jupyternetes.kadense.io/instance", pod.Metadata.Labels["jupyternetes.kadense.io/instance"] },
+                { "jupyternetes.kadense.io/instanceNamespace", pod.Metadata.Labels["jupyternetes.kadense.io/instanceNamespace"] },
+                { "jupyternetes.kadense.io/podName", pod.Metadata.Labels["jupyternetes.kadense.io/podName"] }
+            };
+            var existingPods = await this.K8sClient.CoreV1.ListNamespacedPodAsync(namespaceName, labelSelector: labelSelector.ToString());
+            if (existingPods.Items.Count() > 0)
             {
                 _logger.LogInformation("Pod {PodName} already exists in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, namespaceName);
-                return filteredPods.First();
+                return existingPods.Items.First();
             }
 
             _logger.LogInformation("Creating pod {PodName} in namespace {Namespace}.", pod.Metadata.GenerateName ?? pod.Metadata.Name, namespaceName);

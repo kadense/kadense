@@ -71,6 +71,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadense.Jupyternetes.Pvcs.O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadense.Jupyternetes.Pvcs.Operator.Tests", "operators\Jupyternetes.Pvcs.Operator\test\Kadense.Jupyternetes.Pvcs.Operator.Tests.csproj", "{8F2641CF-AD14-4853-AD33-5A2DFF083F2B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jupyternetes.Watchers", "Jupyternetes.Watchers", "{9263A868-E162-4B55-9796-D6698F2182ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadense.Jupyternetes.Watchers", "components\Jupyternetes.Watchers\src\Kadense.Jupyternetes.Watchers.csproj", "{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadense.Jupyternetes.Watchers.Tests", "components\Jupyternetes.Watchers\test\Kadense.Jupyternetes.Watchers.Tests.csproj", "{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -297,6 +303,30 @@ Global
 		{8F2641CF-AD14-4853-AD33-5A2DFF083F2B}.Release|x64.Build.0 = Release|Any CPU
 		{8F2641CF-AD14-4853-AD33-5A2DFF083F2B}.Release|x86.ActiveCfg = Release|Any CPU
 		{8F2641CF-AD14-4853-AD33-5A2DFF083F2B}.Release|x86.Build.0 = Release|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Debug|x64.Build.0 = Debug|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Debug|x86.Build.0 = Debug|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Release|x64.ActiveCfg = Release|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Release|x64.Build.0 = Release|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Release|x86.ActiveCfg = Release|Any CPU
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4}.Release|x86.Build.0 = Release|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Debug|x64.Build.0 = Debug|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Debug|x86.Build.0 = Debug|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Release|x64.ActiveCfg = Release|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Release|x64.Build.0 = Release|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Release|x86.ActiveCfg = Release|Any CPU
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -333,5 +363,8 @@ Global
 		{C5728024-DF9C-4D14-A7B5-1B681771B961} = {8D95823F-B83F-4C08-842C-4F95384DE3B7}
 		{85EF5F21-B925-4EE2-A98D-A84ED364BA07} = {C5728024-DF9C-4D14-A7B5-1B681771B961}
 		{8F2641CF-AD14-4853-AD33-5A2DFF083F2B} = {C5728024-DF9C-4D14-A7B5-1B681771B961}
+		{9263A868-E162-4B55-9796-D6698F2182ED} = {F30895DC-C3AC-FF44-FFF8-D51D98AE1B61}
+		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4} = {9263A868-E162-4B55-9796-D6698F2182ED}
+		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56} = {9263A868-E162-4B55-9796-D6698F2182ED}
 	EndGlobalSection
 EndGlobal

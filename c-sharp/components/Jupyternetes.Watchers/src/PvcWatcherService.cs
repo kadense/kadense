@@ -7,10 +7,12 @@ using k8s.Models;
 using System.Runtime.InteropServices;
 using System.Reflection;
 
-namespace Kadense.Jupyternetes.Pvcs.Operator 
+namespace Kadense.Jupyternetes.Watchers
 {
     public class PvcWatcherService : KadenseCustomResourceWatcher<JupyterNotebookInstance>
     {
+        private readonly string STATE_COMPLETED = "Completed";
+        private readonly string STATE_PARTIALLY_PROCESSED = "Partially Processed";
         private readonly KadenseLogger<PvcWatcherService> _logger;
 
         public KadenseCustomResourceClient<JupyterNotebookTemplate> TemplateClient { get; set; }
@@ -47,6 +49,8 @@ namespace Kadense.Jupyternetes.Pvcs.Operator
         {
             _logger.LogInformation("Resource updated: {ResourceName}", resource.Metadata.Name);
 
+            await this.ProcessAsync(resource);
+
             var evt = await this.CreateEventAsync(
                 involvedObject: resource.ToV1ObjectReference(),
                 action: "Processed Resource Updated",
@@ -73,11 +77,11 @@ namespace Kadense.Jupyternetes.Pvcs.Operator
 
 
             _logger.LogInformation("Building pvcs for resource {ResourceName}.", resource.Metadata.Name);
-            bool updated = await BuildPvcsAsync(resource, template);
+            var (updated, provisioningState) = await BuildPvcsAsync(resource, template);
 
-            if(!resource.Status.PvcsProvisionedState.Equals("Completed"))
+            if(!resource.Status.PvcsProvisionedState.Equals(provisioningState))
             {
-                resource.Status.PvcsProvisionedState = "Completed";
+                resource.Status.PvcsProvisionedState = provisioningState;
                 updated = true;
             }
 
@@ -115,7 +119,7 @@ namespace Kadense.Jupyternetes.Pvcs.Operator
         {
             bool updated = false;
             bool statusExists = false;
-            resource.Status!.Pods!.Where(x => x.Name.Equals(name)).ToList().ForEach(x => {
+            resource.Status!.Pvcs!.Where(x => x.Name!.Equals(name)).ToList().ForEach(x => {
                 if (x.ResourceName != resourceName)
                 {
                     x.ResourceName = resourceName;
@@ -124,61 +128,69 @@ namespace Kadense.Jupyternetes.Pvcs.Operator
                     updated = true;
                 }
                 statusExists = true;
-            };
+            });
             if(!statusExists)
             {
-                resource.Status.Pvcs.Add(new JupyterResourceState(name: name, resourceName: resourceName, state: state, errorMessage: errorMessage));
+                resource.Status.Pvcs.Add(new JupyterResourceState(name: name, resourceName: null, state: state, errorMessage: errorMessage));
                 updated = true;
             }
             return updated;
         }
 
-        private async Task<bool> BuildPvcsAsync(JupyterNotebookInstance resource, JupyterNotebookTemplate template)
+        private async Task<(bool, string)> BuildPvcsAsync(JupyterNotebookInstance resource, JupyterNotebookTemplate template)
         {
             bool updated = false;
-            List<string> PvcNames = new List<string>();
+            List<string> pvcNames = new List<string>();
 
             _logger.LogInformation("Creating pvcs for resource {ResourceName} using template {TemplateName}.", resource.Metadata.Name, template.Metadata.Name);
 
             var (pvcs, conversionIssues) = template.CreatePvcs(resource);
             foreach (var pvc in pvcs)
             {
-                string PvcName = pvc.Metadata.Labels["jupyternetes.kadense.io/pvcName"];
-                var PvcInK8s = await CreatePvcIfNotExists(resource, pvc, resource.Metadata.NamespaceProperty!);
-                PvcNames.Add(PvcName);
-                if(UpdateResourceState(resource, podName, podInK8s?.Metadata.Name, "Processed"))
+                string pvcName = pvc.Metadata.Labels["jupyternetes.kadense.io/pvcName"];
+                var pvcInK8s = await CreatePvcIfNotExists(resource, pvc, resource.Metadata.NamespaceProperty!);
+                pvcNames.Add(pvcName);
+                if(UpdateResourceState(resource, pvcName, pvcInK8s?.Metadata.Name, "Processed"))
                 {
                     updated = true;
                 }    
             }
 
-            resource.Status!.Pvcs!.Where(x => !PvcNames.Contains(x.Key)).ToList().ForEach(x => {
-                resource.Status.Pvcs!.Remove(x.Key);
+            resource.Status!.Pvcs!.Where(x => !pvcNames.Contains(x.Name!)).ToList().ForEach(x => {
+                resource.Status.Pvcs!.Remove(x);
                 updated = true;
             });
 
             foreach(var issue in conversionIssues)
             {
-                if(UpdateResourceState(resource, podName, podInK8s?.Metadata.Name, "Error", errorMessage: issue.Value.Message))
+                if(UpdateResourceState(resource, issue.Key, null, "Error", errorMessage: issue.Value.Message))
                 {
                     updated = true;
                 }
             }
 
-            return updated;
+            string provisioningState = conversionIssues.Count > 0 ? STATE_PARTIALLY_PROCESSED : STATE_COMPLETED;
+
+            return (updated, provisioningState);
         }
 
         private async Task<k8s.Models.V1PersistentVolumeClaim?> CreatePvcIfNotExists(JupyterNotebookInstance resource, k8s.Models.V1PersistentVolumeClaim pvc, string namespaceName)
         {
             _logger.LogInformation("Checking if Pvc {PvcName} exists in namespace {Namespace}.", pvc.Metadata.GenerateName ?? pvc.Metadata.Name, namespaceName);
 
-            var labelSelector = $"jupyternetes.kadense.io/template={pvc.Metadata.Labels["jupyternetes.kadense.io/template"]},jupyternetes.kadense.io/templateNamespace={pvc.Metadata.Labels["jupyternetes.kadense.io/templateNamespace"]},jupyternetes.kadense.io/instance={pvc.Metadata.Labels["jupyternetes.kadense.io/instance"]},jupyternetes.kadense.io/instanceNamespace={pvc.Metadata.Labels["jupyternetes.kadense.io/instanceNamespace"]}";
-            var existingPvcs = await this.K8sClient.CoreV1.ListNamespacedPersistentVolumeClaimAsync(namespaceName, labelSelector: labelSelector);
-            var filteredPvcs = existingPvcs.Items.Where(x => x.Metadata.Name == pvc.Metadata.Name);
-            if (filteredPvcs.Count() > 0)
+            var labelSelector = new KubernetesLabelSelector()
+            {
+                { "jupyternetes.kadense.io/template", pvc.Metadata.Labels["jupyternetes.kadense.io/template"] },
+                { "jupyternetes.kadense.io/templateNamespace", pvc.Metadata.Labels["jupyternetes.kadense.io/templateNamespace"] },
+                { "jupyternetes.kadense.io/instance", pvc.Metadata.Labels["jupyternetes.kadense.io/instance"] },
+                { "jupyternetes.kadense.io/instanceNamespace", pvc.Metadata.Labels["jupyternetes.kadense.io/instanceNamespace"] },
+                { "jupyternetes.kadense.io/pvcName", pvc.Metadata.Labels["jupyternetes.kadense.io/pvcName"] }
+            };
+            var existingPvcs = await this.K8sClient.CoreV1.ListNamespacedPersistentVolumeClaimAsync(namespaceName, labelSelector: labelSelector.ToString());
+            if (existingPvcs.Items.Count > 0)
             {
                 _logger.LogInformation("Pvc {PvcName} already exists in namespace {Namespace}.", pvc.Metadata.GenerateName ?? pvc.Metadata.Name, namespaceName);
-                return filteredPvcs.First();
+                return existingPvcs.Items.First();
             }
 
             _logger.LogInformation("Creating Pvc {PvcName} in namespace {Namespace}.", pvc.Metadata.GenerateName ?? pvc.Metadata.Name, namespaceName);
@@ -226,22 +238,18 @@ namespace Kadense.Jupyternetes.Pvcs.Operator
             var existingPvcs = await this.K8sClient.CoreV1.ListNamespacedPersistentVolumeClaimAsync(resource.Metadata.NamespaceProperty, labelSelector: $"jupyternetes.kadense.io/instance={resource.Metadata.Name},jupyternetes.kadense.io/instanceNamespace={resource.Metadata.NamespaceProperty}");
             foreach(var Pvc in existingPvcs.Items)
             {
-                _logger.LogInformation("Deleting Pvc {PvcName} in namespace {Namespace}.", Pvc.Metadata.Name, resource.Metadata.NamespaceProperty);
-                await this.K8sClient.CoreV1.DeleteNamespacedPersistentVolumeClaimAsync(
-                    name: Pvc.Metadata.Name!, 
-                    namespaceParameter: resource.Metadata.NamespaceProperty
-                );
-
+                _logger.LogInformation("Pvc {PvcName} in namespace {Namespace} will not be removed.", Pvc.Metadata.Name, resource.Metadata.NamespaceProperty);
+                
                 await this.CreateEventAsync(
                     related: resource.ToV1ObjectReference(),
-                    action: "Deleted by Jupyternetes Pvc Operator",
-                    reason: "Pvc Deleted",
+                    action: "Orphaned by Jupyternetes Pvc Operator",
+                    reason: "Pvc Orphaned",
                     involvedObject: new k8s.Models.V1ObjectReference(
                         kind: "Pvc",
                         name: Pvc.Metadata.Name,
                         namespaceProperty: resource.Metadata.NamespaceProperty
                     ),
-                    message: $"Deleted by JupyterNotebookInstance/{resource.Metadata.Name} Resource Deletion"
+                    message: $"Orphaned by JupyterNotebookInstance/{resource.Metadata.Name} Resource Deletion"
                 );
             }
 

@@ -14,13 +14,34 @@ namespace Kadense.Models.Jupyternetes
         [JsonPropertyName("spec")]
         public JupyterNotebookTemplateSpec? Spec { get; set; }
 
-        public virtual (IList<k8s.Models.V1Pod>, IDictionary<string, Exception>) CreatePods(JupyterNotebookInstance instance)
+        public virtual void UpdateInstantVariablesByStatus(JupyterNotebookInstance instance)
         {
             instance.Spec!.Variables!["template.name"] = this.Metadata.Name!;
             instance.Spec!.Variables!["template.namespace"] = this.Metadata.NamespaceProperty!;
             instance.Spec!.Variables!["instance.name"] = instance.Metadata.Name!;
             instance.Spec!.Variables!["instance.namespace"] = instance.Metadata.NamespaceProperty!;
             
+            foreach(var pvcStatus in instance.Status.Pvcs)
+            {
+                if(pvcStatus.ResourceName != null)
+                {
+                    instance.Spec!.Variables![$"jupyternetes.pvcs.{pvcStatus.Name}"] = pvcStatus.ResourceName!;
+                }
+            }
+
+            foreach(var podStatus in instance.Status.Pods)
+            {
+                if(podStatus.ResourceName != null)
+                {
+                    instance.Spec!.Variables![$"jupyternetes.pods.{podStatus.Name}"] = podStatus.ResourceName!;
+                }
+            }
+        }
+
+        public virtual (IList<k8s.Models.V1Pod>, IDictionary<string, Exception>) CreatePods(JupyterNotebookInstance instance)
+        {
+            UpdateInstantVariablesByStatus(instance);
+
             var conversionIssues = new Dictionary<string, Exception>();
             var pods = new List<k8s.Models.V1Pod>();
             foreach (var podSpec in this.Spec!.Pods!)
@@ -33,6 +54,7 @@ namespace Kadense.Models.Jupyternetes
                     pod.Metadata.Labels["jupyternetes.kadense.io/template"] = this.Metadata.Name!;
                     pod.Metadata.Labels["jupyternetes.kadense.io/templateNamespace"] = this.Metadata.NamespaceProperty!;
                     pods.Add(pod);
+                    instance.Spec!.Variables![$"jupyternetes.pods.{podSpec.Name}"] = pod.Metadata!.Name!;
                 }
                 catch(AwaitingDependencyException adEx)
                 {
@@ -49,10 +71,7 @@ namespace Kadense.Models.Jupyternetes
         
         public virtual (IList<k8s.Models.V1PersistentVolumeClaim>, IDictionary<string, Exception>) CreatePvcs(JupyterNotebookInstance instance)
         {
-            instance.Spec!.Variables!["template.name"] = this.Metadata.Name!;
-            instance.Spec!.Variables!["template.namespace"] = this.Metadata.NamespaceProperty!;
-            instance.Spec!.Variables!["instance.name"] = instance.Metadata.Name!;
-            instance.Spec!.Variables!["instance.namespace"] = instance.Metadata.NamespaceProperty!;
+            UpdateInstantVariablesByStatus(instance);
             
             var conversionIssues = new Dictionary<string, Exception>();
             var pvcs = new List<k8s.Models.V1PersistentVolumeClaim>();

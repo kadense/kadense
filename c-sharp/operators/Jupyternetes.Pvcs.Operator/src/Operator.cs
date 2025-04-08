@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using Kadense.Logging;
+using Kadense.Jupyternetes.Watchers;
 
 namespace Kadense.Jupyternetes.Pvcs.Operator
 {

@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <PackageId>Kadense.Jupyternetes.Watchers</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Shaun Turner</Authors>
+    <Company>Head in the Cloud Solutions Ltd</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <None Include="../README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Models.Jupyternetes\src\Kadense.Models.Jupyternetes.csproj" />
+    <ProjectReference Include="..\..\Client.Kubernetes\src\Kadense.Client.Kubernetes.csproj" />
+    <ProjectReference Include="..\..\Logging\src\Kadense.Logging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Kadense.Logging" />
+    <Using Include="Kadense.Client.Kubernetes" />
+    <Using Include="Kadense.Models.Jupyternetes" />
+  </ItemGroup>
+</Project>

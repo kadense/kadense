@@ -83,7 +83,7 @@ namespace Kadense.Models.Jupyternetes.Tests {
             };
         }
 
-        public virtual JupyterNotebookTemplate CreateTemplate(string templateName = "test-template", bool withPvcs = false)
+        public virtual JupyterNotebookTemplate CreateTemplate(string templateName = "test-template", string prefixName = "test", bool withPvcs = false)
         {
             return new JupyterNotebookTemplate()
             {
@@ -95,7 +95,7 @@ namespace Kadense.Models.Jupyternetes.Tests {
                 {
                     Pods = new List<NotebookTemplatePodSpec>(){
                         new NotebookTemplatePodSpec(){
-                            Name = "test-pod",
+                            Name = $"{prefixName}-pod",
                             Labels = new Dictionary<string, string>()
                             {
                                 { "jupyternetes.kadense.io/testProperty" , "{test}-instance" }
@@ -124,7 +124,7 @@ namespace Kadense.Models.Jupyternetes.Tests {
                                         Name = "test-pvc",
                                         PersistentVolumeClaim = new V1PersistentVolumeClaimVolumeSource()
                                         {
-                                            ClaimName = "{jupyternetes.pvcs.test-pvc}"
+                                            ClaimName = $"{{jupyternetes.pvcs.{prefixName}-pvc}}"
                                         }
                                     }
                                 } : null
@@ -133,7 +133,7 @@ namespace Kadense.Models.Jupyternetes.Tests {
                     },
                     Pvcs = new List<NotebookTemplatePvcSpec>(){
                         new NotebookTemplatePvcSpec(){
-                            Name = "test-pvc",
+                            Name = $"{prefixName}-pvc",
                             Labels = new Dictionary<string, string>()
                             {
                                 { "jupyternetes.kadense.io/testProperty" , "{test}-instance" }

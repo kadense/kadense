@@ -3,22 +3,25 @@ using Kadense.Models.Jupyternetes;
 using Kadense.Models.Kubernetes.CoreApi;
 using Kadense.Models.Jupyternetes.Tests;
 using Microsoft.Extensions.Logging;
+using Kadense.Jupyternetes.Watchers;
 
-namespace Kadense.Jupyternetes.Pods.Operator.Tests {
+namespace Kadense.Jupyternetes.Watchers.Tests {
 
     public class PodTests : KadenseTest
     {
+        public readonly string INSTANCE_NAME = "jo-pod-test";
+        public readonly string TEMPLATE_NAME = "jo-pod-test";
         public CustomResourceTestUtils TestUtils = new CustomResourceTestUtils();
     
         [TestOrder(0)]
         [Fact]
         public async Task CreateJupyternetesInstanceAndTemplate()
         {
-            var instance = TestUtils.CreateInstance(instanceName: "jo-test-instance", templateName: "jo-test-template");
+            var instance = TestUtils.CreateInstance(instanceName: INSTANCE_NAME, templateName: TEMPLATE_NAME);
             await TestUtils.CreateOrUpdateItem<JupyterNotebookInstance>(instance);
 
             
-            var template = TestUtils.CreateTemplate(templateName: "jo-test-template");
+            var template = TestUtils.CreateTemplate(templateName: TEMPLATE_NAME);
             await TestUtils.CreateOrUpdateItem<JupyterNotebookTemplate>(template);
         }
 
@@ -26,7 +29,7 @@ namespace Kadense.Jupyternetes.Pods.Operator.Tests {
         [Fact]
         public async Task OnAddedTest()
         {
-            var instance = TestUtils.CreateInstance(instanceName: "jo-test-instance", templateName: "jo-test-template");
+            var instance = TestUtils.CreateInstance(instanceName: INSTANCE_NAME, templateName: TEMPLATE_NAME);
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
             var watcherService = new PodWatcherService(logger);
             await watcherService.OnAddedAsync(instance);
@@ -36,7 +39,7 @@ namespace Kadense.Jupyternetes.Pods.Operator.Tests {
         [Fact]
         public async Task OnUpdatedTest()
         {
-            var instance = TestUtils.CreateInstance(instanceName: "jo-test-instance", templateName: "jo-test-template");
+            var instance = TestUtils.CreateInstance(instanceName: INSTANCE_NAME, templateName: TEMPLATE_NAME);
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
             var watcherService = new PodWatcherService(logger);
             await watcherService.OnUpdatedAsync(instance);
@@ -46,7 +49,7 @@ namespace Kadense.Jupyternetes.Pods.Operator.Tests {
         [Fact]
         public async Task OnDeletedTest()
         {
-            var instance = TestUtils.CreateInstance(instanceName: "jo-test-instance", templateName: "jo-test-template");
+            var instance = TestUtils.CreateInstance(instanceName: INSTANCE_NAME, templateName: TEMPLATE_NAME);
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
             var watcherService = new PodWatcherService(logger);
             await watcherService.OnDeletedAsync(instance);

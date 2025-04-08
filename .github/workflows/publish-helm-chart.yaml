@@ -27,7 +27,7 @@ jobs:
       uses: actions/checkout@v4    
 
     - name: Helm Package
-      working-directory: "${GITHUB_WORKSPACE}/helm"
+      working-directory: "./helm"
       run: |
         helm package --version "${{ inputs.GitVersion_SemVer }}"
 
@@ -35,7 +35,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: helm-artifact
-        path: "${GITHUB_WORKSPACE}/helm/*.tgz"
+        path: "./*.tgz"
       
   publish:
     name: helm-package

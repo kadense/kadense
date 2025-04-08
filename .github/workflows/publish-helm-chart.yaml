@@ -27,9 +27,8 @@ jobs:
       uses: actions/checkout@v4    
 
     - name: Helm Package
-      working-directory: "./helm"
       run: |
-        helm package --version "${{ inputs.GitVersion_SemVer }}"
+        helm package ./helm/ --version "${{ inputs.GitVersion_SemVer }}"
 
     - name: Upload Helm Artifact
       uses: actions/upload-artifact@v4

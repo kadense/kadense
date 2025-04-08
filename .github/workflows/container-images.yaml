@@ -6,10 +6,10 @@ on:
         platforms: 
             type: string
             default: |
-              {
+              [
                 "arm64",
                 "amd64"
-              }
+              ]
 
 jobs:
   semver:

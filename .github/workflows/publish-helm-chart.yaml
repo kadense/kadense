@@ -8,7 +8,7 @@ on:
 
 jobs:
   package:
-    name: helm-package
+    name: Package Helm Chart
     runs-on: ubuntu-latest
     permissions:
         contents: write
@@ -38,10 +38,12 @@ jobs:
         path: "./*.tgz"
       
   publish:
-    name: helm-package
+    name: Publish Helm Chart
     runs-on: ubuntu-latest
     permissions:
         contents: write
+    needs:
+    - package
 
     steps:
 

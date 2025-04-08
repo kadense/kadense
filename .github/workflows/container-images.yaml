@@ -17,7 +17,7 @@ jobs:
 
     - id: config
       run: |
-        CONTAINER_CONFIG=$(cat container-config.yaml | yq -o json)
+        CONTAINER_CONFIG=$(cat container-config.yaml | yq -p yaml -o json)
         echo "container_config=$CONTAINER_CONFIG" >> $GITHUB_OUTPUT
 
   build-images:

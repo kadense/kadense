@@ -28,8 +28,8 @@ jobs:
 
     - name: Update Values File
       run: |
-        yq -i '.image.tag = "${{ inputs.GitVersion_SemVer }}"' ./helm/jupyternetes/values.yaml
-        cat ./helm/jupyternetes/values.yaml
+        yq -i '.image.tag = "${{ inputs.GitVersion_SemVer }}"' ./helm/values.yaml
+        cat ./helm/values.yaml
 
     - name: Helm Package
       run: |

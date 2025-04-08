@@ -1,0 +1,89 @@
+on:
+    workflow_call:
+      inputs:
+          GitVersion_SemVer:
+              description: 'The semantic version of the project'
+              required: true
+              type: string
+
+jobs:
+  package:
+    name: helm-package
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+
+    steps:
+    - name: Install Helm
+      run: |
+        curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+        sudo apt-get install apt-transport-https --yes
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+        sudo apt-get update
+        sudo apt-get install helm
+
+
+    - name: Checkout
+      uses: actions/checkout@v4    
+
+    - name: Helm Package
+      working-directory: "${GITHUB_WORKSPACE}/helm"
+      run: |
+        helm package --version "${{ inputs.GitVersion_SemVer }}"
+
+    - name: Upload Helm Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: helm-artifact
+        path: "${GITHUB_WORKSPACE}/helm/*.tgz"
+      
+  publish:
+    name: helm-package
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        repository: headinthecloudsolutions/helm-charts
+
+    - name: Install Helm
+      run: |
+        curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+        sudo apt-get install apt-transport-https --yes
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+        sudo apt-get update
+        sudo apt-get install helm
+  
+    - name: Switch to main branch for repository
+      run: |
+        git switch main
+        git fetch
+        git pull
+
+    - name: Download Helm Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: helm-artifact
+
+    - name: Helm Repo Index
+      run: |
+        helm repo index ./
+
+    - name: Commit and Push
+      run: |
+        UPDATE_MESSAGE="Added Package version ${{ inputs.GitVersion_SemVer }}"
+        echo "${UPDATE_MESSAGE}"
+        git config --global user.name 'headinthecloudsolutions.co.uk'
+        git config --global user.email 'enquiries@headinthecloudsolutions.co.uk'
+
+        git add *.tgz
+        git add index.yaml
+        git commit -m "${UPDATE_MESSAGE}"
+
+        echo "Pushing changes to main branch"
+        git push -u "origin" "main"
+        

@@ -16,7 +16,7 @@ jobs:
     secrets: inherit 
     with:
       images: |
-        {
+        [
           "jupyternetes-pods-operator",
           "jupyternetes-pvcs-operator"
-        }
+        ]

@@ -11,12 +11,15 @@ permissions:
   contents: read
 
 jobs:
-  semver:
+  get-version:
+    uses: headinthecloudsolutions/kadense/.github/workflows/semver.yaml@main
+    secrets: inherit 
+    
+  container-images:
     uses: headinthecloudsolutions/kadense/.github/workflows/container-images.yaml@main
+    needs: 
+    - get-version
     secrets: inherit 
     with:
-      images: |
-        [
-          "jupyternetes-pods-operator",
-          "jupyternetes-pvcs-operator"
-        ]
+      GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }} 
+        

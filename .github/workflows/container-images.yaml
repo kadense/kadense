@@ -1,42 +1,29 @@
 on:
   workflow_call:
     inputs:
-        images: 
-            type: string
-        platforms: 
-            type: string
-            default: |
-              [
-                "arm64",
-                "amd64"
-              ]
-
+        GitVersion_SemVer:
+            description: 'The semantic version of the project'
+            required: true
+            type: string    
 jobs:
-  semver:
+  setup:
+    name: setup
     runs-on: ubuntu-latest
     outputs:
-      GitVersion_SemVer: ${{ steps.gitversion.outputs.semVer }}
+        container_config: ${{ steps.config.outputs.container_config }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0
-      with:
-        versionSpec: '5.x'
 
-    - name: Determine Version
-      uses: gittools/actions/gitversion/execute@v0
-      id: gitversion
-      with:
-        useConfigFile: true
-  
+    - id: config
+      run: |
+        CONTAINER_CONFIG=$(cat container-config.yaml | yq -c)
+        echo "container_config=$CONTAINER_CONFIG" >> $GITHUB_OUTPUT
+
   build-images:
     name: Build and Push Images
     needs:
-    - semver
+    - setup
     permissions:
       packages: write
       contents: read
@@ -44,8 +31,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform:  ${{ fromJson(inputs.platforms) }}
-        image: $${{ fromJson(inputs.images) }}
+        platform:  ${{ fromJson(needs.setup.outputs.container_config.platforms) }}
+        image: $${{ fromJson(needs.setup.outputs.container_config.images) }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -74,7 +61,7 @@ jobs:
       with:
         context: ./
         build-args: |
-          KADENSE_VERSION=${{ needs.semver.outputs.GitVersion_SemVer }}
+          KADENSE_VERSION=${{ inputs.GitVersion_SemVer }}
           KADENSE_VERSION_SUFFIX=""
         cache-from: type=gha
         cache-to: type=gha,mode=max
@@ -103,13 +90,13 @@ jobs:
         retention-days: 1
   merge-images:
     needs: 
+    - setup
     - build-images
-    - semver
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        image: ${{ fromJson(inputs.images) }}
+        image: $${{ fromJson(needs.setup.outputs.container_config.images) }}
     steps:
     - name: Download digests
       uses: actions/download-artifact@v4
@@ -133,7 +120,7 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ghcr.io/$GITHUB_REPOSITORY/${{ matrix.image }}
-        tags: ${{ needs.semver.outputs.GitVersion_SemVer }}
+        tags: ${{ inputs.GitVersion_SemVer }}
         labels: |
           org.opencontainers.image.title=${{ matrix.image }}
           org.opencontainers.image.description=${{ matrix.image }} container image
@@ -142,7 +129,7 @@ jobs:
     - name: Create manifest list and push
       working-directory: /tmp/digests
       run: |
-        TAGNAME="ghcr.io/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ needs.semver.outputs.GitVersion_SemVer }}"
+        TAGNAME="ghcr.io/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ inputs.GitVersion_SemVer }}"
         DATA=$(printf "ghcr.io/$GITHUB_REPOSITORY/${{ matrix.image }}@sha256:%s\n" *)
         echo $DATA
         docker buildx imagetools create -t "${TAGNAME}" $(echo $DATA | xargs)

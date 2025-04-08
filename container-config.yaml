@@ -1,0 +1,7 @@
+images:
+  - jupyternetes-pods-operator
+  - jupyternetes-pvcs-operator
+
+platforms:
+  - amd64
+  - arm64

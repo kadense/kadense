@@ -1,0 +1,148 @@
+on:
+  workflow_call:
+    inputs:
+        images: 
+            type: string
+        platforms: 
+            type: string
+            default: |
+              {
+                "arm64",
+                "amd64"
+              }
+
+jobs:
+  semver:
+    runs-on: ubuntu-latest
+    outputs:
+      GitVersion_SemVer: ${{ steps.gitversion.outputs.semVer }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      uses: gittools/actions/gitversion/execute@v0
+      id: gitversion
+      with:
+        useConfigFile: true
+  
+  build-images:
+    name: Build and Push Images
+    needs:
+    - semver
+    permissions:
+      packages: write
+      contents: read
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:  ${{ fromJson(inputs.platforms) }}
+        image: $${{ fromJson(inputs.images) }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Build Args JSON to List Output
+      id: parse_build_args
+      run: |
+        echo "image_name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }}" >> $GITHUB_OUTPUT
+   
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push
+      id: build
+      uses: docker/build-push-action@v6
+      with:
+        context: ./
+        build-args: |
+          KADENSE_VERSION=${{ needs.semver.outputs.GitVersion_SemVer }}
+          KADENSE_VERSION_SUFFIX=""
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        platforms: linux/${{ matrix.platform }}
+        outputs: type=image,name=${{ steps.parse_build_args.outputs.image_name }},push-by-digest=true,name-canonical=true,push=true
+        target: ${{ matrix.image }}
+      
+    - name: Build digest url
+      id: concatenate
+      run: |
+        digest_url="linux/${{ matrix.image }}-${{ matrix.platform }}"
+        echo "digest_url=$digest_url" >> $GITHUB_OUTPUT
+      
+    - name: Export digest
+      run: |
+        mkdir -p /tmp/digests/${{ steps.concatenate.outputs.digest_url }}
+        digest="${{ steps.build.outputs.digest }}"
+        touch "/tmp/digests/${{ steps.concatenate.outputs.digest_url  }}/${digest#sha256:}" 
+      
+    - name: Upload digest
+      uses: actions/upload-artifact@v4
+      with:
+        name: digests-${{ matrix.image }}-linux-${{ matrix.platform }}
+        path: /tmp/digests/${{ steps.concatenate.outputs.digest_url }}/*
+        if-no-files-found: error
+        retention-days: 1
+  merge-images:
+    needs: 
+    - build-images
+    - semver
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJson(inputs.images) }}
+    steps:
+    - name: Download digests
+      uses: actions/download-artifact@v4
+      with:
+        path: /tmp/digests
+        pattern: digests-${{ matrix.image }}-*-*
+        merge-multiple: true
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+  
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/$GITHUB_REPOSITORY/${{ matrix.image }}
+        tags: ${{ needs.semver.outputs.GitVersion_SemVer }}
+        labels: |
+          org.opencontainers.image.title=${{ matrix.image }}
+          org.opencontainers.image.description=${{ matrix.image }} container image
+          org.opencontainers.image.vendor=Head in the Cloud Solutions Ltd
+        
+    - name: Create manifest list and push
+      working-directory: /tmp/digests
+      run: |
+        TAGNAME="ghcr.io/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ needs.semver.outputs.GitVersion_SemVer }}"
+        DATA=$(printf "ghcr.io/$GITHUB_REPOSITORY/${{ matrix.image }}@sha256:%s\n" *)
+        echo $DATA
+        docker buildx imagetools create -t "${TAGNAME}" $(echo $DATA | xargs)

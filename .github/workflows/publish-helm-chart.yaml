@@ -26,6 +26,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4    
 
+    - name: Update Values File
+      run: |
+        yq -i '.image.tag = "${{ inputs.GitVersion_SemVer }}"' ./helm/jupyternetes/values.yaml
+        cat ./helm/jupyternetes/values.yaml
+
     - name: Helm Package
       run: |
         helm package ./helm/ --version "${{ inputs.GitVersion_SemVer }}"
@@ -39,8 +44,6 @@ jobs:
   publish:
     name: Publish Helm Chart
     runs-on: ubuntu-latest
-    permissions:
-        contents: write
     needs:
     - package
 

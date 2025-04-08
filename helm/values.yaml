@@ -1,5 +1,6 @@
 image:
-  repository: https://headinthecloudsolutions.github.io/helm-charts/
+  repository: ghcr.io/headinthecloudsolutions/kadense
+  tag: latest
 
 jupyternetes:
   pods:
@@ -8,7 +9,7 @@ jupyternetes:
       image:
         repository: ""
         name: jupyternetes-pods-operator
-        tag: latest
+        tag: ""
         pullPolicy: Always
       serviceAccount:
         create: true
@@ -29,7 +30,7 @@ jupyternetes:
       image:
         repository: ""
         name: jupyternetes-pvcs-operator
-        tag: latest
+        tag: ""
         pullPolicy: Always
       serviceAccount:
         create: true

@@ -1,5 +1,5 @@
 {{- define "jupyternetes.pods.operator.fullname" -}}
-{{- printf "%s-jpod-op" $.Release.Name }}
+{{- printf "jupyternetes-pods-op" }}
 {{- end }}
 
 {{- define "jupyternetes.pods.operator.serviceAccountName" -}}
@@ -18,6 +18,15 @@
 {{- end }}
 {{- end }}
 
+{{- define "jupyternetes.pods.operator.image.tag" -}}
+{{- if ne .Values.jupyternetes.pods.operator.image.tag "" -}}
+{{- printf "%s" .Values.jupyternetes.pods.operator.image.tag }}
+{{- else -}}
+{{- printf "%s" .Values.image.tag }}
+{{- end }}
+{{- end }}
+
+
 {{- define "jupyternetes.pods.operator.image.name" -}}
-{{- printf "%s/%s:%s" (include "jupyternetes.pods.operator.image.repository" .) .Values.jupyternetes.pods.operator.image.name .Values.jupyternetes.pods.operator.image.tag }}
+{{- printf "%s/%s:%s" (include "jupyternetes.pods.operator.image.repository" .) .Values.jupyternetes.pods.operator.image.name (include "jupyternetes.pods.operator.image.tag" .) }}
 {{- end }}

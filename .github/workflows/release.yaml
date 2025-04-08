@@ -15,19 +15,20 @@ jobs:
     uses: headinthecloudsolutions/kadense/.github/workflows/semver.yaml@main
     secrets: inherit 
   
+  container-images:
+    uses: headinthecloudsolutions/kadense/.github/workflows/container-images.yaml@main
+    needs: 
+    - get-version
+    secrets: inherit 
+    with:
+      GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }} 
+  
   publish-helm-chart:
     uses: headinthecloudsolutions/kadense/.github/workflows/publish-helm-chart.yaml@main
     secrets: inherit
     needs:
     - get-version
+    - container-images
     with:
       GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }}
   
-  # container-images:
-  #   uses: headinthecloudsolutions/kadense/.github/workflows/container-images.yaml@main
-  #   needs: 
-  #   - get-version
-  #   secrets: inherit 
-  #   with:
-  #     GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }} 
-        

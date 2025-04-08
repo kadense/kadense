@@ -1,5 +1,5 @@
 {{- define "jupyternetes.pvcs.operator.fullname" -}}
-{{- printf "%s-jpvc-op" $.Release.Name }}
+{{- printf "jupyternetes-pvcs-op" }}
 {{- end }}
 
 {{- define "jupyternetes.pvcs.operator.serviceAccountName" -}}
@@ -18,6 +18,14 @@
 {{- end }}
 {{- end }}
 
+{{- define "jupyternetes.pvcs.operator.image.tag" -}}
+{{- if ne .Values.jupyternetes.pvcs.operator.image.tag "" -}}
+{{- printf "%s" .Values.jupyternetes.pvcs.operator.image.tag }}
+{{- else -}}
+{{- printf "%s" .Values.image.tag }}
+{{- end }}
+{{- end }}
+
 {{- define "jupyternetes.pvcs.operator.image.name" -}}
-{{- printf "%s/%s:%s" (include "jupyternetes.pvcs.operator.image.repository" .) .Values.jupyternetes.pvcs.operator.image.name .Values.jupyternetes.pvcs.operator.image.tag }}
+{{- printf "%s/%s:%s" (include "jupyternetes.pvcs.operator.image.repository" .) .Values.jupyternetes.pvcs.operator.image.name (include "jupyternetes.pvcs.operator.image.tag" .) }}
 {{- end }}

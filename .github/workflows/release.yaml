@@ -76,6 +76,9 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: ./
+        build-args: |
+          KADENSE_VERSION=${{ needs.semver.outputs.GitVersion_SemVer }}
+          KADENSE_VERSION_SUFFIX=""
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/${{ matrix.platform }}

@@ -1,0 +1,1 @@
+from .models.jupyter.notebook import instance

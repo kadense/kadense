@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jupyternetes_models"
+dynamic = ["version"]
+authors = [
+  { name="Shaun Turner", email="shaun.turner@headinthecloudsolutions.co.uk" },
+]
+description = "Kadense Jupyternetes Models" 
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["kadense", "jupyternetes", "jupyterhub", "models"]
+dependencies = [
+  "pydantic",
+  "kubernetes-asyncio",
+  "pytz",
+  'importlib-metadata; python_version<"3.10"',
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/headinthecloudsolutions/jupyternetes-models-python"
+Issues = "https://github.com/headinthecloudsolutions/jupyternetes-models-python/issues"
+
+[tool.coverage.run]
+source = ["jupyternetes_models"]
+
+[tool.hatch.version]
+path = "jupyternetes_models/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["jupyternetes_models"]
+
+[tool.hatch.build]
+exclude = [
+  "test.py",
+  "integrationtest.py"
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "jupyternetes_models/test.py",
+    "jupyternetes_models/integrationtest.py"
+]

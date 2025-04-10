@@ -3,21 +3,15 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "jupyternetes_models"
-dynamic = ["version"]
+name = "jupyternetes_clients"
+dynamic = ["version", "dependencies"]
 authors = [
   { name="Shaun Turner", email="shaun.turner@headinthecloudsolutions.co.uk" },
 ]
-description = "Kadense Jupyternetes Models" 
+description = "Kadense Jupyternetes Kubernetes Clients" 
 readme = "README.md"
 requires-python = ">=3.8"
-keywords = ["kadense", "jupyternetes", "jupyterhub", "models"]
-dependencies = [
-  "pydantic",
-  "kubernetes-asyncio",
-  "pytz",
-  'importlib-metadata; python_version<"3.10"',
-]
+keywords = ["kadense", "jupyternetes", "jupyterhub", "clients"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -29,13 +23,13 @@ Homepage = "https://github.com/headinthecloudsolutions/kadense"
 Issues = "https://github.com/headinthecloudsolutions/kadense/issues"
 
 [tool.coverage.run]
-source = ["jupyternetes_models"]
+source = ["jupyternetes_clients" ]
 
 [tool.hatch.version]
-path = "jupyternetes_models/_version.py"
+path = "jupyternetes_clients/_version.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["jupyternetes_models"]
+packages = ["jupyternetes_clients"]
 
 [tool.hatch.build]
 exclude = [
@@ -46,5 +40,5 @@ exclude = [
 minversion = "6.0"
 addopts = "-ra -q"
 testpaths = [
-    "jupyternetes_models/test.py"
+    "jupyternetes_clients/test.py"
 ]

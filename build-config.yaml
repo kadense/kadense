@@ -11,4 +11,4 @@ python:
     - 3.x
   modules:
     - jupyternetes_models
-    
+    - jupyternetes_clients

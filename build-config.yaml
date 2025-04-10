@@ -10,5 +10,5 @@ python:
   versions:
     - 3.x
   modules:
-    - jupyternetes-models
+    - jupyternetes_models
     

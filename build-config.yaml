@@ -12,3 +12,4 @@ python:
   modules:
     - jupyternetes_models
     - jupyternetes_clients
+    - jupyternetes_spawner

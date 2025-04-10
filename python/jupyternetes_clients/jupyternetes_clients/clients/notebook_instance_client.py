@@ -1,7 +1,8 @@
-from .. import (
+from jupyternetes_models import (
     V1JupyterNotebookInstance,
     V1JupyterNotebookInstanceList
 )
+
 from kubernetes_asyncio.client import CustomObjectsApi
 from kubernetes_asyncio.client.exceptions import ApiException
 from logging import Logger

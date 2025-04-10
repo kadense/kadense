@@ -27,9 +27,9 @@ class KubernetesNamespacedCustomClient(ApiClient):
         response = await self.get_from_kube_api(resource_path)
         return self.singleton_adapter.validate_json(response)
     
-    async def list(self, namespace, **kwargs):
+    async def list(self, namespace, label_selector: str = None, field_selector: str = None):
         resource_path = f"/apis/{self.group}/{self.version}/namespaces/{namespace}/{self.plural}"
-        response = await self.get_from_kube_api(resource_path)
+        response = await self.get_from_kube_api(resource_path, label_selector, field_selector)
         return self.list_adapter.validate_json(response)
 
     async def replace(self, namespace : str, name : str, body):
@@ -74,9 +74,23 @@ class KubernetesNamespacedCustomClient(ApiClient):
 
     
     
-    async def get_from_kube_api(self, resource_path: str):
+    async def get_from_kube_api(self, resource_path: str, label_selector: str = None, field_selector: str = None, watch : bool = False, resource_version : str = None):
         headers = {'Content-Type': 'application/json'}
+        
         query_params = []
+
+        if label_selector:
+            query_params.append(('labelSelector', label_selector))
+            
+        if field_selector:
+            query_params.append(('fieldSelector', field_selector))
+
+        if resource_version:
+            query_params.append(('resourceVersion', resource_version))
+
+        if watch:
+            query_params.append(('watch', "1"))
+        
         self.update_params_for_auth(headers, query_params, None)
         endpoint = self.configuration.host + resource_path
         response = await self.rest_client.request("GET", endpoint, headers=headers)

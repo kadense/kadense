@@ -1,0 +1,117 @@
+# build-system
+# - ref: https://peps.python.org/pep-0517/
+#
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+# project
+# - ref 1: https://peps.python.org/pep-0621/
+# - ref 2: https://hatch.pypa.io/latest/config/metadata/#project-metadata
+#
+[project]
+name = "jupyternetes_spawner"
+description = "Jupyternetes Spawner for Jupyter Hub"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["kadense", "jupyternetes", "jupyterhub", "spawner"]
+authors = [
+    {name = "Jupyter Contributors", email = "jupyter@googlegroups.com"},
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+]
+dynamic = ["version"]
+
+dependencies = [
+    "jupyternetes-clients",
+    "jupyternetes-models",
+    "escapism",
+    "jinja2",
+    "jupyterhub>=4.0.0",
+    "kubernetes_asyncio>=24.2.3",
+    "python-slugify",
+    "pyYAML",
+    "traitlets",
+    "urllib3"
+]
+
+[project.optional-dependencies]
+test = [
+    "kubernetes>=11",
+    "pytest>=5.4",
+    "pytest-cov",
+    # FIXME: unpin pytest-asyncio
+    "pytest-asyncio>=0.17,<0.23",
+]
+
+[project.urls]
+Documentation = "https://headinthecloudsolutions.github.io/kadense"
+Source = "https://github.com/headinthecloudsolutions/kadense"
+Issues = "https://github.com/headinthecloudsolutions/kadense/issues"
+
+# Explicitly include our profile_list templates, as hatch doesn't
+# respect MANIFEST.in.
+# Documentation: https://hatch.pypa.io/latest/config/build/#artifacts
+[tool.hatch.build]
+artifacts = [
+    "jupyternetes_spawner/templates/*"
+]
+# include is required since the project name doesn't match the folder name
+include = ["jupyternetes_spawner"]
+
+[tool.hatch.build.targets.wheel]
+# packages is required when building wheels since the project name doesn't match
+# the folder name.
+packages = ["jupyternetes_spawner"]
+
+# black is used for autoformatting Python code
+#
+# ref: https://black.readthedocs.io/en/stable/
+#
+[tool.black]
+skip-string-normalization = true
+# target-version should be all supported versions, see
+# https://github.com/psf/black/issues/751#issuecomment-473066811
+target_version = [
+    "py37",
+    "py38",
+    "py39",
+    "py310",
+    "py311",
+]
+
+
+# hatch ref: https://hatch.pypa.io/latest/
+#
+[tool.hatch.version]
+path = "jupyternetes_spawner/_version.py"
+
+
+# isort is used for autoformatting Python code
+#
+# ref: https://pycqa.github.io/isort/
+#
+[tool.isort]
+profile = "black"
+
+
+# pytest is used for running Python based tests
+#
+# ref: https://docs.pytest.org/en/stable/
+#
+[tool.pytest.ini_options]
+addopts = "--verbose --color=yes --durations=10"
+asyncio_mode = "auto"
+# Ignore thousands of tests in dependencies installed in a virtual environment
+norecursedirs = "lib lib64"
+
+# djlint is used for autoformatting jinja templates
+#
+# ref: https://www.djlint.com/docs/formatter/
+#
+[tool.djlint]
+indent = 2
+profile = "jinja"

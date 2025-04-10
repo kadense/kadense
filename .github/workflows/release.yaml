@@ -53,7 +53,6 @@ jobs:
     - container-images
     with:
       GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }}
-      Config: ${{ needs.setup.outputs.config }} 
   
   publish-python-packages:
     uses: headinthecloudsolutions/kadense/.github/workflows/python-modules.yaml@main

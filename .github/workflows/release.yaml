@@ -11,7 +11,26 @@ permissions:
   contents: write
 
 jobs:
+  setup:
+    name: setup
+    needs: []
+    runs-on: ubuntu-latest
+    outputs:
+        config: ${{ steps.config.outputs.config }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - id: config
+      run: |
+        BUILD_CONFIG=$(yq -p yaml -o json build-config.yaml | jq -c)
+
+        echo "$BUILD_CONFIG"
+        echo "config=$BUILD_CONFIG" >> $GITHUB_OUTPUT
+
+
   get-version:
+    needs: []
     uses: headinthecloudsolutions/kadense/.github/workflows/semver.yaml@main
     secrets: inherit 
   
@@ -19,16 +38,30 @@ jobs:
     uses: headinthecloudsolutions/kadense/.github/workflows/container-images.yaml@main
     needs: 
     - get-version
+    - setup
     secrets: inherit 
     with:
-      GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }} 
+      GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }}
+      Config: ${{ needs.setup.outputs.config }} 
   
   publish-helm-chart:
     uses: headinthecloudsolutions/kadense/.github/workflows/publish-helm-chart.yaml@main
     secrets: inherit
     needs:
     - get-version
+    - setup
     - container-images
     with:
       GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }}
+      Config: ${{ needs.setup.outputs.config }} 
+  
+  publish-python-packages:
+    uses: headinthecloudsolutions/kadense/.github/workflows/python-modules.yaml@main
+    secrets: inherit
+    needs:
+    - get-version
+    - setup
+    with:
+      GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }}
+      Config: ${{ needs.setup.outputs.config }} 
   

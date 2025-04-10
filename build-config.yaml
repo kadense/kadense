@@ -5,3 +5,10 @@ images:
 platforms:
   - amd64
   - arm64
+
+python:
+  versions:
+    - 3.x
+  modules:
+    - jupyternetes-models
+    

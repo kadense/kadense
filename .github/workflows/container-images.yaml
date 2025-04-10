@@ -5,27 +5,13 @@ on:
             description: 'The semantic version of the project'
             required: true
             type: string    
+        Config:
+            description: 'The configuration for the workflow'
+            required: true
+            type: string
 jobs:
-  setup:
-    name: setup
-    runs-on: ubuntu-latest
-    outputs:
-        container_config: ${{ steps.config.outputs.container_config }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - id: config
-      run: |
-        CONTAINER_CONFIG=$(yq -p yaml -o json container-config.yaml | jq -c)
-
-        echo "$CONTAINER_CONFIG"
-        echo "container_config=$CONTAINER_CONFIG" >> $GITHUB_OUTPUT
-
   build-images:
     name: Build and Push Images
-    needs:
-    - setup
     permissions:
       packages: write
       contents: read
@@ -33,8 +19,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform:  ${{ fromJson(needs.setup.outputs.container_config).platforms }}
-        image: ${{ fromJson(needs.setup.outputs.container_config).images }}
+        platform:  ${{ fromJson(inputs.Config).platforms }}
+        image: ${{ fromJson(inputs.Config).images }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -92,13 +78,12 @@ jobs:
         retention-days: 1
   merge-images:
     needs: 
-    - setup
     - build-images
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        image: ${{ fromJson(needs.setup.outputs.container_config).images }}
+        image: ${{ fromJson(inputs.Config).images }}
     steps:
     - name: Download digests
       uses: actions/download-artifact@v4

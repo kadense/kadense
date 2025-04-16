@@ -32,6 +32,10 @@ jobs:
         PUSH_IMAGE="true" 
         if [ "${{ matrix.image }}" == "artifact" ]; then
           PUSH_IMAGE="false";
+          mkdir -p /tmp/docker-artifacts
+          OUTPUT_OPTIONS="type=tar,dest=/tmp/docker-artifacts/artifact.tar";
+        else
+          OUTPUT_OPTIONS="type=image,name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }},push-by-digest=true,name-canonical=true,push=true";
         fi;
         echo "PUSH_IMAGE=${PUSH_IMAGE}" >> $GITHUB_OUTPUT
         echo "image_name=${image_name}"
@@ -61,7 +65,7 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/${{ matrix.platform }}
-        outputs: type=image,name=${{ steps.parse_build_args.outputs.image_name }},push-by-digest=true,name-canonical=true,push=${{ steps.parse_build_args.outputs.PUSH_IMAGE }}
+        outputs: ${{ steps.parse_build_args.outputs.OUTPUT_OPTIONS }}
         target: ${{ matrix.image }}
       
     - name: Build digest url
@@ -88,22 +92,21 @@ jobs:
       
     - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'false' }}
       name: Fetch Docker Artifacts
+      working-directory: /tmp/docker-artifacts
       run: |
         if [ "${{ matrix.image }}" == "artifact" ]; then
-          mkdir -p /tmp/docker-artifacts
-          cd /tmp/docker-artifacts
-          docker save ${{ steps.parse_build_args.outputs.image_name }}:${{ inputs.GitVersion_SemVer }} -o artifact.tar
           tar -xvf artifact.tar
           rm artifact.tar
           export BLOB_FILE=$(cat manifest.json | jq '.[0].Layers[0]' -r)
           tar -xvf $BLOB_FILE
+          rm $BLOB_FILE
         fi;
 
     - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'false' }}
       name: Upload Docker Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: docker-artifacts-${{ matrix.image }}-linux-${{ matrix.platform }}
+        name: docker-${{ matrix.image }}-linux-${{ matrix.platform }}
         path: /tmp/docker-artifacts/outputs/**
         if-no-files-found: error
         retention-days: 1

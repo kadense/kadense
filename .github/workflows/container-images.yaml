@@ -30,10 +30,12 @@ jobs:
       run: |
         echo "image_name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }}" >> $GITHUB_OUTPUT
         PUSH_IMAGE="true" 
-        if [ \"${{ matrix.image }}\" == "artifact" ]; then
+        if [ "${{ matrix.image }}" == "artifact" ]; then
           PUSH_IMAGE="false";
         fi;
         echo "PUSH_IMAGE=${PUSH_IMAGE}" >> $GITHUB_OUTPUT
+        echo "image_name=${image_name}"
+        echo "PUSH_IMAGE=${PUSH_IMAGE}"
    
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -122,10 +124,12 @@ jobs:
       run: |
         echo "image_name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }}" >> $GITHUB_OUTPUT
         PUSH_IMAGE="true" 
-        if [ \"${{ matrix.image }}\" == "artifact" ]; then
+        if [ "${{ matrix.image }}" == "artifact" ]; then
           PUSH_IMAGE="false";
         fi;
         echo "PUSH_IMAGE=${PUSH_IMAGE}" >> $GITHUB_OUTPUT
+        echo "image_name=${image_name}"
+        echo "PUSH_IMAGE=${PUSH_IMAGE}"
    
     - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE }}
       name: Download digests

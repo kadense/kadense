@@ -101,9 +101,9 @@ jobs:
         if [ "${{ matrix.image }}" == "artifact" ]; then
           tar -xvf artifact.tar
           rm artifact.tar
-          export BLOB_FILE=$(cat manifest.json | jq '.[0].Layers[0]' -r)
-          tar -xvf $BLOB_FILE
-          rm $BLOB_FILE
+          # export BLOB_FILE=$(cat manifest.json | jq '.[0].Layers[0]' -r)
+          # tar -xvf $BLOB_FILE
+          # rm $BLOB_FILE
         fi;
 
     - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'false' }}

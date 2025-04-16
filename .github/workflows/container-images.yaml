@@ -111,7 +111,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.image }}-linux-${{ matrix.platform }}
-        path: /tmp/docker-artifacts/outputs/**
+        path: /tmp/docker-artifacts/src/**
         if-no-files-found: error
         retention-days: 1
 

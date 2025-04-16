@@ -15,7 +15,7 @@ RUN mkdir -p /outputs/crds && \
     dotnet /src/cli/CustomResourceDefinition.Generator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/Kadense.CustomResourceDefinition.Generator.dll /outputs/crds
 
 FROM scratch AS crds-artifact
-COPY --from=builder "/outputs/" "/outputs"
+COPY --from=builder "/outputs/crds" "/outputs"
 
 FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_SDK_VERSION} AS jupyternetes-pods-operator
 ARG DOTNET_SDK_VERSION
@@ -40,16 +40,21 @@ RUN pip install --no-cache-dir --upgrade \
     build \
     twine
 COPY ./python /src
-RUN mkdir -p /tmp/dist
-RUN echo "__version__ = \"${KADENSE_VERSION}\"" > /src/jupyternetes_models/_version.py
+RUN export KADENSE_PY_VERSION="__version__ = \"${KADENSE_VERSION}\""; \
+    echo "KADENSE_PY_VERSION=${KADENSE_PY_VERSION}"; \
+    echo "${KADENSE_PY_VERSION}" > /src/jupyternetes_models/jupyternetes_models/_version.py; \
+    echo "${KADENSE_PY_VERSION}" > /src/jupyternetes_clients/jupyternetes_clients/_version.py; \
+    echo "${KADENSE_PY_VERSION}" > /src/jupyternetes_spawner/jupyternetes_spawner/_version.py; \
+    mkdir -p /tmp/dist;
+
 WORKDIR /src/jupyternetes_models
 RUN python -m build && \
     mv dist/* /tmp/dist
-RUN echo "__version__ = \"${KADENSE_VERSION}\"" > /src/jupyternetes_clients/_version.py
+
 WORKDIR /src/jupyternetes_clients
 RUN python -m build && \
     mv dist/* /tmp/dist
-RUN echo "__version__ = \"${KADENSE_VERSION}\"" > /src/jupyternetes_spawner/_version.py
+
 WORKDIR /src/jupyternetes_spawner
 RUN python -m build && \
     mv dist/* /tmp/dist

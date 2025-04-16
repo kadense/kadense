@@ -89,7 +89,7 @@ jobs:
     - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'false' }}
       name: Fetch Docker Artifacts
       run: |
-        if [ \"${{ matrix.image }}\" == "artifact" ]; then
+        if [ "${{ matrix.image }}" == "artifact" ]; then
           mkdir -p /tmp/docker-artifacts
           cd /tmp/docker-artifacts
           docker save ${{ steps.parse_build_args.outputs.image_name }} -o artifact.tar

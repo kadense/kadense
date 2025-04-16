@@ -55,4 +55,4 @@ RUN python -m build && \
     mv dist/* /tmp/dist
 
 FROM scratch AS python-libraries-artifact
-COPY --from=python-libraries /tmp/dist /src/dist
+COPY --from=python-libraries /tmp/dist/ /src/dist

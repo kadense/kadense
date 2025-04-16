@@ -16,10 +16,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: python-libraries-artifact-linux-amd64 
-        path: ./
+        path: /tmp/python-libraries-artifact-linux-amd64/
 
     - name: Publish distribution to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_SECRET }}
         attestations: false
+        packages-dir: /tmp/python-libraries-artifact-linux-amd64/

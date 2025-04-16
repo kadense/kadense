@@ -29,13 +29,7 @@ jobs:
       id: parse_build_args
       run: |
         echo "image_name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }}" >> $GITHUB_OUTPUT
-        PUSH_IMAGE="true" 
-        if [ "${{ matrix.image }}" == "artifact" ]; then
-          PUSH_IMAGE="false";
-        fi;
-        echo "PUSH_IMAGE=${PUSH_IMAGE}" >> $GITHUB_OUTPUT
         echo "image_name=${image_name}"
-        echo "PUSH_IMAGE=${PUSH_IMAGE}"
    
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -61,7 +55,7 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/${{ matrix.platform }}
-        outputs: type=image,name=${{ steps.parse_build_args.outputs.image_name }},push-by-digest=true,name-canonical=true,push=${{ steps.parse_build_args.outputs.PUSH_IMAGE }}
+        outputs: type=image,name=${{ steps.parse_build_args.outputs.image_name }},push-by-digest=true,name-canonical=true,push=true
         target: ${{ matrix.image }}
       
     - name: Build digest url
@@ -86,8 +80,7 @@ jobs:
         retention-days: 1
 
       
-    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'false' }}
-      name: Fetch Docker Artifacts
+    - name: Fetch Docker Artifacts
       run: |
         if [ "${{ matrix.image }}" == "artifact" ]; then
           mkdir -p /tmp/docker-artifacts
@@ -99,8 +92,7 @@ jobs:
           tar -xvf $BLOB_FILE
         fi;
 
-    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'false' }}
-      name: Upload Docker Artifacts
+    - name: Upload Docker Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: docker-artifacts-${{ matrix.image }}-linux-${{ matrix.platform }}

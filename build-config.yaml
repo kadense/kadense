@@ -1,16 +1,9 @@
 images:
-  - artifact
+  - crds-artifact
   - jupyternetes-pods-operator
   - jupyternetes-pvcs-operator
+  - python-libraries-artifact
 
 platforms:
   - amd64
   - arm64
-
-python:
-  versions:
-    - 3.x
-  modules:
-    - jupyternetes_models
-    - jupyternetes_clients
-    - jupyternetes_spawner

@@ -55,13 +55,13 @@ jobs:
     with:
       GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }}
   
-  publish-python-packages:
-    uses: headinthecloudsolutions/kadense/.github/workflows/python-modules.yaml@main
-    secrets: inherit
-    needs:
-    - get-version
-    - setup
-    with:
-      GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }}
-      Config: ${{ needs.setup.outputs.config }} 
+  # publish-python-packages:
+  #   uses: headinthecloudsolutions/kadense/.github/workflows/python-modules.yaml@main
+  #   secrets: inherit
+  #   needs:
+  #   - get-version
+  #   - setup
+  #   with:
+  #     GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }}
+  #     Config: ${{ needs.setup.outputs.config }} 
   

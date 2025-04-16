@@ -69,20 +69,23 @@ jobs:
         outputs: ${{ steps.parse_build_args.outputs.OUTPUT_OPTIONS }}
         target: ${{ matrix.image }}
       
-    - name: Build digest url
+    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'true' }}
+      name: Build digest url
       id: concatenate
       run: |
       
         digest_url="linux/${{ matrix.image }}-${{ matrix.platform }}"
         echo "digest_url=$digest_url" >> $GITHUB_OUTPUT
       
-    - name: Export digest
+    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'true' }}
+      name: Export digest
       run: |
         mkdir -p /tmp/digests/${{ steps.concatenate.outputs.digest_url }}
         digest="${{ steps.build.outputs.digest }}"
         touch "/tmp/digests/${{ steps.concatenate.outputs.digest_url  }}/${digest#sha256:}" 
-      
-    - name: Upload digest
+    
+    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'true' }}
+      name: Upload digest
       uses: actions/upload-artifact@v4
       with:
         name: digests-${{ matrix.image }}-linux-${{ matrix.platform }}

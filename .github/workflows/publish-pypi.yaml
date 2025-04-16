@@ -1,0 +1,25 @@
+on:
+    workflow_call:
+      inputs: {}
+
+jobs:
+  publish-to-pypi:
+    name: >-
+      Publish Python 🐍 distribution 📦 to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: python-libraries-artifact-linux-amd64 
+        path: ./
+
+    - name: Publish distribution to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_SECRET }}
+        attestations: false

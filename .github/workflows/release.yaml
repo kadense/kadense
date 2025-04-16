@@ -55,6 +55,14 @@ jobs:
     with:
       GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }}
   
+  publish-to-pypi:
+    uses: headinthecloudsolutions/kadense/.github/workflows/publish-pypi.yaml@main
+    secrets: inherit
+    needs: 
+    - get-version
+    - setup
+    - container-images
+        
   # publish-python-packages:
   #   uses: headinthecloudsolutions/kadense/.github/workflows/python-modules.yaml@main
   #   secrets: inherit

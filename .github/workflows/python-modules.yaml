@@ -47,31 +47,3 @@ jobs:
       with:
         name: python-package-distribution-${{ matrix.module }}-${{ matrix.python-version }}
         path: python/${{ matrix.module }}/dist/
-
-  publish-to-pypi:
-    name: >-
-      Publish Python 🐍 distribution 📦 to PyPI
-    needs:
-    - build
-    strategy:
-        matrix:
-            python-version: ${{ fromJson(inputs.Config).python.versions }}
-    runs-on: ubuntu-latest
-    environment:
-      name: pypi
-    permissions:
-      id-token: write  # IMPORTANT: mandatory for trusted publishing
-    steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        pattern: python-package-distribution-*-${{ matrix.python-version }}
-        path: dist/
-        merge-multiple: true
-
-    - name: Publish distribution to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-urL: 
-        password: ${{ secrets.PYPI_SECRET }}
-        attestations: false

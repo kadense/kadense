@@ -38,6 +38,7 @@ jobs:
           OUTPUT_OPTIONS="type=image,name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }},push-by-digest=true,name-canonical=true,push=true";
         fi;
         echo "PUSH_IMAGE=${PUSH_IMAGE}" >> $GITHUB_OUTPUT
+        echo "OUTPUT_OPTIONS=${OUTPUT_OPTIONS}" >> $GITHUB_OUTPUT
         echo "image_name=${image_name}"
         echo "PUSH_IMAGE=${PUSH_IMAGE}"
    

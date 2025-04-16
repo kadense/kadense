@@ -110,8 +110,8 @@ jobs:
       name: Upload Docker Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: docker-${{ matrix.image }}-linux-${{ matrix.platform }}
-        path: /tmp/docker-artifacts/outputs/**
+        name: crds-${{ matrix.image }}-linux-${{ matrix.platform }}
+        path: /tmp/docker-artifacts/outputs/crds/**
         if-no-files-found: error
         retention-days: 1
 

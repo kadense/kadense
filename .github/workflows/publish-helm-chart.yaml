@@ -24,7 +24,14 @@ jobs:
 
 
     - name: Checkout
-      uses: actions/checkout@v4    
+      uses: actions/checkout@v4
+      
+    - name: Download Helm Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: crds-artifact-linux-amd64
+        path: ./helm/templates
+        
 
     - name: Update Values File
       run: |
@@ -54,7 +61,7 @@ jobs:
       with:
         repository: headinthecloudsolutions/helm-charts
         token: ${{ secrets.HELM_REPO_TOKEN }}
-
+         
     - name: Install Helm
       run: |
         curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null

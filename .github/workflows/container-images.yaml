@@ -98,20 +98,18 @@ jobs:
       name: Fetch Docker Artifacts
       working-directory: /tmp/docker-artifacts
       run: |
-        if [ "${{ matrix.image }}" == "artifact" ]; then
-          tar -xvf artifact.tar
-          rm artifact.tar
-          # export BLOB_FILE=$(cat manifest.json | jq '.[0].Layers[0]' -r)
-          # tar -xvf $BLOB_FILE
-          # rm $BLOB_FILE
-        fi;
+        tar -xvf artifact.tar
+        rm artifact.tar
+        # export BLOB_FILE=$(cat manifest.json | jq '.[0].Layers[0]' -r)
+        # tar -xvf $BLOB_FILE
+        # rm $BLOB_FILE
 
     - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'false' }}
       name: Upload Docker Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.image }}-linux-${{ matrix.platform }}
-        path: /tmp/docker-artifacts/src/**
+        path: /tmp/docker-artifacts/outputs/**
         if-no-files-found: error
         retention-days: 1
 

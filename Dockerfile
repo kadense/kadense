@@ -15,7 +15,7 @@ RUN mkdir -p /outputs/crds && \
     dotnet /src/cli/CustomResourceDefinition.Generator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/Kadense.CustomResourceDefinition.Generator.dll /outputs/crds
 
 FROM scratch AS crds-artifact
-COPY --from=builder "/outputs/" "/src"
+COPY --from=builder "/outputs/" "/outputs"
 
 FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_SDK_VERSION} AS jupyternetes-pods-operator
 ARG DOTNET_SDK_VERSION
@@ -55,4 +55,4 @@ RUN python -m build && \
     mv dist/* /tmp/dist
 
 FROM scratch AS python-libraries-artifact
-COPY --from=python-libraries /tmp/dist/ /src/dist
+COPY --from=python-libraries /tmp/dist/ /outputs

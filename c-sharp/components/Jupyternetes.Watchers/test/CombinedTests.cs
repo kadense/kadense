@@ -36,7 +36,7 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
             var watcherService = new PodWatcherService(logger);
             await watcherService.OnAddedAsync(Instance);
-            Assert.Equal("Pending", Instance.Status.PodsProvisioningState);
+            Assert.Equal("Pending", Instance.Status.PodsProvisionedState);
             Assert.Equal("Pending", Instance.Status.PvcsProvisionedState);
         }
 
@@ -48,7 +48,7 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
             var watcherService = new PodWatcherService(logger);
             await watcherService.OnUpdatedAsync(Instance);
-            Assert.Equal("Pending", Instance.Status.PodsProvisioningState);
+            Assert.Equal("Pending", Instance.Status.PodsProvisionedState);
             Assert.Equal("Pending", Instance.Status.PvcsProvisionedState);
         }
 
@@ -78,12 +78,12 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
             var watcherService = new PodWatcherService(logger);
             await watcherService.OnUpdatedAsync(Instance);
-            Assert.Equal("Completed", Instance.Status.PodsProvisioningState);
+            Assert.Equal("Completed", Instance.Status.PodsProvisionedState);
             Assert.Equal("Completed", Instance.Status.PvcsProvisionedState);
             Assert.Single(Instance.Status.Pods);
             foreach(var pod in Instance.Status.Pods)
             {
-                Assert.Equal("Processed", pod.State);
+                Assert.Equal("Processed", pod.Value.State);
             }
         }
 

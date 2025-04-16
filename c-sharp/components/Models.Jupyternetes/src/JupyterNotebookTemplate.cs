@@ -23,17 +23,17 @@ namespace Kadense.Models.Jupyternetes
             
             foreach(var pvcStatus in instance.Status.Pvcs)
             {
-                if(pvcStatus.ResourceName != null)
+                if(pvcStatus.Value.ResourceName != null)
                 {
-                    instance.Spec!.Variables![$"jupyternetes.pvcs.{pvcStatus.Name}"] = pvcStatus.ResourceName!;
+                    instance.Spec!.Variables![$"jupyternetes.pvcs.{pvcStatus.Key}"] = pvcStatus.Value.ResourceName!;
                 }
             }
 
             foreach(var podStatus in instance.Status.Pods)
             {
-                if(podStatus.ResourceName != null)
+                if(podStatus.Value.ResourceName != null)
                 {
-                    instance.Spec!.Variables![$"jupyternetes.pods.{podStatus.Name}"] = podStatus.ResourceName!;
+                    instance.Spec!.Variables![$"jupyternetes.pods.{podStatus.Key}"] = podStatus.Value.ResourceName!;
                 }
             }
         }

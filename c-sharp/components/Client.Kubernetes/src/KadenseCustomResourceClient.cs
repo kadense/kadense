@@ -26,7 +26,7 @@ namespace Kadense.Client.Kubernetes
         {
             return await Client.ListAsync<KadenseCustomResourceList<T>>();
         }
-
+ 
         public async Task<KadenseCustomResourceList<T>> ListNamespacedAsync(string @namespace)
         {
             return await Client.ListNamespacedAsync<KadenseCustomResourceList<T>>(@namespace);

@@ -13,5 +13,8 @@ namespace Kadense.Models.Jupyternetes
         [JsonPropertyName("pvcs")]
         public List<NotebookTemplatePvcSpec>? Pvcs { get; set; } = new List<NotebookTemplatePvcSpec>();
 
+        [JsonPropertyName("otherResources")]
+        public List<NotebookTemplateOtherSpec>? OtherResources { get; set; } = new List<NotebookTemplateOtherSpec>();
+
     }
 }

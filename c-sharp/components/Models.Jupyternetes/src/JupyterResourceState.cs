@@ -13,16 +13,12 @@ namespace Kadense.Models.Jupyternetes
         {
             ErrorMessage = ex.Message;
         }
-        public JupyterResourceState(string name, string? resourceName = null, string? state = null, string? errorMessage = null)
+        public JupyterResourceState(string? resourceName = null, string? state = null, string? errorMessage = null)
         {
-            Name = name;
             ResourceName = resourceName;
             State = state;
             ErrorMessage = errorMessage;
         }
-
-        [JsonPropertyName("name")]
-        public string? Name { get; set; }
 
         [JsonPropertyName("resourceName")]
         public string? ResourceName { get; set; }

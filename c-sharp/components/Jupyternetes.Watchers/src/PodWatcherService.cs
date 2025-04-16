@@ -94,9 +94,9 @@ namespace Kadense.Jupyternetes.Watchers
             _logger.LogInformation("Building pods for resource {ResourceName}.", resource.Metadata.Name);
             var (updated, provisioningState) = await BuildPodsAsync(resource, template);
 
-            if(!resource.Status.PodsProvisioningState.Equals(provisioningState))
+            if(!resource.Status.PodsProvisionedState.Equals(provisioningState))
             {
-                resource.Status.PodsProvisioningState = provisioningState;
+                resource.Status.PodsProvisionedState = provisioningState;
                 updated = true;
             }
 
@@ -136,12 +136,12 @@ namespace Kadense.Jupyternetes.Watchers
         {
             bool updated = false;
             bool statusExists = false;
-            resource.Status!.Pods!.Where(x => x.Name!.Equals(name)).ToList().ForEach(x => {
-                if (x.ResourceName != resourceName)
+            resource.Status!.Pods!.Where(x => x.Key.Equals(name)).ToList().ForEach(x => {
+                if (x.Value.ResourceName != resourceName)
                 {
-                    x.ResourceName = resourceName;
-                    x.State = state;
-                    x.ErrorMessage = errorMessage;
+                    x.Value.ResourceName = resourceName;
+                    x.Value.State = state;
+                    x.Value.ErrorMessage = errorMessage;
                     updated = true;
                 }
                 statusExists = true;
@@ -149,7 +149,7 @@ namespace Kadense.Jupyternetes.Watchers
 
             if(!statusExists)
             {
-                resource.Status.Pods.Add(new JupyterResourceState(name: name, resourceName: resourceName!, state: state!, errorMessage: errorMessage));
+                resource.Status.Pods.Add(name, new JupyterResourceState(resourceName: resourceName!, state: state!, errorMessage: errorMessage));
                 updated = true;
             }
             return updated;
@@ -174,8 +174,8 @@ namespace Kadense.Jupyternetes.Watchers
                 } 
             }
 
-            resource.Status!.Pods!.Where(x => !podNames.Contains(x.Name!)).ToList().ForEach(x => {
-                resource.Status.Pods!.Remove(x);
+            resource.Status!.Pods!.Where(x => !podNames.Contains(x.Key)).ToList().ForEach(x => {
+                resource.Status.Pods!.Remove(x.Key);
                 updated = true;
             });
 

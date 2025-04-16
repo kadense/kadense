@@ -29,6 +29,11 @@ jobs:
       id: parse_build_args
       run: |
         echo "image_name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }}" >> $GITHUB_OUTPUT
+        PUSH_IMAGE="true" 
+        if [ \"${{ matrix.image }}\" == "builder" ]; then
+          PUSH_IMAGE="false"
+        fi
+        echo "PUSH_IMAGE=${PUSH_IMAGE} >> $GITHUB_OUTPUT
    
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -54,7 +59,7 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/${{ matrix.platform }}
-        outputs: type=image,name=${{ steps.parse_build_args.outputs.image_name }},push-by-digest=true,name-canonical=true,push=true
+        outputs: type=image,name=${{ steps.parse_build_args.outputs.image_name }},push-by-digest=true,name-canonical=true,push=${{ steps.parse_build_args.outputs.PUSH_IMAGE }}
         target: ${{ matrix.image }}
       
     - name: Build digest url
@@ -85,24 +90,39 @@ jobs:
       matrix:
         image: ${{ fromJson(inputs.Config).images }}
     steps:
-    - name: Download digests
+
+    - name: Build Args JSON to List Output
+      id: parse_build_args
+      run: |
+        echo "image_name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }}" >> $GITHUB_OUTPUT
+        PUSH_IMAGE="true" 
+        if [ \"${{ matrix.image }}\" == "builder" ]; then
+          PUSH_IMAGE="false"
+        fi
+        echo "PUSH_IMAGE=${PUSH_IMAGE} >> $GITHUB_OUTPUT
+   
+    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE }}
+      name: Download digests
       uses: actions/download-artifact@v4
       with:
         path: /tmp/digests
         pattern: digests-${{ matrix.image }}-*-*
         merge-multiple: true
 
-    - name: Set up Docker Buildx
+    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE }}
+      name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
       
-    - name: Log in to the Container registry
+    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE }}
+      name: Log in to the Container registry
       uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
   
-    - name: Docker meta
+    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE }}
+      name: Docker meta
       id: meta
       uses: docker/metadata-action@v5
       with:
@@ -113,7 +133,8 @@ jobs:
           org.opencontainers.image.description=${{ matrix.image }} container image
           org.opencontainers.image.vendor=Head in the Cloud Solutions Ltd
         
-    - name: Create manifest list and push
+    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE }}
+      name: Create manifest list and push
       working-directory: /tmp/digests
       run: |
         TAGNAME="ghcr.io/$GITHUB_REPOSITORY/${{ matrix.image }}:${{ inputs.GitVersion_SemVer }}"

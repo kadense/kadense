@@ -119,19 +119,19 @@ namespace Kadense.Jupyternetes.Watchers
         {
             bool updated = false;
             bool statusExists = false;
-            resource.Status!.Pvcs!.Where(x => x.Name!.Equals(name)).ToList().ForEach(x => {
-                if (x.ResourceName != resourceName)
+            resource.Status!.Pvcs!.Where(x => x.Key!.Equals(name)).ToList().ForEach(x => {
+                if (x.Value.ResourceName != resourceName)
                 {
-                    x.ResourceName = resourceName;
-                    x.State = state;
-                    x.ErrorMessage = errorMessage;
+                    x.Value.ResourceName = resourceName;
+                    x.Value.State = state;
+                    x.Value.ErrorMessage = errorMessage;
                     updated = true;
                 }
                 statusExists = true;
             });
             if(!statusExists)
             {
-                resource.Status.Pvcs.Add(new JupyterResourceState(name: name, resourceName: null, state: state, errorMessage: errorMessage));
+                resource.Status.Pvcs.Add(name, new JupyterResourceState(resourceName: null, state: state, errorMessage: errorMessage));
                 updated = true;
             }
             return updated;
@@ -156,8 +156,8 @@ namespace Kadense.Jupyternetes.Watchers
                 }    
             }
 
-            resource.Status!.Pvcs!.Where(x => !pvcNames.Contains(x.Name!)).ToList().ForEach(x => {
-                resource.Status.Pvcs!.Remove(x);
+            resource.Status!.Pvcs!.Where(x => !pvcNames.Contains(x.Key)).ToList().ForEach(x => {
+                resource.Status.Pvcs!.Remove(x.Key);
                 updated = true;
             });
 

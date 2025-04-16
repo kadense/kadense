@@ -77,6 +77,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadense.Jupyternetes.Watche
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadense.Jupyternetes.Watchers.Tests", "components\Jupyternetes.Watchers\test\Kadense.Jupyternetes.Watchers.Tests.csproj", "{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cli", "cli", "{DE13770C-C1A1-42BF-9E0E-166E5B020D82}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CustomResourceDefinition.Generator", "CustomResourceDefinition.Generator", "{2C8FB3F0-8B5D-4D27-BB7D-41E287B11A9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadense.CustomResourceDefinition.Generator", "cli\CustomResourceDefinition.Generator\src\Kadense.CustomResourceDefinition.Generator.csproj", "{18E90768-392E-45A1-9CE8-93668B60C434}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -327,6 +333,18 @@ Global
 		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Release|x64.Build.0 = Release|Any CPU
 		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Release|x86.ActiveCfg = Release|Any CPU
 		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56}.Release|x86.Build.0 = Release|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Debug|x64.Build.0 = Debug|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Debug|x86.Build.0 = Debug|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Release|x64.ActiveCfg = Release|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Release|x64.Build.0 = Release|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Release|x86.ActiveCfg = Release|Any CPU
+		{18E90768-392E-45A1-9CE8-93668B60C434}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -366,5 +384,7 @@ Global
 		{9263A868-E162-4B55-9796-D6698F2182ED} = {F30895DC-C3AC-FF44-FFF8-D51D98AE1B61}
 		{FC4CF4C3-0F01-4DB3-88FA-51BFD50534E4} = {9263A868-E162-4B55-9796-D6698F2182ED}
 		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56} = {9263A868-E162-4B55-9796-D6698F2182ED}
+		{2C8FB3F0-8B5D-4D27-BB7D-41E287B11A9A} = {DE13770C-C1A1-42BF-9E0E-166E5B020D82}
+		{18E90768-392E-45A1-9CE8-93668B60C434} = {2C8FB3F0-8B5D-4D27-BB7D-41E287B11A9A}
 	EndGlobalSection
 EndGlobal

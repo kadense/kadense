@@ -103,6 +103,11 @@ namespace Kadense.Client.Kubernetes
             {
                 result.Type = "integer";
             }
+            else if (propertyType.Equals(typeof(object)))
+            {
+                result.Type = "object";
+                result.XKubernetesPreserveUnknownFields = true;
+            }
             else if (propertyType.IsEnum)
             {
                 result.Type = "string";
@@ -132,12 +137,24 @@ namespace Kadense.Client.Kubernetes
                     {
                         additionalProperties.Type = "string";
                     }
+                    else if (propertyType.GetGenericArguments()[1] == typeof(bool))
+                    {
+                        additionalProperties.Type = "boolean";
+                    }
+                    else if (propertyType.GetGenericArguments()[1] == typeof(int))
+                    {
+                        additionalProperties.Type = "integer";
+                    }
+                    else if (propertyType.GetGenericArguments()[1] == typeof(long))
+                    {
+                        additionalProperties.Type = "integer";
+                    }
                     else
                     {
                         additionalProperties.Type = "object";
                         try
                         {
-                            additionalProperties.Properties = ProcessProperties(propertyType);
+                            additionalProperties.Properties = ProcessProperties(propertyType.GetGenericArguments()[1]);
                         }
                         catch (Exception ex)
                         {

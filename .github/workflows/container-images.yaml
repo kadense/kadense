@@ -30,7 +30,7 @@ jobs:
       run: |
         echo "image_name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }}" >> $GITHUB_OUTPUT
         PUSH_IMAGE="true" 
-        if [ \"${{ matrix.image }}\" == "builder" ]; then
+        if [ \"${{ matrix.image }}\" == "artifact" ]; then
           PUSH_IMAGE="false";
         fi;
         echo "PUSH_IMAGE=${PUSH_IMAGE}" >> $GITHUB_OUTPUT
@@ -65,6 +65,7 @@ jobs:
     - name: Build digest url
       id: concatenate
       run: |
+      
         digest_url="linux/${{ matrix.image }}-${{ matrix.platform }}"
         echo "digest_url=$digest_url" >> $GITHUB_OUTPUT
       
@@ -81,6 +82,31 @@ jobs:
         path: /tmp/digests/${{ steps.concatenate.outputs.digest_url }}/*
         if-no-files-found: error
         retention-days: 1
+
+      
+    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'false' }}
+      name: Fetch Docker Artifacts
+      run: |
+        if [ \"${{ matrix.image }}\" == "artifact" ]; then
+          mkdir -p /tmp/docker-artifacts
+          cd /tmp/docker-artifacts
+          docker save ${{ steps.parse_build_args.outputs.image_name }} -o artifact.tar
+          tar -xvf artifact.tar
+          rm artifact.tar
+          export BLOB_FILE=$(cat manifest.json | jq '.[0].Layers[0]' -r)
+          tar -xvf $BLOB_FILE
+        fi;
+
+    - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'false' }}
+      name: Upload Docker Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-artifacts-${{ matrix.image }}-linux-${{ matrix.platform }}
+        path: /tmp/docker-artifacts/outputs/**
+        if-no-files-found: error
+        retention-days: 1
+
+
   merge-images:
     needs: 
     - build-images
@@ -96,7 +122,7 @@ jobs:
       run: |
         echo "image_name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }}" >> $GITHUB_OUTPUT
         PUSH_IMAGE="true" 
-        if [ \"${{ matrix.image }}\" == "builder" ]; then
+        if [ \"${{ matrix.image }}\" == "artifact" ]; then
           PUSH_IMAGE="false";
         fi;
         echo "PUSH_IMAGE=${PUSH_IMAGE}" >> $GITHUB_OUTPUT

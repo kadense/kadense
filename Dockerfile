@@ -13,6 +13,8 @@ RUN dotnet publish -c Release /p:Version=${KADENSE_VERSION}${KADENSE_VERSION_SUF
 RUN mkdir -p /outputs/crds && \
     dotnet /src/cli/CustomResourceDefinition.Generator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/Kadense.CustomResourceDefinition.Generator.dll /outputs/crds
 
+FROM scratch AS artifact
+COPY --from=builder "/outputs/" "/outputs"
 
 FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_SDK_VERSION} AS jupyternetes-pods-operator
 ARG DOTNET_SDK_VERSION
@@ -27,3 +29,4 @@ COPY --from=builder "/src/operators/Jupyternetes.Pvcs.Operator/src/bin/Release/n
 WORKDIR /app
 ENTRYPOINT ["dotnet", "Kadense.Jupyternetes.Pvcs.Operator.dll"]
 USER 999
+

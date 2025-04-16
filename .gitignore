@@ -4,3 +4,4 @@
 **/dist/
 **/.pytest_cache/
 c-sharp/cli/CustomResourceDefinition.Generator/src/*-CRD.yaml
+**.tar

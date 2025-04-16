@@ -1,5 +1,5 @@
 images:
-  - builder
+  - artifact
   - jupyternetes-pods-operator
   - jupyternetes-pvcs-operator
 

@@ -57,8 +57,9 @@ class JupyternetesSpawner(Spawner):
         """
         self.log.debug("Jupyternetes Spawner Loading State")
         super().load_state(state)
-        self.instance_name = state["instance_name"]
-        self.instance_namespace = state["instance_namespace"]
+        self.instance_name = state.get("instance_name", self.instance_name)
+        self.instance_namespace = state.get("instance_namespace", self.instance_namespace)
+        self.log.debug("Jupyternetes Spawner Loaded State")
 
     def get_state(self):
         """
@@ -68,8 +69,13 @@ class JupyternetesSpawner(Spawner):
         """
         self.log.debug("Jupyternetes Getting Spawner State")
         state = super().get_state()
-        state["instance_name"] = self.instance_name
-        state["instance_namespace"] = self.instance_namespace
+        if self.instance_name is not None:
+            state["instance_name"] = self.instance_name
+        
+        if self.instance_namespace is not None:
+            state["instance_namespace"] = self.instance_namespace
+        
+        self.log.debug("Jupyternetes Got Spawner State")
         return state
 
     async def start(self):
@@ -78,8 +84,7 @@ class JupyternetesSpawner(Spawner):
 
         Start the spawner.
         """
-
-        self.log.info("Starting Jupyternetes Spawner")
+        self.log.debug("Starting Jupyternetes Spawner")
         return self.utils.start_instance()
 
         
@@ -90,13 +95,15 @@ class JupyternetesSpawner(Spawner):
 
         Stop the spawner.
         """
+        self.log.info("Stopping Jupyternetes Spawner")
         if not now:
-            self.log.info("Stopping Jupyternetes Spawner")
+            self.log.info("Gracefully stopping instances")
             instance_list = await self.instance_client.list(self.instance_namespace, field_selector=f"metadata.name={self.instance_name}")
             if len(instance_list.items) > 0:
                 self.log.info(f"Deleting instance: {self.instance_name} on namespace: {self.instance_namespace}")
                 await self.instance_client.delete(self.instance_name, self.instance_namespace)
                 self.log.info("Instance deleted")
+        self.log.info("Stopped Jupyternetes Spawner")
 
     async def poll(self):
         """

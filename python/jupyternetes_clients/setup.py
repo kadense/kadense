@@ -6,7 +6,7 @@ jupyternetes_models_path: str = (Path(__file__).parent / "jupyternetes_models").
 
 setup(
     install_requires=[
-        "package-name @ {jupyternetes_models_path}",
+        "jupyternetes-models @ {jupyternetes_models_path}",
         "pydantic",
         "kubernetes-asyncio",
         "pytz",

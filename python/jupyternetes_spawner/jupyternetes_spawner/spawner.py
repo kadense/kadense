@@ -3,85 +3,17 @@ from jupyterhub.spawner import Spawner
 from jupyterhub.traitlets import Callable, Integer, Command, Unicode
 from jupyterhub.utils import exponential_backoff, maybe_future
 from .utils import JupyternetesUtils
-from jupyternetes_clients import V1JupyterNotebookInstanceClient
+from .clients import JupyterNotebookInstanceClient
 
 class JupyternetesSpawner(Spawner):
-    utils = JupyternetesUtils()
-    instance_client = V1JupyterNotebookInstanceClient()
-
-    get_pod_url = Callable(
-        default_value=utils.get_pod_url,
-        allow_none=True,
-        config=True,
-        help="""Callable to retrieve pod url
-
-        Called with (spawner, pod) returns str
-
-        Must not be async
-        """,
-    )
-
-    get_unique_instance_name = Callable(
-        default_value=utils.get_unique_instance_name,
-        allow_none=True,
-        config=True,
-        help="""Callable to retrieve pod url
-
-        Called with (spawner, pod) returns str
-
-        Must not be async
-        """,
-    )
-
-    create_instance = Callable(
-        default_value=utils.create_instance,
-        allow_none=True,
-        config=True,
-        help="""Creates a instance from the details provided by the spawner
-
-        Called with (spawner, instance_name, template_name) returns V1JupyterNotebookInstance
-
-        Must not be async
-        """,
-    )
-
-    get_instance_variables = Callable(
-        default_value=utils.get_instance_variables,
-        allow_none=True,
-        config=True,
-        help="""Creates a map of string variables to be passed to the template for this instance
-
-        Called with (spawner) returns dict[str,str]
-
-        Must not be async
-        """,
-    )
-    
-
-    get_template_name = Callable(
-        default_value=utils.get_template_name,
-        allow_none=True,
-        config=True,
-        help="""Gets the name of the template
-
-        Called with (spawner) returns str
-
-        Must not be async
-        """,
-    )
-    
-
-    get_instance_namespace = Callable(
-        default_value=utils.get_instance_namespace,
-        allow_none=True,
-        config=True,
-        help="""Gets the name of namespace where this instance will be created
-
-        Called with (spawner) returns str
-
-        Must not be async
-        """,
-    )
+    utils : JupyternetesUtils
+    instance_client : JupyterNotebookInstanceClient
+    get_pod_url : Callable
+    get_unique_instance_name : Callable 
+    create_instance : Callable
+    get_instance_variables : Callable 
+    get_template_name : Callable 
+    get_instance_namespace : Callable 
 
     template_name = Unicode(
         default_value="default",
@@ -99,6 +31,80 @@ class JupyternetesSpawner(Spawner):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.utils = JupyternetesUtils()
+        self.instance_client = JupyterNotebookInstanceClient()
+
+        self.get_pod_url = Callable(
+            default_value= self.utils.get_pod_url,
+            allow_none=True,
+            config=True,
+            help="""Callable to retrieve pod url
+
+            Called with (spawner, pod) returns str
+
+            Must not be async
+            """,
+        )
+
+        self.get_unique_instance_name = Callable(
+            default_value=self.utils.get_unique_instance_name,
+            allow_none=True,
+            config=True,
+            help="""Callable to retrieve pod url
+
+            Called with (spawner, pod) returns str
+
+            Must not be async
+            """,
+        )
+
+        self.create_instance = Callable(
+            default_value=self.utils.create_instance,
+            allow_none=True,
+            config=True,
+            help="""Creates a instance from the details provided by the spawner
+
+            Called with (spawner, instance_name, template_name) returns V1JupyterNotebookInstance
+
+            Must not be async
+            """,
+        )
+
+        self.get_instance_variables = Callable(
+            default_value=self.utils.get_instance_variables,
+            allow_none=True,
+            config=True,
+            help="""Creates a map of string variables to be passed to the template for this instance
+
+            Called with (spawner) returns dict[str,str]
+
+            Must not be async
+            """,
+        )
+
+        self.get_template_name = Callable(
+            default_value=self.utils.get_template_name,
+            allow_none=True,
+            config=True,
+            help="""Gets the name of the template
+
+            Called with (spawner) returns str
+
+            Must not be async
+            """,
+        )
+
+        self.get_instance_namespace = Callable(
+            default_value=self.utils.get_instance_namespace,
+            allow_none=True,
+            config=True,
+            help="""Gets the name of namespace where this instance will be created
+
+            Called with (spawner) returns str
+
+            Must not be async
+            """,
+        )
 
 
     def load_state(self, state):

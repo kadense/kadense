@@ -1,7 +1,7 @@
 import ipaddress
 import re
 from uuid import UUID, uuid5
-from jupyternetes_models import (
+from .models import (
         V1JupyterNotebookInstance,
         V1JupyterNotebookInstanceSpec,
         V1JupyterNotebookInstanceSpecTemplate,
@@ -19,7 +19,9 @@ class JupyternetesUtils:
         Generate a unique instance name from the user name
         """
         
-        spawner.log.debug(f"get_unique_instance_name: {name}")
+        if spawner != None:
+            spawner.log.debug(f"get_unique_instance_name: {name}")
+
         return uuid5(self.default_uuid, name).hex
     
     def get_pod_url(self, spawner, pod):
@@ -35,14 +37,17 @@ class JupyternetesUtils:
             hostname = f"[{hostname}]"
         
         port: int = pod["spec"]["containers"][0]["ports"][0]["containerPort"]
-
-        return "{}://{}:{}".format(
+        result = "{}://{}:{}".format(
             proto,
             hostname,
             port,
         )
+
+        if spawner != None:
+            spawner.log.debug(f"get_pod_url: {result}")
+        return result
     
-    def create_instance(self, spawner, instance_name : str, template_name : str):
+    def create_instance(self, spawner, instance_name : str):
         """
         Create a instance from the details provided by the spawner
         """

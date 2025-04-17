@@ -38,25 +38,25 @@ RUN pip install --no-cache-dir --upgrade \
     setuptools \
     wheel \
     build \
-    twine
-COPY ./python /src
+    twine \
+    pytest \
+    pydantic \
+    kubernetes-asyncio \
+    pytz \
+    jupyterhub \
+    pytest-asyncio 
+
+COPY ./python /workspaces/kadense/python
 RUN export KADENSE_PY_VERSION="__version__ = \"${KADENSE_VERSION}\""; \
     echo "KADENSE_PY_VERSION=${KADENSE_PY_VERSION}"; \
-    echo "${KADENSE_PY_VERSION}" > /src/jupyternetes_models/jupyternetes_models/_version.py; \
-    echo "${KADENSE_PY_VERSION}" > /src/jupyternetes_clients/jupyternetes_clients/_version.py; \
-    echo "${KADENSE_PY_VERSION}" > /src/jupyternetes_spawner/jupyternetes_spawner/_version.py; \
+    echo "${KADENSE_PY_VERSION}" > /workspaces/kadense/python/jupyternetes_models/jupyternetes_models/_version.py; \
+    echo "${KADENSE_PY_VERSION}" > /workspaces/kadense/python/jupyternetes_clients/jupyternetes_clients/_version.py; \
+    echo "${KADENSE_PY_VERSION}" > /workspaces/kadense/python/jupyternetes_spawner/jupyternetes_spawner/_version.py; \
     mkdir -p /tmp/dist;
 
-WORKDIR /src/jupyternetes_models
-RUN python -m build && \
-    mv dist/* /tmp/dist
-
-WORKDIR /src/jupyternetes_clients
-RUN python -m build && \
-    mv dist/* /tmp/dist
-
-WORKDIR /src/jupyternetes_spawner
-RUN python -m build && \
+WORKDIR /workspaces/kadense/python/jupyternetes_spawner
+RUN python -m pytest; 
+RUN python -m build; \
     mv dist/* /tmp/dist
 
 FROM scratch AS python-libraries-artifact

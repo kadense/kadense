@@ -1,7 +1,7 @@
 images:
   - crds-artifact
-  #- jupyternetes-pods-operator
-  #- jupyternetes-pvcs-operator
+  - jupyternetes-pods-operator
+  - jupyternetes-pvcs-operator
   - python-libraries-artifact
 
 platforms:

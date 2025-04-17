@@ -4,7 +4,8 @@ from .models.jupyter.notebook.instance import (
     V1JupyterNotebookInstanceSpec,
     V1JupyterNotebookInstanceSpecTemplate,
     V1JupyterNotebookInstanceStatus,
-    V1JupyterNotebookInstanceStatusResourceState
+    V1JupyterNotebookInstanceStatusResourceState,
+    V1JupyterNotebookInstanceStatusPodResourceState
 )
 from .models.kubernetes import (
     V1ListMeta,

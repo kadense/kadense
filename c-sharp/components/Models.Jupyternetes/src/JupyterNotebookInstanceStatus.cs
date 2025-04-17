@@ -6,7 +6,7 @@ namespace Kadense.Models.Jupyternetes
         public Dictionary<string, JupyterResourceState> Pvcs { get; set; } = new Dictionary<string, JupyterResourceState>();
 
         [JsonPropertyName("pods")]
-        public Dictionary<string, JupyterResourceState> Pods { get; set; } = new Dictionary<string, JupyterResourceState>();
+        public Dictionary<string, JupyterPodResourceState> Pods { get; set; } = new Dictionary<string, JupyterPodResourceState>();
 
         [JsonPropertyName("otherResources")]
         public Dictionary<string, JupyterResourceState> OtherResources { get; set; } = new Dictionary<string,JupyterResourceState>();

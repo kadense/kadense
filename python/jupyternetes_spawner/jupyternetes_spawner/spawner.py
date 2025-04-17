@@ -1,19 +1,14 @@
 import jupyterhub
 from jupyterhub.spawner import Spawner
-from jupyterhub.traitlets import Callable, Integer, Command, Unicode
 from jupyterhub.utils import exponential_backoff, maybe_future
 from .utils import JupyternetesUtils
 from .clients import JupyterNotebookInstanceClient
+from jupyterhub.traitlets import Unicode, Integer
+from .models import V1JupyterNotebookInstance
 
 class JupyternetesSpawner(Spawner):
     utils : JupyternetesUtils
     instance_client : JupyterNotebookInstanceClient
-    get_pod_url : Callable
-    get_unique_instance_name : Callable 
-    create_instance : Callable
-    get_instance_variables : Callable 
-    get_template_name : Callable 
-    get_instance_namespace : Callable 
 
     template_name = Unicode(
         default_value="default",
@@ -28,84 +23,27 @@ class JupyternetesSpawner(Spawner):
         """
     ).tag(config=True)
 
+    instance_port = Integer(
+        default_value=80,
+        help = """
+        The default instance port
+        """
+    ).tag(config=True)
 
+    
+    max_wait = Integer(
+        default_value=300,
+        help = """
+        Max wait for an instance to be provisioned
+        """
+    ).tag(config=True)
+
+
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.utils = JupyternetesUtils()
-        self.instance_client = JupyterNotebookInstanceClient()
-
-        self.get_pod_url = Callable(
-            default_value= self.utils.get_pod_url,
-            allow_none=True,
-            config=True,
-            help="""Callable to retrieve pod url
-
-            Called with (spawner, pod) returns str
-
-            Must not be async
-            """,
-        )
-
-        self.get_unique_instance_name = Callable(
-            default_value=self.utils.get_unique_instance_name,
-            allow_none=True,
-            config=True,
-            help="""Callable to retrieve pod url
-
-            Called with (spawner, pod) returns str
-
-            Must not be async
-            """,
-        )
-
-        self.create_instance = Callable(
-            default_value=self.utils.create_instance,
-            allow_none=True,
-            config=True,
-            help="""Creates a instance from the details provided by the spawner
-
-            Called with (spawner, instance_name, template_name) returns V1JupyterNotebookInstance
-
-            Must not be async
-            """,
-        )
-
-        self.get_instance_variables = Callable(
-            default_value=self.utils.get_instance_variables,
-            allow_none=True,
-            config=True,
-            help="""Creates a map of string variables to be passed to the template for this instance
-
-            Called with (spawner) returns dict[str,str]
-
-            Must not be async
-            """,
-        )
-
-        self.get_template_name = Callable(
-            default_value=self.utils.get_template_name,
-            allow_none=True,
-            config=True,
-            help="""Gets the name of the template
-
-            Called with (spawner) returns str
-
-            Must not be async
-            """,
-        )
-
-        self.get_instance_namespace = Callable(
-            default_value=self.utils.get_instance_namespace,
-            allow_none=True,
-            config=True,
-            help="""Gets the name of namespace where this instance will be created
-
-            Called with (spawner) returns str
-
-            Must not be async
-            """,
-        )
-
+        self.instance_client = JupyterNotebookInstanceClient(self)
 
     def load_state(self, state):
         """
@@ -113,7 +51,9 @@ class JupyternetesSpawner(Spawner):
 
         Load the state of the spawner from the given state dictionary.
         """
-        pass
+        super().load_state(state)
+        self.instance_name = state["instance_name"]
+        self.instance_namespace = state["instance_namespace"]
 
     def get_state(self):
         """
@@ -122,25 +62,21 @@ class JupyternetesSpawner(Spawner):
         Get the state of the spawner as a dictionary.
         """
         state = super().get_state()
+        state["instance_name"] = self.instance_name
+        state["instance_namespace"] = self.instance_namespace
         return state
 
-
-
-
-    def start(self):
+    async def start(self):
         """
         override from inherited class:
 
         Start the spawner.
         """
 
-        instance_name = self.get_unique_instance_name(self, self.user.name)
-        
-        self.log.info(f"Creating : {instance_name}")
+        self.log.info("Starting Jupyternetes Spawner")
+        return self.utils.start_instance()
 
         
-
-        return self.start()
 
     async def stop(self, now=False):
         """
@@ -148,7 +84,13 @@ class JupyternetesSpawner(Spawner):
 
         Stop the spawner.
         """
-        pass
+        if not now:
+            self.log.info("Stopping Jupyternetes Spawner")
+            instance_list = await self.instance_client.list(self.instance_namespace, field_selector=f"metadata.name={self.instance_name}")
+            if len(instance_list.items) > 0:
+                self.log.info(f"Deleting instance: {self.instance_name} on namespace: {self.instance_namespace}")
+                await self.instance_client.delete(self.instance_name, self.instance_namespace)
+                self.log.info("Instance deleted")
 
     async def poll(self):
         """
@@ -156,4 +98,8 @@ class JupyternetesSpawner(Spawner):
 
         Poll the spawner.
         """
-        return 1
+        instance_list = await self.instance_client.list(self.instance_namespace, field_selector=f"metadata.name={self.instance_name}")
+        if len(instance_list.items) > 0:
+            return None
+        
+        return 0

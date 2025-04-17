@@ -3,6 +3,7 @@ images:
   - jupyternetes-pods-operator
   - jupyternetes-pvcs-operator
   - python-libraries-artifact
+  - jupyternetes-hub
 
 platforms:
   - amd64

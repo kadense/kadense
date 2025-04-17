@@ -28,5 +28,8 @@ namespace Kadense.Models.Jupyternetes
 
         [JsonPropertyName("errorMessage")]
         public string? ErrorMessage { get; set; }
+
+        [JsonPropertyName("parameters")]
+        public Dictionary<string, string>? Parameters { get; set; } = new Dictionary<string, string>();
     }
 }

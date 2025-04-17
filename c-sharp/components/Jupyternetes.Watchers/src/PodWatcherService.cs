@@ -132,24 +132,49 @@ namespace Kadense.Jupyternetes.Watchers
 
         }
 
-        private bool UpdateResourceState(JupyterNotebookInstance resource, string name, string? resourceName = null, string? state = null, string? errorMessage = null)
+        private bool UpdateResourceState(JupyterNotebookInstance resource, string name, string? resourceName = null, string? state = null, string? podAddress = null, int? portNumber = null, string? errorMessage = null)
         {
-            bool updated = false;
-            bool statusExists = false;
-            resource.Status!.Pods!.Where(x => x.Key.Equals(name)).ToList().ForEach(x => {
-                if (x.Value.ResourceName != resourceName)
-                {
-                    x.Value.ResourceName = resourceName;
-                    x.Value.State = state;
-                    x.Value.ErrorMessage = errorMessage;
-                    updated = true;
-                }
-                statusExists = true;
-            });
-
-            if(!statusExists)
+            if(!resource.Status.Pods.ContainsKey(name))
             {
-                resource.Status.Pods.Add(name, new JupyterResourceState(resourceName: resourceName!, state: state!, errorMessage: errorMessage));
+                resource.Status.Pods.Add(name, new JupyterPodResourceState(resourceName: resourceName!, state: state!, errorMessage: errorMessage, podAddress, portNumber));
+                return true;
+            }
+
+            bool updated = false;
+            var podStatus = resource.Status.Pods[name];
+            if (podStatus.ResourceName != resourceName)
+            {
+                podStatus.ResourceName = resourceName;
+                updated = true;
+            }
+
+            
+            if(!string.IsNullOrEmpty(podStatus.ErrorMessage) && errorMessage == null)
+            {
+                podStatus.ErrorMessage = "";
+                updated = true;
+            }
+            else if (podStatus.ErrorMessage != errorMessage)
+            {
+                podStatus.ErrorMessage = errorMessage;
+                updated = true;
+            }
+
+            if (podStatus.State != state)
+            {
+                podStatus.State = state;
+                updated = true;
+            }
+
+            if(podStatus.PodAddress != podAddress)
+            {
+                podStatus.PodAddress = podAddress;
+                updated = true;
+            }
+
+            if(portNumber.HasValue && (!podStatus.PortNumber.HasValue || podStatus.PortNumber != portNumber))
+            {
+                podStatus.PortNumber = portNumber;
                 updated = true;
             }
             return updated;
@@ -168,7 +193,21 @@ namespace Kadense.Jupyternetes.Watchers
                 string podName = pod.Metadata.Labels["jupyternetes.kadense.io/podName"];
                 var podInK8s = await CreatePodIfNotExists(resource, pod, resource.Metadata.NamespaceProperty!);
                 podNames.Add(podName);
-                if(UpdateResourceState(resource, podName, podInK8s?.Metadata.Name, "Processed"))
+                string? podAddress = null;
+                int? portNumber = null;
+                if (podInK8s != null && podInK8s.Status != null && podInK8s.Status.PodIP != null)
+                    podAddress = podInK8s.Status.PodIP;
+
+                if(podInK8s != null && podInK8s.Spec != null && podInK8s.Spec.Containers.Count > 0)
+                {
+                    var container = podInK8s.Spec.Containers.First();
+                    if(container.Ports != null && container.Ports.Count > 0)
+                    {
+                        var containerPort = container.Ports.First();
+                        portNumber = containerPort.ContainerPort;
+                    }
+                }
+                if(UpdateResourceState(resource, podName, podInK8s?.Metadata.Name, "Processed", podAddress: podAddress, portNumber: portNumber))
                 {
                     updated = true;
                 } 

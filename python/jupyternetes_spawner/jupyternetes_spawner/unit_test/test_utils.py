@@ -7,9 +7,9 @@ class TestJupyternetesUtils:
     def test_get_pod_url(self):
         mocker = Mocker()
         pod = mocker.mock_pod()
+        spawner = mocker.mock_spawner()
 
-        utils = JupyternetesUtils()
-        url = utils.get_pod_url(None, pod)
+        url = spawner.utils.get_pod_url(pod)
         assert url == "http://10.128.15.51:80"
 
     @pytest.mark.parametrize(
@@ -22,6 +22,36 @@ class TestJupyternetesUtils:
         ]
     )
     def test_get_unique_instance_name_email(self, user_name, expected):
-        utils = JupyternetesUtils()
-        unique_name = utils.get_unique_instance_name(None, user_name)
+        mocker = Mocker()
+        spawner = mocker.mock_spawner()
+        unique_name = spawner.utils.get_unique_instance_name(user_name)
         assert unique_name == expected
+
+    def test_get_instance_variables(self):
+        mocker = Mocker()
+        spawner = mocker.mock_spawner()
+        variables = spawner.utils.get_instance_variables()
+        assert variables["jupyterhub.user.id"] == spawner.user.id
+        assert variables["jupyterhub.user.name"] == spawner.user.name
+        assert variables["jupyternetes.instance.name"] == "ebf60aed2fea54fba7f249898ad18b8c"
+        assert variables["jupyternetes.instance.namespace"] == spawner.instance_namespace
+
+    def test_create_instance(self):
+        mocker = Mocker()
+        spawner = mocker.mock_spawner()
+        instance = spawner.utils.create_instance()
+        assert instance.metadata.namespace == spawner.instance_namespace
+        assert instance.spec.template.name == spawner.template_name
+        assert instance.metadata.name == "ebf60aed2fea54fba7f249898ad18b8c"
+        assert instance.spec.variables["jupyterhub.user.id"] == spawner.user.id
+        assert instance.spec.variables["jupyterhub.user.name"] == spawner.user.name
+        assert instance.spec.variables["jupyternetes.instance.name"] == "ebf60aed2fea54fba7f249898ad18b8c"
+        assert instance.spec.variables["jupyternetes.instance.namespace"] == spawner.instance_namespace
+
+    @pytest.mark.asyncio
+    async def test_start_instance(self):
+        mocker = Mocker()
+        spawner = mocker.mock_spawner()
+        pod_address, port_number = await spawner.utils.start_instance()
+        assert pod_address == "10.128.15.23"
+        assert port_number == 80

@@ -2,6 +2,7 @@ ARG DOTNET_SDK_VERSION=8.0
 ARG PYTHON_VERSION=3.13-alpine
 ARG KADENSE_VERSION="0.1.0"
 ARG KADENSE_VERSION_SUFFIX="-local"
+ARG JUPYTERHUB_BASE_IMAGE="quay.io/jupyterhub/k8s-hub:4.1.0"
 
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_VERSION} AS builder
 ARG KADENSE_VERSION
@@ -61,3 +62,9 @@ RUN python -m build; \
 
 FROM scratch AS python-libraries-artifact
 COPY --from=python-libraries /tmp/dist/ /outputs
+
+FROM ${JUPYTERHUB_BASE_IMAGE} AS jupyternetes-hub
+USER root
+COPY ./python/jupyternetes_spawner/ /src/jupyternetes-spawner
+RUN python -mpip install /src/jupyternetes-spawner
+USER jovyan

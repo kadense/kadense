@@ -57,8 +57,8 @@ class JupyternetesSpawner(Spawner):
         """
         self.log.debug("Jupyternetes Spawner Loading State")
         super().load_state(state)
-        self.instance_name = state.get("instance_name", self.instance_name)
-        self.instance_namespace = state.get("instance_namespace", self.instance_namespace)
+        #self.instance_name = state.get("instance_name", self.instance_name)
+        #self.instance_namespace = state.get("instance_namespace", self.instance_namespace)
         self.log.debug("Jupyternetes Spawner Loaded State")
 
     def get_state(self):
@@ -69,11 +69,11 @@ class JupyternetesSpawner(Spawner):
         """
         self.log.debug("Jupyternetes Getting Spawner State")
         state = super().get_state()
-        if self.instance_name is not None:
-            state["instance_name"] = self.instance_name
-        
-        if self.instance_namespace is not None:
-            state["instance_namespace"] = self.instance_namespace
+        #if self.instance_name is not None:
+        #    state["instance_name"] = self.instance_name
+        #
+        #if self.instance_namespace is not None:
+        #    state["instance_namespace"] = self.instance_namespace
         
         self.log.debug("Jupyternetes Got Spawner State")
         return state

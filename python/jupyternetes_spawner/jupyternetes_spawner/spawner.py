@@ -45,7 +45,7 @@ class JupyternetesSpawner(Spawner):
         self.log.debug("Jupyternetes Spawner initializing")
         self.utils = JupyternetesUtils(self)
         self.log.debug("Initializing JupyterNotebookInstanceClient")
-        self.instance_client = JupyterNotebookInstanceClient(self)
+        self.instance_client = JupyterNotebookInstanceClient()
         self.log.debug("Jupyternetes Spawner initialized")
 
 

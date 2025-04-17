@@ -14,9 +14,11 @@ from .models import (
 
 class JupyternetesUtils:
     def __init__(self, spawner=None):
+        spawner.log.debug("JupyternetesUtils initializing")
         self.spawner = spawner
         self.non_alphanum_pattern = re.compile(r'[^a-zA-Z0-9]+')
         self.default_uuid = UUID("00000000-0000-0000-0000-000000000000")
+        spawner.log.debug("JupyternetesUtils initialized")
 
     def get_unique_instance_name(self, name: str) -> str:
         """

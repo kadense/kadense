@@ -42,8 +42,12 @@ class JupyternetesSpawner(Spawner):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.log.debug("Jupyternetes Spawner initializing")
         self.utils = JupyternetesUtils()
+        self.log.debug("Initializing JupyterNotebookInstanceClient")
         self.instance_client = JupyterNotebookInstanceClient(self)
+        self.log.debug("Jupyternetes Spawner initialized")
+
 
     def load_state(self, state):
         """
@@ -51,6 +55,7 @@ class JupyternetesSpawner(Spawner):
 
         Load the state of the spawner from the given state dictionary.
         """
+        self.log.debug("Jupyternetes Spawner Loading State")
         super().load_state(state)
         self.instance_name = state["instance_name"]
         self.instance_namespace = state["instance_namespace"]
@@ -61,6 +66,7 @@ class JupyternetesSpawner(Spawner):
 
         Get the state of the spawner as a dictionary.
         """
+        self.log.debug("Jupyternetes Getting Spawner State")
         state = super().get_state()
         state["instance_name"] = self.instance_name
         state["instance_namespace"] = self.instance_namespace
@@ -98,8 +104,11 @@ class JupyternetesSpawner(Spawner):
 
         Poll the spawner.
         """
+        self.log.debug(f"Polling Spawner for {self.instance_name} in {self.instance_namespace}")
         instance_list = await self.instance_client.list(self.instance_namespace, field_selector=f"metadata.name={self.instance_name}")
         if len(instance_list.items) > 0:
+            self.log.debug(f"Polling Returning None for {self.instance_name} in {self.instance_namespace}")
             return None
         
+        self.log.debug(f"Polling Returning 0 for {self.instance_name} in {self.instance_namespace}")
         return 0

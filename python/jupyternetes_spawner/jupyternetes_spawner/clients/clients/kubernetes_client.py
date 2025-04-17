@@ -9,6 +9,7 @@ from kubernetes_asyncio.client.rest import RESTClientObject
 class KubernetesNamespacedCustomClient(ApiClient):
     def __init__(self, log : Logger, group : str, version : str, plural : str, kind : str, list_type : type, singleton_type : type, configuration=None, header_name=None, header_value=None, cookie=None, pool_threads : int =1):
         super().__init__(configuration, header_name, header_value, cookie, pool_threads)
+        log.debug(f"Initializing KubernetesNamespacedCustomClient with group: {group}, version: {version}, plural: {plural}, kind: {kind}")
         self.group = group
         self.version = version
         self.plural = plural
@@ -18,6 +19,8 @@ class KubernetesNamespacedCustomClient(ApiClient):
         self.list_adapter = TypeAdapter(list_type)
 
         self.singleton_adapter = TypeAdapter(singleton_type)
+        log.debug(f"Initialized KubernetesNamespacedCustomClient with group: {group}, version: {version}, plural: {plural}, kind: {kind}")
+
 
     def get_api_version(self):
         return f"{self.group}/{self.version}"
@@ -102,6 +105,7 @@ class KubernetesNamespacedCustomClient(ApiClient):
         
     
     async def send_to_kube_api(self, method : str, resource_path: str, model_instance: BaseModel):
+        self.log.debug(f"Sending {method} request to {resource_path} with body: {model_instance}")
         headers = {'Content-Type': 'application/json'}
         query_params = []
         
@@ -109,6 +113,8 @@ class KubernetesNamespacedCustomClient(ApiClient):
         body = self.singleton_adapter.dump_python(model_instance, exclude_none=True, by_alias=True)
         endpoint = self.configuration.host + resource_path
         response = await self.rest_client.request(method, endpoint, headers=headers, body=body)
+
+        self.log.debug(f"{method} request to {resource_path} responsed with status: {response.status}")
         if not 200 <= response.status <= 299:
             raise ApiException(http_resp=response)
         

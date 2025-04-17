@@ -1,0 +1,25 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: jupyternetes-hub 
+rules:
+- apiGroups: [ "kadense.io" ]
+  resources: ["jupyternotebookinstances", "jupyternotebooktemplates", "jupyternotebookinstances/status", "jupyternotebooktemplates/status"]
+  verbs: [ "get", "list", "watch", "patch", "create", "delete" ]
+
+- apiGroups: [""]
+  resources: ["pods", "pods/status"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: jupyternetes-hub:hub
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: jupyternetes-hub
+subjects:
+- kind: ServiceAccount
+  name: hub
+  namespace: kadense

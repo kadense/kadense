@@ -5,9 +5,10 @@ from kubernetes_asyncio.client.exceptions import ApiException
 from typing import TypeVar, Generic, Mapping
 import json
 from kubernetes_asyncio.client.rest import RESTClientObject
+from kubernetes_asyncio.config import Configuration
 
 class KubernetesNamespacedCustomClient(ApiClient):
-    def __init__(self, log : Logger, group : str, version : str, plural : str, kind : str, list_type : type, singleton_type : type, configuration=None, header_name=None, header_value=None, cookie=None, pool_threads : int =1):
+    def __init__(self, log : Logger, group : str, version : str, plural : str, kind : str, list_type : type, singleton_type : type, configuration : Configuration =None, header_name=None, header_value=None, cookie=None, pool_threads : int =1):
         log.debug(f"Initializing KubernetesNamespacedCustomClient with group: {group}, version: {version}, plural: {plural}, kind: {kind}")
         super().__init__(configuration, header_name, header_value, cookie, pool_threads)
         self.group = group
@@ -112,7 +113,7 @@ class KubernetesNamespacedCustomClient(ApiClient):
         self.update_params_for_auth(headers, query_params, auth_settings)
         body = self.singleton_adapter.dump_python(model_instance, exclude_none=True, by_alias=True)
         endpoint = self.configuration.host + resource_path
-        response = await self.rest_client.request(method, endpoint, headers=headers, body=body)
+        response = await self.rest_client.request(method, endpoint, headers=headers, query_params=query_params, body=body)
 
         self.log.debug(f"{method} request to {resource_path} responsed with status: {response.status}")
         if not 200 <= response.status <= 299:

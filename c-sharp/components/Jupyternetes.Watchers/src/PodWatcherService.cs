@@ -274,8 +274,9 @@ namespace Kadense.Jupyternetes.Watchers
             try 
             {
                 var templateName = resource.Spec!.Template!.Name!;
-                _logger.LogInformation("Fetching template {TemplateName} for resource {ResourceName}.", templateName, resource.Metadata.Name);
-                return await this.TemplateClient.ReadNamespacedAsync(resource.Metadata.NamespaceProperty, templateName);
+                var templateNamespace = resource.Spec.Template.Namespace ?? resource.Metadata.NamespaceProperty;
+                _logger.LogInformation("Fetching template {TemplateName} for resource {ResourceName}.", templateName, templateNamespace);
+                return await this.TemplateClient.ReadNamespacedAsync(templateNamespace, templateName);
             }
             catch (k8s.Exceptions.KubernetesClientException ex)
             {

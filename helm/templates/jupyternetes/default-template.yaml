@@ -2,5 +2,5 @@ apiVersion: kadense.io/v1
 kind: JupyterNotebookTemplate
 metadata:
   name: {{ .Values.jupyternetes.template.name }}
-spec:
-  {{ .Values.jupyternetes.template.spec | indent 2 }}
+spec: 
+  {{ toYaml .Values.jupyternetes.template.spec | nindent 2 }}

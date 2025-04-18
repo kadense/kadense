@@ -86,6 +86,7 @@ class MockInstanceClient:
 class MockSpawner:
     user : MockUser
     template_name : str = "py-test"
+    template_namespace : str = "default"
     instance_namespace : str = "default"
     utils : JupyternetesUtils
     log : MockSpawnerLog

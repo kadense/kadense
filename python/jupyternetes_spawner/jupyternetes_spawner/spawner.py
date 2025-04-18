@@ -9,6 +9,17 @@ from ._version import __version__
 from os import environ, path
 from kubernetes_asyncio import config
 
+def get_default_template_namespace():
+    """
+    Get the current namespace from the kubernetes service account
+    """
+    file_path = "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
+    if path.isfile(file_path):
+        with open(file_path, "r") as file:
+            return file.read()
+    else:
+        return environ.get("JUPYTERNETES_TEMPLATE_NAMESPACE", "default")
+
 class JupyternetesSpawner(Spawner):
     utils : JupyternetesUtils = None
     instance_client : JupyterNotebookInstanceClient = None
@@ -20,20 +31,8 @@ class JupyternetesSpawner(Spawner):
         """
     ).tag(config=True)
 
-    def get_default_template_namespace(self):
-        """
-        Get the current namespace from the kubernetes service account
-        """
-        file_path = "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
-        if path.isfile(file_path):
-            with open(file_path, "r") as file:
-                return file.read()
-        else:
-            return environ.get("JUPYTERNETES_TEMPLATE_NAMESPACE", "default")
-
-
     template_namespace = Unicode(
-        default_value= get_default_template_namespace(),
+        default_value = get_default_template_namespace(),
         help = """
         The namespace of the template to use for this instance
         """

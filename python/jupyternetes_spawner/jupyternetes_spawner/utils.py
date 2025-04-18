@@ -155,9 +155,9 @@ class JupyternetesUtils:
             if instance.status.podsProvisioned and instance.status.podsProvisioned == "Processed":
                 self.spawner.log.info(f"Instance {instance.metadata.name} is ready")
                 return [True, instance]
-            else:
-                self.spawner.log.info(f"Instance {instance.metadata.name} is not ready")
-                return [False, instance]
+
+        self.spawner.log.info(f"Instance {instance.metadata.name} is not ready")
+        return [False, instance]
         
     
         

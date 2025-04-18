@@ -24,6 +24,13 @@ class JupyternetesSpawner(Spawner):
         """
     ).tag(config=True)
 
+    instance_namespace = Unicode(
+        default_value="default",
+        help = """
+        The name of the instance being created
+        """
+    ).tag(config=True)
+
     instance_port = Integer(
         default_value=80,
         help = """

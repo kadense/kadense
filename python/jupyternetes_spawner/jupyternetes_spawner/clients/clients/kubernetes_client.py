@@ -77,7 +77,7 @@ class KubernetesNamespacedCustomClient(ApiClient):
 
     
     
-    async def get_from_kube_api(self, resource_path: str, label_selector: str = None, field_selector: str = None, watch : bool = False, resource_version : str = None):
+    async def get_from_kube_api(self, resource_path: str, label_selector: str = None, field_selector: str = None, watch : bool = False, resource_version : str = None, auth_settings = ['BearerToken']):
         headers = {'Content-Type': 'application/json'}
         
         query_params = []
@@ -94,9 +94,9 @@ class KubernetesNamespacedCustomClient(ApiClient):
         if watch:
             query_params.append(('watch', "1"))
         
-        self.update_params_for_auth(headers, query_params, None)
+        self.update_params_for_auth(headers, query_params, auth_settings)
         endpoint = self.configuration.host + resource_path
-        response = await self.rest_client.request("GET", endpoint, headers=headers)
+        response = await self.rest_client.request("GET", endpoint, headers=headers, query_params=query_params)
         if response.status != 200:
             self.log.error(f"Failed to GET to {endpoint}: {response.data}")
             response.raise_for_status()

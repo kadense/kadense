@@ -65,9 +65,6 @@ COPY --from=python-libraries /tmp/dist/ /outputs
 
 FROM ${JUPYTERHUB_BASE_IMAGE} AS jupyternetes-hub
 USER root
-COPY ./python/jupyternetes_spawner/ /src/jupyternetes-spawner
-RUN export KADENSE_PY_VERSION="__version__ = \"${KADENSE_VERSION}\""; \
-    echo "KADENSE_PY_VERSION=${KADENSE_PY_VERSION}"; \
-    echo "${KADENSE_PY_VERSION}" > /src/jupyternetes-spawner/jupyternetes_spawner/_version.py; \
+COPY --from=python-libraries /workspaces/kadense/python/jupyternetes_spawner/ /src/jupyternetes-spawner
 RUN python -mpip install /src/jupyternetes-spawner
 USER jovyan

@@ -78,7 +78,7 @@ class JupyternetesUtils:
         Get the instance variables from the spawner
         """
         return {
-            "jupyterhub.user.id" : self.spawner.user.id,
+            "jupyterhub.user.id" : str(self.spawner.user.id),
             "jupyterhub.user.name" : self.spawner.user.name,
             "jupyternetes.instance.name" : self.get_unique_instance_name(self.spawner.user.name),
             "jupyternetes.instance.namespace" : self.get_instance_namespace(),

@@ -1,15 +1,26 @@
 from logging import Logger
 from pydantic import TypeAdapter, BaseModel
+from kubernetes_asyncio import config
 from kubernetes_asyncio.client import ApiClient
 from kubernetes_asyncio.client.exceptions import ApiException
 from typing import TypeVar, Generic, Mapping
 import json
 from kubernetes_asyncio.client.rest import RESTClientObject
+from os import environ
 
 class KubernetesNamespacedCustomClient(ApiClient):
     def __init__(self, log : Logger, group : str, version : str, plural : str, kind : str, list_type : type, singleton_type : type, configuration=None, header_name=None, header_value=None, cookie=None, pool_threads : int =1):
-        super().__init__(configuration, header_name, header_value, cookie, pool_threads)
         log.debug(f"Initializing KubernetesNamespacedCustomClient with group: {group}, version: {version}, plural: {plural}, kind: {kind}")
+        if configuration is None:
+           
+            kubernetes_service_host = environ.get("KUBERNETES_SERVICE_HOST")
+
+            if kubernetes_service_host:
+                configuration = config.load_incluster_config()
+            else:
+                configuration = config.load_kube_config() 
+            
+        super().__init__(configuration, header_name, header_value, cookie, pool_threads)
         self.group = group
         self.version = version
         self.plural = plural

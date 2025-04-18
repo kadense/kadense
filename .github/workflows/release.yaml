@@ -54,6 +54,7 @@ jobs:
     - container-images
     with:
       GitVersion_SemVer: ${{ needs.get-version.outputs.GitVersion_SemVer }}
+      Config: ${{ needs.setup.outputs.config }} 
   
   publish-to-pypi:
     uses: headinthecloudsolutions/kadense/.github/workflows/publish-pypi.yaml@main

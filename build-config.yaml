@@ -8,3 +8,7 @@ images:
 platforms:
   - amd64
   #- arm64
+
+helm_charts:
+  - kadense
+  - kadense-crds

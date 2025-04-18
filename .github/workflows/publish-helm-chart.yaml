@@ -1,18 +1,24 @@
 on:
-    workflow_call:
-      inputs:
-          GitVersion_SemVer:
-              description: 'The semantic version of the project'
-              required: true
-              type: string
-
+  workflow_call:
+    inputs:
+      GitVersion_SemVer:
+        description: 'The semantic version of the project'
+        required: true
+        type: string
+      Config:
+        description: 'The configuration for the workflow'
+        required: true
+        type: string
+    
 jobs:
   package:
     name: Package Helm Chart
     runs-on: ubuntu-latest
     permissions:
         contents: write
-
+    strategy:
+      matrix:
+        chart: ${{ toJson(inputs.Config).helm_charts }}
     steps:
     - name: Install Helm
       run: |
@@ -22,30 +28,30 @@ jobs:
         sudo apt-get update
         sudo apt-get install helm
 
-
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: Download Helm Artifact
+    - if: ${{ matrix.chart == 'kadense-crds' }}
+      name: Download Helm Artifact
       uses: actions/download-artifact@v4
       with:
         name: crds-artifact-linux-amd64
-        path: ./helm/templates
+        path: ./helm/${{ matrix.chart }}/templates/
         
-
-    - name: Update Values File
+    - if: ${{ matrix.chart == 'kadense' }}
+      name: Update Values File
       run: |
-        yq -i '.image.tag = "${{ inputs.GitVersion_SemVer }}"' ./helm/values.yaml
-        cat ./helm/values.yaml
+        yq -i '.image.tag = "${{ inputs.GitVersion_SemVer }}"' ./helm/${{ matrix.chart }}/values.yaml
+        cat ./helm/${{ matrix.chart }}/values.yaml
 
     - name: Helm Package
       run: |
-        helm package ./helm/ --version "${{ inputs.GitVersion_SemVer }}"
+        helm package ./helm/${{ matrix.chart }} --version "${{ inputs.GitVersion_SemVer }}"
 
     - name: Upload Helm Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: helm-artifact
+        name: helm-artifact-${{ matrix.chart }}
         path: "./*.tgz"
       
   publish:
@@ -55,7 +61,6 @@ jobs:
     - package
 
     steps:
-
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -79,7 +84,8 @@ jobs:
     - name: Download Helm Artifact
       uses: actions/download-artifact@v4
       with:
-        name: helm-artifact
+        pattern: helm-artifact-*
+        merge-multiple: true
 
     - name: Helm Repo Index
       run: |

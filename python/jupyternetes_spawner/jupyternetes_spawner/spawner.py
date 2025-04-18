@@ -10,8 +10,8 @@ from os import environ
 from kubernetes_asyncio import config
 
 class JupyternetesSpawner(Spawner):
-    utils : JupyternetesUtils
-    instance_client : JupyterNotebookInstanceClient
+    utils : JupyternetesUtils = None
+    instance_client : JupyterNotebookInstanceClient = None
 
     template_name = Unicode(
         default_value="default",
@@ -52,6 +52,7 @@ class JupyternetesSpawner(Spawner):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.instance_client = None
         try:
             self.log.debug(f"Jupyternetes Spawner Version {__version__} initializing")
             self.utils = JupyternetesUtils(self)

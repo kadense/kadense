@@ -120,14 +120,14 @@ class JupyternetesUtils:
         exists, instance = await self.check_instance_exists(instance)   
         if not exists:
             self.spawner.log.info(f"Creating instance {instance.metadata.name} in {instance.metadata.namespace}")
-            instance = await self.instance_client.create(instance.metadata.namespace, instance)
+            instance = await self.spawner.instance_client.create(instance.metadata.namespace, instance)
 
         ready, instance = self.check_instance_status(instance)
 
         wait : int = 1
         while not ready and wait < self.spawner.max_wait:
             await sleep(wait)
-            instance = await self.instance_client.get(instance.metadata.namespace, instance.metadata.name)
+            instance = await self.spawner.instance_client.get(instance.metadata.namespace, instance.metadata.name)
             ready, instance = self.check_instance_status(instance)
             wait = wait * 2
         

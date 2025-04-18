@@ -5,6 +5,7 @@ from .utils import JupyternetesUtils
 from .clients import JupyterNotebookInstanceClient
 from jupyterhub.traitlets import Unicode, Integer
 from .models import V1JupyterNotebookInstance
+from ._version import __version__
 
 class JupyternetesSpawner(Spawner):
     utils : JupyternetesUtils
@@ -42,12 +43,15 @@ class JupyternetesSpawner(Spawner):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.log.debug("Jupyternetes Spawner initializing")
-        self.utils = JupyternetesUtils(self)
-        self.log.debug("Initializing JupyterNotebookInstanceClient")
-        self.instance_client = JupyterNotebookInstanceClient()
-        self.log.debug("Jupyternetes Spawner initialized")
-
+        try:
+            self.log.debug(f"Jupyternetes Spawner Version {__version__} initializing")
+            self.utils = JupyternetesUtils(self)
+            self.log.debug("Initializing JupyterNotebookInstanceClient")
+            self.instance_client = JupyterNotebookInstanceClient()
+            self.log.debug("Jupyternetes Spawner initialized")
+        except Exception as e:
+            self.log.error(f"Error initializing Jupyternetes Spawner: {e}")
+            raise e
 
     def load_state(self, state):
         """
@@ -55,11 +59,16 @@ class JupyternetesSpawner(Spawner):
 
         Load the state of the spawner from the given state dictionary.
         """
-        self.log.debug("Jupyternetes Spawner Loading State")
-        super().load_state(state)
-        #self.instance_name = state.get("instance_name", self.instance_name)
-        #self.instance_namespace = state.get("instance_namespace", self.instance_namespace)
-        self.log.debug("Jupyternetes Spawner Loaded State")
+        try:
+            self.log.debug("Jupyternetes Spawner Loading State")
+            super().load_state(state)
+            #self.instance_name = state.get("instance_name", self.instance_name)
+            #self.instance_namespace = state.get("instance_namespace", self.instance_namespace)
+            self.log.debug("Jupyternetes Spawner Loaded State")
+
+        except Exception as e:
+            self.log.error(f"Error loading state: {e}")
+            raise e
 
     def get_state(self):
         """
@@ -67,16 +76,20 @@ class JupyternetesSpawner(Spawner):
 
         Get the state of the spawner as a dictionary.
         """
-        self.log.debug("Jupyternetes Getting Spawner State")
-        state = super().get_state()
-        #if self.instance_name is not None:
-        #    state["instance_name"] = self.instance_name
-        #
-        #if self.instance_namespace is not None:
-        #    state["instance_namespace"] = self.instance_namespace
-        
-        self.log.debug("Jupyternetes Got Spawner State")
-        return state
+        try:
+            self.log.debug("Jupyternetes Getting Spawner State")
+            state = super().get_state()
+            #if self.instance_name is not None:
+            #    state["instance_name"] = self.instance_name
+            #
+            #if self.instance_namespace is not None:
+            #    state["instance_namespace"] = self.instance_namespace
+            
+            self.log.debug("Jupyternetes Got Spawner State")
+            return state
+        except Exception as e:
+            self.log.error(f"Error getting state: {e}")
+            raise e
 
     async def start(self):
         """
@@ -84,9 +97,12 @@ class JupyternetesSpawner(Spawner):
 
         Start the spawner.
         """
-        self.log.debug("Starting Jupyternetes Spawner")
-        return self.utils.start_instance()
-
+        try:
+            self.log.debug("Starting Jupyternetes Spawner")
+            return self.utils.start_instance()
+        except Exception as e:
+            self.log.error(f"Error starting instance: {e}")
+            raise e
         
 
     async def stop(self, now=False):
@@ -95,15 +111,19 @@ class JupyternetesSpawner(Spawner):
 
         Stop the spawner.
         """
-        self.log.info("Stopping Jupyternetes Spawner")
-        if not now:
-            self.log.info("Gracefully stopping instances")
-            instance_list = await self.instance_client.list(self.instance_namespace, field_selector=f"metadata.name={self.instance_name}")
-            if len(instance_list.items) > 0:
-                self.log.info(f"Deleting instance: {self.instance_name} on namespace: {self.instance_namespace}")
-                await self.instance_client.delete(self.instance_name, self.instance_namespace)
-                self.log.info("Instance deleted")
-        self.log.info("Stopped Jupyternetes Spawner")
+        try:
+            self.log.info("Stopping Jupyternetes Spawner")
+            if not now:
+                self.log.info("Gracefully stopping instances")
+                instance_list = await self.instance_client.list(self.instance_namespace, field_selector=f"metadata.name={self.instance_name}")
+                if len(instance_list.items) > 0:
+                    self.log.info(f"Deleting instance: {self.instance_name} on namespace: {self.instance_namespace}")
+                    await self.instance_client.delete(self.instance_name, self.instance_namespace)
+                    self.log.info("Instance deleted")
+            self.log.info("Stopped Jupyternetes Spawner")
+        except Exception as e:
+            self.log.error(f"Error stopping instance: {e}")
+            raise e
 
     async def poll(self):
         """
@@ -111,11 +131,15 @@ class JupyternetesSpawner(Spawner):
 
         Poll the spawner.
         """
-        self.log.debug(f"Polling Spawner for {self.instance_name} in {self.instance_namespace}")
-        instance_list = await self.instance_client.list(self.instance_namespace, field_selector=f"metadata.name={self.instance_name}")
-        if len(instance_list.items) > 0:
-            self.log.debug(f"Polling Returning None for {self.instance_name} in {self.instance_namespace}")
-            return None
-        
-        self.log.debug(f"Polling Returning 0 for {self.instance_name} in {self.instance_namespace}")
-        return 0
+        try:
+            self.log.debug(f"Polling Spawner for {self.instance_name} in {self.instance_namespace}")
+            instance_list = await self.instance_client.list(self.instance_namespace, field_selector=f"metadata.name={self.instance_name}")
+            if len(instance_list.items) > 0:
+                self.log.debug(f"Polling Returning None for {self.instance_name} in {self.instance_namespace}")
+                return None
+            
+            self.log.debug(f"Polling Returning 0 for {self.instance_name} in {self.instance_namespace}")
+            return 0
+        except Exception as e:
+            self.log.error(f"Error polling instance: {e}")
+            raise e

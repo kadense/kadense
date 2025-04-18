@@ -45,4 +45,31 @@ jupyternetes:
         requests:
           cpu: 100m
           memory: 128Mi
-      
+  template:
+    name: default-template
+    spec:
+      pods:
+      - name: notebook
+        labels:
+          jupyternetes.kadense.io/userId: '{jupyterhub.user.id}'
+        spec:
+          containers:
+          - name: notebook
+            image: quay.io/jupyter/datascience-notebook:latest
+            volumeMounts:
+            - name: workspace-pvc
+              mountPath: /home/jovyan/work
+          volumes:
+          - name: workspace-pvc
+            persistentVolumeClaim:
+              claimName: '{jupyternetes.pvcs.workspace}'
+      pvcs:
+      - name: workspace
+        labels:
+          jupyternetes.kadense.io/userId: '{jupyterhub.user.id}'
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi    

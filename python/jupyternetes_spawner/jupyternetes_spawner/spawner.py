@@ -6,7 +6,7 @@ from .clients import JupyterNotebookInstanceClient
 from jupyterhub.traitlets import Unicode, Integer
 from .models import V1JupyterNotebookInstance
 from ._version import __version__
-from os import environ
+from os import environ, path
 from kubernetes_asyncio import config
 
 class JupyternetesSpawner(Spawner):
@@ -14,9 +14,28 @@ class JupyternetesSpawner(Spawner):
     instance_client : JupyterNotebookInstanceClient = None
 
     template_name = Unicode(
-        default_value="default",
+        default_value=environ.get("JUPYTERNETES_TEMPLATE", "default-template"),
         help = """
         The name of the template to use for this instance
+        """
+    ).tag(config=True)
+
+    def get_default_template_namespace(self):
+        """
+        Get the current namespace from the kubernetes service account
+        """
+        file_path = "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
+        if path.isfile(file_path):
+            with open(, "r") as file:
+                return file.read()
+        else:
+            return environ.get("JUPYTERNETES_TEMPLATE_NAMESPACE", "default")
+
+
+    template_namespace = Unicode(
+        default_value= get_default_template_namespace(),
+        help = """
+        The namespace of the template to use for this instance
         """
     ).tag(config=True)
 

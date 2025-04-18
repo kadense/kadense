@@ -67,6 +67,7 @@ class JupyternetesUtils:
             spec = V1JupyterNotebookInstanceSpec(
                 template = V1JupyterNotebookInstanceSpecTemplate(
                     name = self.get_template_name(),
+                    namespace = self.get_template_namespace(),
                 ),
                 variables = self.get_instance_variables()
             )
@@ -89,6 +90,12 @@ class JupyternetesUtils:
         Get the template name from the spawner
         """
         return self.spawner.template_name
+    
+    def get_template_namespace(self):
+        """
+        Get the template name from the spawner
+        """
+        return self.spawner.template_namespace
     
     def get_instance_namespace(self):
         """
@@ -142,12 +149,15 @@ class JupyternetesUtils:
         return [False, instance]
     
     def check_instance_status(self, instance : V1JupyterNotebookInstance) -> tuple[bool, V1JupyterNotebookInstance]:
-        if instance.status.podsProvisioned == "Processed":
+        if instance.status:
             self.spawner.log.info(f"Instance {instance.metadata.name} is ready")
-            return [True, instance]
-        else:
-            self.spawner.log.info(f"Instance {instance.metadata.name} is not ready")
-            return [False, instance]
+
+            if instance.status.podsProvisioned and instance.status.podsProvisioned == "Processed":
+                self.spawner.log.info(f"Instance {instance.metadata.name} is ready")
+                return [True, instance]
+            else:
+                self.spawner.log.info(f"Instance {instance.metadata.name} is not ready")
+                return [False, instance]
         
     
         

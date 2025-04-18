@@ -18,7 +18,7 @@ jobs:
         contents: write
     strategy:
       matrix:
-        chart: ${{ toJson(inputs.Config).helm_charts }}
+        chart: ${{ fromJson(inputs.Config).helm_charts }}
     steps:
     - name: Install Helm
       run: |

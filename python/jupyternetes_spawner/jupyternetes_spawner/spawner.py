@@ -26,7 +26,7 @@ class JupyternetesSpawner(Spawner):
         """
         file_path = "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
         if path.isfile(file_path):
-            with open(, "r") as file:
+            with open(file_path, "r") as file:
                 return file.read()
         else:
             return environ.get("JUPYTERNETES_TEMPLATE_NAMESPACE", "default")

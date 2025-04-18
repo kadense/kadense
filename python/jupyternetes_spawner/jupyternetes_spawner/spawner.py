@@ -106,7 +106,7 @@ class JupyternetesSpawner(Spawner):
         """
         try:
             self.log.debug("Starting Jupyternetes Spawner")
-            return self.utils.start_instance()
+            return await self.utils.start_instance()
         except Exception as e:
             self.log.error(f"Error starting instance: {e}")
             raise e

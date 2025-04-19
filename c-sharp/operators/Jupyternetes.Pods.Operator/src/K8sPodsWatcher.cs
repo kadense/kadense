@@ -87,13 +87,13 @@ namespace Kadense.Jupyternetes.Pods.Operator
                 }
                 bool updated = false;
 
-                if (notebookInstance.Status.Pods[podName].PodAddress != podIP)
+                if (notebookInstance.Status.Pods[podName].PodAddress == null || notebookInstance.Status.Pods[podName].PodAddress != podIP)
                 {
                     notebookInstance.Status.Pods[podName].PodAddress = podIP;
                     updated = true;
                 }
 
-                if (notebookInstance.Status.Pods[podName].State != "Running")
+                if (notebookInstance.Status.Pods[podName].State == null || notebookInstance.Status.Pods[podName].State != "Running")
                 {
                     notebookInstance.Status.Pods[podName].State = "Running";
                     updated = true;

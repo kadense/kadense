@@ -13,6 +13,8 @@ namespace Kadense.Jupyternetes.Pods.Operator
         public IKubernetes K8sClient { get; set; }
         public KadenseCustomResourceClient<JupyterNotebookInstance> InstanceClient { get; set; }
         public KadenseLogger<K8sPodsWatcher> Logger { get; set; }
+
+        public bool IsRunning { get; set; } = false;
         public K8sPodsWatcher()
         {
             // Initialize the watcher
@@ -23,31 +25,42 @@ namespace Kadense.Jupyternetes.Pods.Operator
             this.InstanceClient = clientFactory.Create<JupyterNotebookInstance>(this.K8sClient);
         }
 
-        public async Task Start()
+        public async Task Start(CancellationToken cancellationToken = default)
         {
-            var listResponse = this.K8sClient.CoreV1.ListPodForAllNamespacesWithHttpMessagesAsync(watch: true, labelSelector: "jupyternetes.kadense.io/instanceNamespace,jupyternetes.kadense.io/instance", cancellationToken: CancellationToken.None);
-            await foreach (var (type, item) in listResponse.WatchAsync<V1Pod, V1PodList>())
+            IsRunning = true;
+            while(IsRunning && !cancellationToken.IsCancellationRequested)
             {
-                this.Logger.LogInformation($"Event Type: {type}, Pod Name: {item.Metadata.Name}, Namespace: {item.Metadata.NamespaceProperty}");
-                if (type == WatchEventType.Added)
+                this.Logger.LogInformation("Watcher Started");
+                var listResponse = this.K8sClient.CoreV1.ListPodForAllNamespacesWithHttpMessagesAsync(watch: true, labelSelector: "jupyternetes.kadense.io/instanceNamespace,jupyternetes.kadense.io/instance", cancellationToken: CancellationToken.None);
+                await foreach (var (type, item) in listResponse.WatchAsync<V1Pod, V1PodList>(onError: OnWatchError, cancellationToken: cancellationToken))
                 {
-                    this.Logger.LogInformation($"Pod Added: {item.Metadata.Name}");
-                    await ProcessPodEvent(item);
+                    this.Logger.LogInformation($"Event Type: {type}, Pod Name: {item.Metadata.Name}, Namespace: {item.Metadata.NamespaceProperty}");
+                    if (type == WatchEventType.Added)
+                    {
+                        this.Logger.LogInformation($"Pod Added: {item.Metadata.Name}");
+                        await ProcessPodEvent(item);
+                    }
+                    else if (type == WatchEventType.Modified)
+                    {
+                        this.Logger.LogInformation($"Pod Modified: {item.Metadata.Name}");
+                        await ProcessPodEvent(item);
+                    }
+                    else if (type == WatchEventType.Deleted)
+                    {
+                        this.Logger.LogInformation($"Pod Deleted: {item.Metadata.Name}");
+                    }
+                    else if (type == WatchEventType.Error)
+                    {
+                        this.Logger.LogWarning($"Error: {item.Metadata.Name}");
+                    }
                 }
-                else if (type == WatchEventType.Modified)
-                {
-                    this.Logger.LogInformation($"Pod Modified: {item.Metadata.Name}");
-                    await ProcessPodEvent(item);
-                }
-                else if (type == WatchEventType.Deleted)
-                {
-                    this.Logger.LogInformation($"Pod Deleted: {item.Metadata.Name}");
-                }
-                else if (type == WatchEventType.Error)
-                {
-                    this.Logger.LogWarning($"Error: {item.Metadata.Name}");
-                }
+                this.Logger.LogInformation("Watcher stopped");
             }
+        }
+
+        protected void OnWatchError(Exception exception)
+        {
+            this.Logger.LogError(exception, "Error in watcher");
         }
 
         private async Task UpdateStatusAsync(JupyterNotebookInstance resource)

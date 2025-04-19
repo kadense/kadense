@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Kadense.Models.Kubernetes
 {
-    public class KadenseCustomResource : KubernetesObject, IMetadata<V1ObjectMeta>
+    public class KadenseCustomResource : KubernetesObject, IKubernetesObject<V1ObjectMeta>, IMetadata<V1ObjectMeta>
     {
         [IgnoreOnCrdGeneration]
         [JsonPropertyName("metadata")]

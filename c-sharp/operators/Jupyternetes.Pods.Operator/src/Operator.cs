@@ -11,7 +11,7 @@ namespace Kadense.Jupyternetes.Pods.Operator
             KadenseLogger<Operator> logger = new KadenseLogger<Operator>();
             logger.LogInformation($"Starting Jupyternetes Pods Operator Version {System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version}");
             var k8sPodsWatcher = new K8sPodsWatcher();
-            Task task = k8sPodsWatcher.Start();
+            Task task = Task.Run( () => k8sPodsWatcher.Start() );
             var podWatcherService = new JupyternetesPodWatcherService(logger);
             podWatcherService.StartAndWait();
             task.Wait();

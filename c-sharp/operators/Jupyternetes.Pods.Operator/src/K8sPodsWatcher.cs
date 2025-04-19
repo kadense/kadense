@@ -8,59 +8,37 @@ using Kadense.Models.Jupyternetes;
 
 namespace Kadense.Jupyternetes.Pods.Operator
 {
-    public class K8sPodsWatcher
+    public class K8sPodsWatcher : KadenseResourceWatcher<V1Pod>
     {
-        public IKubernetes K8sClient { get; set; }
         public KadenseCustomResourceClient<JupyterNotebookInstance> InstanceClient { get; set; }
-        public KadenseLogger<K8sPodsWatcher> Logger { get; set; }
+        private KadenseLogger<K8sPodsWatcher> Logger { get; set; }
 
         public bool IsRunning { get; set; } = false;
-        public K8sPodsWatcher()
+        public K8sPodsWatcher() : base()
         {
             // Initialize the watcher
             this.Logger = new KadenseLogger<K8sPodsWatcher>();
-            var k8sClientFactory = new KubernetesClientFactory();
-            this.K8sClient = k8sClientFactory.CreateClient();
             var clientFactory = new CustomResourceClientFactory();
             this.InstanceClient = clientFactory.Create<JupyterNotebookInstance>(this.K8sClient);
+            this.GenericClient = new GenericClient(this.K8sClient, "v1", "pods");
         }
 
-        public async Task Start(CancellationToken cancellationToken = default)
+        public override async Task<(V1Pod?, Corev1Event?)> OnAddedAsync(V1Pod item)
         {
-            IsRunning = true;
-            while(IsRunning && !cancellationToken.IsCancellationRequested)
-            {
-                this.Logger.LogInformation("Watcher Started");
-                var listResponse = this.K8sClient.CoreV1.ListPodForAllNamespacesWithHttpMessagesAsync(watch: true, labelSelector: "jupyternetes.kadense.io/instanceNamespace,jupyternetes.kadense.io/instance", allowWatchBookmarks: true, cancellationToken: CancellationToken.None);
-                await foreach (var (type, item) in listResponse.WatchAsync<V1Pod, V1PodList>(onError: OnWatchError, cancellationToken: cancellationToken))
-                {
-                    this.Logger.LogInformation($"Event Type: {type}, Pod Name: {item.Metadata.Name}, Namespace: {item.Metadata.NamespaceProperty}");
-                    if (type == WatchEventType.Added)
-                    {
-                        this.Logger.LogInformation($"Pod Added: {item.Metadata.Name}");
-                        await ProcessPodEvent(item);
-                    }
-                    else if (type == WatchEventType.Modified)
-                    {
-                        this.Logger.LogInformation($"Pod Modified: {item.Metadata.Name}");
-                        await ProcessPodEvent(item);
-                    }
-                    else if (type == WatchEventType.Deleted)
-                    {
-                        this.Logger.LogInformation($"Pod Deleted: {item.Metadata.Name}");
-                    }
-                    else if (type == WatchEventType.Error)
-                    {
-                        this.Logger.LogWarning($"Error: {item.Metadata.Name}");
-                    }
-                }
-                this.Logger.LogInformation("Watcher stopped");
-            }
+            this.Logger.LogInformation($"Pod {item.Metadata.Name} on {item.Metadata.NamespaceProperty} added");
+            return await ProcessPodEvent(item);
         }
 
-        protected void OnWatchError(Exception exception)
+        public override async Task<(V1Pod?, Corev1Event?)> OnUpdatedAsync(V1Pod item)
         {
-            this.Logger.LogError(exception, "Error in watcher");
+            this.Logger.LogInformation($"Pod {item.Metadata.Name} on {item.Metadata.NamespaceProperty} updated");
+            return await ProcessPodEvent(item);
+        }
+
+        public override Task<(V1Pod?, Corev1Event?)> OnDeletedAsync(V1Pod item)
+        {
+            this.Logger.LogInformation($"Pod {item.Metadata.Name} on {item.Metadata.NamespaceProperty} deleted");
+            return Task.FromResult<(V1Pod?, Corev1Event?)>((item, null));
         }
 
         private async Task UpdateStatusAsync(JupyterNotebookInstance resource)
@@ -109,34 +87,6 @@ namespace Kadense.Jupyternetes.Pods.Operator
             );
         }
 
-        protected virtual async Task<Corev1Event> CreateEventAsync(V1ObjectReference involvedObject, string action, string reason, Corev1EventSeries? series = null, V1ObjectReference? related = null, string type = "Normal", string? message = null)
-        {
-            var body = new k8s.Models.Corev1Event(
-                    metadata: new V1ObjectMeta(
-                        generateName: $"{involvedObject.Name}.",
-                        namespaceProperty: involvedObject.NamespaceProperty
-                    ),
-                    reportingComponent: System.Reflection.Assembly.GetEntryAssembly()!.GetName().Name,
-                    reportingInstance: Environment.MachineName,
-                    eventTime: DateTime.UtcNow,
-                    action: action,
-                    involvedObject: involvedObject,
-                    related: related,
-                    reason: reason,
-                    message: message,
-                    type: type
-                );
-
-            var evt = await this.K8sClient.CoreV1.CreateNamespacedEventAsync(
-                namespaceParameter: involvedObject.NamespaceProperty,
-                body: body
-            );
-
-            this.Logger.LogInformation($"Event created: {evt.Metadata.Name} for {involvedObject.Name}: {action} - {reason}");
-
-            return evt;
-        }
-
         public async Task UpdateNotebookInstanceAsync(V1Pod pod, string instanceName, string instanceNamespace, string podName, string podIP)
         {
             this.Logger.LogInformation($"Checking Notebook Instance {instanceName} in {instanceName} to see if {podName} has IP {podIP}");
@@ -183,7 +133,7 @@ namespace Kadense.Jupyternetes.Pods.Operator
             }
         }
 
-        public async Task ProcessPodEvent(V1Pod pod)
+        public async Task<(V1Pod?, Corev1Event?)> ProcessPodEvent(V1Pod pod)
         {
             this.Logger.LogInformation($"Processing Pod Event: {pod.Metadata.Name}");
             if (pod.Metadata.Labels.TryGetValue("jupyternetes.kadense.io/instance", out string? instanceName))
@@ -208,6 +158,7 @@ namespace Kadense.Jupyternetes.Pods.Operator
                     }
                 }
             }
+            return (pod, null);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
         {
             Instance = Instance == null ? TestUtils.CreateInstance(instanceName: INSTANCE_NAME, templateName: TEMPLATE_NAME) : Instance;
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
-            var watcherService = new PodWatcherService(logger);
+            var watcherService = new JupyternetesPodWatcherService(logger);
             await watcherService.OnAddedAsync(Instance);
             Assert.Equal("Pending", Instance.Status.PodsProvisionedState);
             Assert.Equal("Pending", Instance.Status.PvcsProvisionedState);
@@ -46,7 +46,7 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
         {
             Instance = Instance == null ? TestUtils.CreateInstance(instanceName: INSTANCE_NAME, templateName: TEMPLATE_NAME) : Instance;
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
-            var watcherService = new PodWatcherService(logger);
+            var watcherService = new JupyternetesPodWatcherService(logger);
             await watcherService.OnUpdatedAsync(Instance);
             Assert.Equal("Pending", Instance.Status.PodsProvisionedState);
             Assert.Equal("Pending", Instance.Status.PvcsProvisionedState);
@@ -61,7 +61,7 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
             var client = new CustomResourceClientFactory().Create<JupyterNotebookInstance>(TestUtils.CreateClient());
             Instance = await client.ReadNamespacedAsync("default", INSTANCE_NAME);
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
-            var watcherService = new PvcWatcherService(logger);
+            var watcherService = new JupyternetesPvcWatcherService(logger);
             await watcherService.OnUpdatedAsync(Instance);
             Assert.Equal("Completed", Instance.Status.PvcsProvisionedState);
         }
@@ -76,7 +76,7 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
             Instance = await client.ReadNamespacedAsync("default", INSTANCE_NAME);
             Assert.Equal("Completed", Instance.Status.PvcsProvisionedState);
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
-            var watcherService = new PodWatcherService(logger);
+            var watcherService = new JupyternetesPodWatcherService(logger);
             await watcherService.OnUpdatedAsync(Instance);
             Assert.Equal("Completed", Instance.Status.PodsProvisionedState);
             Assert.Equal("Completed", Instance.Status.PvcsProvisionedState);
@@ -93,7 +93,7 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
         {
             Instance = Instance == null ? TestUtils.CreateInstance(instanceName: INSTANCE_NAME, templateName: TEMPLATE_NAME) : Instance;
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
-            var watcherService = new PodWatcherService(logger);
+            var watcherService = new JupyternetesPodWatcherService(logger);
             await watcherService.OnDeletedAsync(Instance);
         }
     }

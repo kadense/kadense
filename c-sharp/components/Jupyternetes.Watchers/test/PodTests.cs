@@ -31,7 +31,7 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
         {
             var instance = TestUtils.CreateInstance(instanceName: INSTANCE_NAME, templateName: TEMPLATE_NAME);
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
-            var watcherService = new PodWatcherService(logger);
+            var watcherService = new JupyternetesPodWatcherService(logger);
             await watcherService.OnAddedAsync(instance);
         }
 
@@ -41,7 +41,7 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
         {
             var instance = TestUtils.CreateInstance(instanceName: INSTANCE_NAME, templateName: TEMPLATE_NAME);
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
-            var watcherService = new PodWatcherService(logger);
+            var watcherService = new JupyternetesPodWatcherService(logger);
             await watcherService.OnUpdatedAsync(instance);
         }
 
@@ -51,7 +51,7 @@ namespace Kadense.Jupyternetes.Watchers.Tests {
         {
             var instance = TestUtils.CreateInstance(instanceName: INSTANCE_NAME, templateName: TEMPLATE_NAME);
             KadenseLogger<PodTests> logger = new KadenseLogger<PodTests>();
-            var watcherService = new PodWatcherService(logger);
+            var watcherService = new JupyternetesPodWatcherService(logger);
             await watcherService.OnDeletedAsync(instance);
         }
     }

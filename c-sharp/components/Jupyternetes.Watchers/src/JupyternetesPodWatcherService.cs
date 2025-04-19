@@ -9,21 +9,21 @@ using System.Reflection;
 
 namespace Kadense.Jupyternetes.Watchers
 {
-    public class PodWatcherService : KadenseCustomResourceWatcher<JupyterNotebookInstance>
+    public class JupyternetesPodWatcherService : KadenseCustomResourceWatcher<JupyterNotebookInstance>
     {
         private readonly string STATE_COMPLETED = "Completed";
         private readonly string STATE_PARTIALLY_PROCESSED = "Partially Processed";
-        private readonly KadenseLogger<PodWatcherService> _logger;
+        private readonly KadenseLogger<JupyternetesPodWatcherService> _logger;
 
         public KadenseCustomResourceClient<JupyterNotebookTemplate> TemplateClient { get; set; }
 
         public Kadense.Models.Kubernetes.KubernetesCustomResourceAttribute CustomResourceAttribute { get; set; }
 
-        public PodWatcherService(IKadenseLogger logger) : base()
+        public JupyternetesPodWatcherService(IKadenseLogger logger) : base()
         {
             var type = typeof(JupyterNotebookInstance);
             this.CustomResourceAttribute = type.GetCustomAttributes<Kadense.Models.Kubernetes.KubernetesCustomResourceAttribute>(true).First()!;
-            _logger = logger.Create<PodWatcherService>();
+            _logger = logger.Create<JupyternetesPodWatcherService>();
             var k8sClientFactory = new KubernetesClientFactory();
             this.K8sClient = k8sClientFactory.CreateClient();
             var clientFactory = new CustomResourceClientFactory();
@@ -132,11 +132,11 @@ namespace Kadense.Jupyternetes.Watchers
 
         }
 
-        private bool UpdateResourceState(JupyterNotebookInstance resource, string name, string? resourceName = null, string? state = null, string? podAddress = null, int? portNumber = null, string? errorMessage = null)
+        private bool UpdateResourceState(JupyterNotebookInstance resource, string name, string? resourceName = null, string? state = null, string? errorMessage = null)
         {
             if(!resource.Status.Pods.ContainsKey(name))
             {
-                resource.Status.Pods.Add(name, new JupyterPodResourceState(resourceName: resourceName!, state: state!, errorMessage: errorMessage, podAddress, portNumber));
+                resource.Status.Pods.Add(name, new JupyterPodResourceState(resourceName: resourceName!, state: state!, errorMessage: errorMessage));
                 return true;
             }
 
@@ -165,18 +165,6 @@ namespace Kadense.Jupyternetes.Watchers
                 podStatus.State = state;
                 updated = true;
             }
-
-            if(podStatus.PodAddress != podAddress)
-            {
-                podStatus.PodAddress = podAddress;
-                updated = true;
-            }
-
-            if(portNumber.HasValue && (!podStatus.PortNumber.HasValue || podStatus.PortNumber != portNumber))
-            {
-                podStatus.PortNumber = portNumber;
-                updated = true;
-            }
             return updated;
         }
 
@@ -193,21 +181,7 @@ namespace Kadense.Jupyternetes.Watchers
                 string podName = pod.Metadata.Labels["jupyternetes.kadense.io/podName"];
                 var podInK8s = await CreatePodIfNotExists(resource, pod, resource.Metadata.NamespaceProperty!);
                 podNames.Add(podName);
-                string? podAddress = null;
-                int? portNumber = null;
-                if (podInK8s != null && podInK8s.Status != null && podInK8s.Status.PodIP != null)
-                    podAddress = podInK8s.Status.PodIP;
-
-                if(podInK8s != null && podInK8s.Spec != null && podInK8s.Spec.Containers.Count > 0)
-                {
-                    var container = podInK8s.Spec.Containers.First();
-                    if(container.Ports != null && container.Ports.Count > 0)
-                    {
-                        var containerPort = container.Ports.First();
-                        portNumber = containerPort.ContainerPort;
-                    }
-                }
-                if(UpdateResourceState(resource, podName, podInK8s?.Metadata.Name, "Processed", podAddress: podAddress, portNumber: portNumber))
+                if(UpdateResourceState(resource, podName, podInK8s?.Metadata.Name, "Processed"))
                 {
                     updated = true;
                 } 

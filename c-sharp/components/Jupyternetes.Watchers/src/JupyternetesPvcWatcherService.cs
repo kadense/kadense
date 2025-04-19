@@ -9,21 +9,21 @@ using System.Reflection;
 
 namespace Kadense.Jupyternetes.Watchers
 {
-    public class PvcWatcherService : KadenseCustomResourceWatcher<JupyterNotebookInstance>
+    public class JupyternetesPvcWatcherService : KadenseCustomResourceWatcher<JupyterNotebookInstance>
     {
         private readonly string STATE_COMPLETED = "Completed";
         private readonly string STATE_PARTIALLY_PROCESSED = "Partially Processed";
-        private readonly KadenseLogger<PvcWatcherService> _logger;
+        private readonly KadenseLogger<JupyternetesPvcWatcherService> _logger;
 
         public KadenseCustomResourceClient<JupyterNotebookTemplate> TemplateClient { get; set; }
 
         public Kadense.Models.Kubernetes.KubernetesCustomResourceAttribute CustomResourceAttribute { get; set; }
 
-        public PvcWatcherService(IKadenseLogger logger) : base()
+        public JupyternetesPvcWatcherService(IKadenseLogger logger) : base()
         {
             var type = typeof(JupyterNotebookInstance);
             this.CustomResourceAttribute = type.GetCustomAttributes<Kadense.Models.Kubernetes.KubernetesCustomResourceAttribute>(true).First()!;
-            _logger = logger.Create<PvcWatcherService>();
+            _logger = logger.Create<JupyternetesPvcWatcherService>();
             var k8sClientFactory = new KubernetesClientFactory();
             this.K8sClient = k8sClientFactory.CreateClient();
             var clientFactory = new CustomResourceClientFactory();

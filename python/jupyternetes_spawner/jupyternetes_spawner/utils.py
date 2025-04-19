@@ -129,13 +129,13 @@ class JupyternetesUtils:
             self.spawner.log.info(f"Creating instance {instance.metadata.name} in {instance.metadata.namespace}")
             instance = await self.spawner.instance_client.create(instance.metadata.namespace, instance)
 
-        ready, instance = self.check_instance_status(instance)
+        ready = self.check_instance_status(instance)
 
         wait : int = 1
         while not ready and wait < self.spawner.max_wait:
             await sleep(wait)
-            instance = await self.spawner.instance_client.get(instance.metadata.namespace, instance.metadata.name)
-            ready, instance = self.check_instance_status(instance)
+            instance = await self.spawner.instance_client.get(namespace = instance.metadata.namespace, name = instance.metadata.name)
+            ready = self.check_instance_status(instance)
             wait = wait * 2
         
         return self.get_pod_details(instance)        
@@ -148,16 +148,21 @@ class JupyternetesUtils:
 
         return [False, instance]
     
-    def check_instance_status(self, instance : V1JupyterNotebookInstance) -> tuple[bool, V1JupyterNotebookInstance]:
+    def check_instance_status(self, instance : V1JupyterNotebookInstance) -> bool:
         if instance.status:
             self.spawner.log.info(f"Instance {instance.metadata.name} is ready")
 
             if instance.status.podsProvisioned and instance.status.podsProvisioned == "Processed":
                 self.spawner.log.info(f"Instance {instance.metadata.name} is ready")
-                return [True, instance]
+                if instance.status.pods:
+                    for pod_key in instance.status.pods:
+                        pod = instance.status.pods[pod_key]
+                        if pod.state == "Ready":
+                            self.spawner.log.info(f"Pod {pod_key} : {pod.resource_name} is ready")
+                            return True
 
         self.spawner.log.info(f"Instance {instance.metadata.name} is not ready")
-        return [False, instance]
+        return False
         
     
         

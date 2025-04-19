@@ -166,7 +166,7 @@ class JupyternetesSpawner(Spawner):
                 instance_list = await self.instance_client.list(self.instance_namespace, field_selector=f"metadata.name={self.instance_name}")
                 if len(instance_list.items) > 0:
                     self.log.info(f"Deleting instance: {self.instance_name} on namespace: {self.instance_namespace}")
-                    await self.instance_client.delete(self.instance_namespace, self.instance_name)
+                    await self.instance_client.delete(namespace = self.instance_namespace, name = self.instance_name)
                     self.log.info("Instance deleted")
             self.log.info("Stopped Jupyternetes Spawner")
         except Exception as e:

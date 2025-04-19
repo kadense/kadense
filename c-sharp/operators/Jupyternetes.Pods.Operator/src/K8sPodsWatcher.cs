@@ -31,7 +31,7 @@ namespace Kadense.Jupyternetes.Pods.Operator
             while(IsRunning && !cancellationToken.IsCancellationRequested)
             {
                 this.Logger.LogInformation("Watcher Started");
-                var listResponse = this.K8sClient.CoreV1.ListPodForAllNamespacesWithHttpMessagesAsync(watch: true, labelSelector: "jupyternetes.kadense.io/instanceNamespace,jupyternetes.kadense.io/instance", cancellationToken: CancellationToken.None);
+                var listResponse = this.K8sClient.CoreV1.ListPodForAllNamespacesWithHttpMessagesAsync(watch: true, labelSelector: "jupyternetes.kadense.io/instanceNamespace,jupyternetes.kadense.io/instance", allowWatchBookmarks: true, cancellationToken: CancellationToken.None);
                 await foreach (var (type, item) in listResponse.WatchAsync<V1Pod, V1PodList>(onError: OnWatchError, cancellationToken: cancellationToken))
                 {
                     this.Logger.LogInformation($"Event Type: {type}, Pod Name: {item.Metadata.Name}, Namespace: {item.Metadata.NamespaceProperty}");
@@ -86,7 +86,7 @@ namespace Kadense.Jupyternetes.Pods.Operator
         {
             return await CreateEventAsync(
                 involvedObject: new V1ObjectReference(
-                    apiVersion: "jupyternetes.kadense.io/v1",
+                    apiVersion: "kadense.io/v1",
                     kind: "JupyterNotebookInstance",
                     name: involvedObject.Name,
                     namespaceProperty: involvedObject.NamespaceProperty,

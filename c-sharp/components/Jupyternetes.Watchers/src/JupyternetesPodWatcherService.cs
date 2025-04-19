@@ -160,7 +160,7 @@ namespace Kadense.Jupyternetes.Watchers
                 updated = true;
             }
 
-            if (podStatus.State != state)
+            if (podStatus.State != state && podStatus.State != "Running")
             {
                 podStatus.State = state;
                 updated = true;

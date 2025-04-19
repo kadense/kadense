@@ -69,7 +69,62 @@ namespace Kadense.Jupyternetes.Pods.Operator
             this.Logger.LogInformation("Patched Status {ResourceName}.", resource.Metadata.Name);
         }
 
-        public async Task UpdateNotebookInstanceAsync(string instanceName, string instanceNamespace, string podName, string podIP)
+        protected virtual async Task<Corev1Event> CreateEventAsync(V1ObjectMeta involvedObject, string action, string reason, Corev1EventSeries? series = null, V1Pod? related = null, string type = "Normal", string? message = null)
+        {
+            return await CreateEventAsync(
+                involvedObject: new V1ObjectReference(
+                    apiVersion: "jupyternetes.kadense.io/v1",
+                    kind: "JupyterNotebookInstance",
+                    name: involvedObject.Name,
+                    namespaceProperty: involvedObject.NamespaceProperty,
+                    uid: involvedObject.Uid,
+                    resourceVersion: involvedObject.ResourceVersion
+                ),
+                action: action,
+                reason: reason,
+                series: series,
+                related: new V1ObjectReference(
+                    apiVersion: "v1",
+                    kind: "Pod",
+                    name: related?.Metadata.Name,
+                    namespaceProperty: related?.Metadata.NamespaceProperty,
+                    uid: related?.Metadata.Uid,
+                    resourceVersion: related?.Metadata.ResourceVersion
+                ),
+                type: type,
+                message: message
+            );
+        }
+
+        protected virtual async Task<Corev1Event> CreateEventAsync(V1ObjectReference involvedObject, string action, string reason, Corev1EventSeries? series = null, V1ObjectReference? related = null, string type = "Normal", string? message = null)
+        {
+            var body = new k8s.Models.Corev1Event(
+                    metadata: new V1ObjectMeta(
+                        generateName: $"{involvedObject.Name}.",
+                        namespaceProperty: involvedObject.NamespaceProperty
+                    ),
+                    reportingComponent: System.Reflection.Assembly.GetEntryAssembly()!.GetName().Name,
+                    reportingInstance: Environment.MachineName,
+                    eventTime: DateTime.UtcNow,
+                    action: action,
+                    involvedObject: involvedObject,
+                    related: related,
+                    reason: reason,
+                    message: message,
+                    type: type
+                );
+
+            var evt = await this.K8sClient.CoreV1.CreateNamespacedEventAsync(
+                namespaceParameter: involvedObject.NamespaceProperty,
+                body: body
+            );
+
+            this.Logger.LogInformation($"Event created: {evt.Metadata.Name} for {involvedObject.Name}: {action} - {reason}");
+
+            return evt;
+        }
+
+        public async Task UpdateNotebookInstanceAsync(V1Pod pod, string instanceName, string instanceNamespace, string podName, string podIP)
         {
             this.Logger.LogInformation($"Checking Notebook Instance {instanceName} in {instanceName} to see if {podName} has IP {podIP}");
             var notebookInstance = await this.InstanceClient.ReadNamespacedAsync(instanceNamespace, instanceName);
@@ -89,13 +144,17 @@ namespace Kadense.Jupyternetes.Pods.Operator
 
                 if (notebookInstance.Status.Pods[podName].PodAddress == null || notebookInstance.Status.Pods[podName].PodAddress != podIP)
                 {
+                    this.Logger.LogInformation($"Notebook Instance {notebookInstance.Metadata.Name} in namespace {notebookInstance.Metadata.NamespaceProperty}, pod {podName} will be updated with PodAddress = {podIP}");
                     notebookInstance.Status.Pods[podName].PodAddress = podIP;
+                    await this.CreateEventAsync(notebookInstance.Metadata, "PodAddressUpdated", "PodAddressUpdated", series: null, related: pod, type: "Normal", message: $"Pod {podName} address updated to {podIP}");
                     updated = true;
                 }
 
                 if (notebookInstance.Status.Pods[podName].State == null || notebookInstance.Status.Pods[podName].State != "Running")
                 {
+                    this.Logger.LogInformation($"Notebook Instance {notebookInstance.Metadata.Name} in namespace {notebookInstance.Metadata.NamespaceProperty}, pod {podName} will be updated to State of Running");
                     notebookInstance.Status.Pods[podName].State = "Running";
+                    await this.CreateEventAsync(notebookInstance.Metadata, "PodStateUpdated", "PodIsRunning", series: null, related: pod, type: "Normal", message: $"Pod state on pod {podName} is updated to Running");
                     updated = true;
                 }
 
@@ -129,7 +188,7 @@ namespace Kadense.Jupyternetes.Pods.Operator
                                 this.Logger.LogInformation($"Pod {pod.Metadata.Name} in {pod.Metadata.NamespaceProperty} is Running");
                                 if (podStatus.PodIP != null)
                                 {
-                                    await UpdateNotebookInstanceAsync(instanceName, instanceNamespace, podName, podStatus.PodIP);
+                                    await UpdateNotebookInstanceAsync(pod, instanceName, instanceNamespace, podName, podStatus.PodIP);
                                 }
                             }
                         }

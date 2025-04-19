@@ -24,6 +24,21 @@ jupyternetes:
         requests:
           cpu: 100m
           memory: 128Mi
+  pod:
+    status:
+      operator:
+        image:
+          repository: ""
+          name: jupyternetes-podstatus-operator
+          tag: ""
+          pullPolicy: Always
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
   pvcs:
     operator:
       enabled: true

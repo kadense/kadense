@@ -83,6 +83,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CustomResourceDefinition.Ge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadense.CustomResourceDefinition.Generator", "cli\CustomResourceDefinition.Generator\src\Kadense.CustomResourceDefinition.Generator.csproj", "{18E90768-392E-45A1-9CE8-93668B60C434}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jupyternetes.PodStatus.Operator", "Jupyternetes.PodStatus.Operator", "{09D762F2-3BC4-43EB-9B21-ED2C57B28A28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadense.Jupyternetes.PodStatus.Operator", "operators\Jupyternetes.PodStatus.Operator\src\Kadense.Jupyternetes.PodStatus.Operator.csproj", "{A7C88A12-B796-4A0D-969E-7E4D053C21BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadense.Jupyternetes.PodStatus.Operator.Tests", "operators\Jupyternetes.PodStatus.Operator\test\Kadense.Jupyternetes.PodStatus.Operator.Tests.csproj", "{06DDC8E4-7558-4E9E-B724-D646976358FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -345,6 +351,30 @@ Global
 		{18E90768-392E-45A1-9CE8-93668B60C434}.Release|x64.Build.0 = Release|Any CPU
 		{18E90768-392E-45A1-9CE8-93668B60C434}.Release|x86.ActiveCfg = Release|Any CPU
 		{18E90768-392E-45A1-9CE8-93668B60C434}.Release|x86.Build.0 = Release|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Debug|x64.Build.0 = Debug|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Debug|x86.Build.0 = Debug|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Release|x64.ActiveCfg = Release|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Release|x64.Build.0 = Release|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Release|x86.ActiveCfg = Release|Any CPU
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA}.Release|x86.Build.0 = Release|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Debug|x64.Build.0 = Debug|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Debug|x86.Build.0 = Debug|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Release|x64.ActiveCfg = Release|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Release|x64.Build.0 = Release|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Release|x86.ActiveCfg = Release|Any CPU
+		{06DDC8E4-7558-4E9E-B724-D646976358FD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -386,5 +416,8 @@ Global
 		{88C9C01A-DBEA-41F7-9A92-C69ACCD72C56} = {9263A868-E162-4B55-9796-D6698F2182ED}
 		{2C8FB3F0-8B5D-4D27-BB7D-41E287B11A9A} = {DE13770C-C1A1-42BF-9E0E-166E5B020D82}
 		{18E90768-392E-45A1-9CE8-93668B60C434} = {2C8FB3F0-8B5D-4D27-BB7D-41E287B11A9A}
+		{09D762F2-3BC4-43EB-9B21-ED2C57B28A28} = {8D95823F-B83F-4C08-842C-4F95384DE3B7}
+		{A7C88A12-B796-4A0D-969E-7E4D053C21BA} = {09D762F2-3BC4-43EB-9B21-ED2C57B28A28}
+		{06DDC8E4-7558-4E9E-B724-D646976358FD} = {09D762F2-3BC4-43EB-9B21-ED2C57B28A28}
 	EndGlobalSection
 EndGlobal

@@ -4,7 +4,8 @@ images:
   - jupyternetes-pvcs-operator
   - python-libraries-artifact
   - jupyternetes-hub
-
+  - jupyternetes-podstatus-operator
+  
 platforms:
   - amd64
   #- arm64

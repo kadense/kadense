@@ -25,9 +25,14 @@ spec:
       affinity: 
         {{ toYaml .Values.jupyternetes.pods.operator.affinity | nindent 8 }}
       containers:
-      - name: controller
+      - name: pods-operator
         image: {{ include "jupyternetes.pods.operator.image.name" . }}
         imagePullPolicy: {{ .Values.jupyternetes.pods.operator.image.pullPolicy }}
         resources:
           {{- toYaml .Values.jupyternetes.pods.operator.resources | nindent 10 }}
+      - name: pod-status-operator
+        image: {{ include "jupyternetes.pod.status.operator.image.name" . }}
+        imagePullPolicy: {{ .Values.jupyternetes.pod.status.operator.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.jupyternetes.pod.status.operator.resources | nindent 10 }}
 {{- end -}}

@@ -1,0 +1,13 @@
+apiVersion: kadense.io/v1
+kind: JupyterNotebookInstance
+metadata:
+  name: test-instance
+  namespace: default
+  labels:
+    app: test
+    version: v1
+spec:
+  template:
+    name: test-template
+  variables:
+    test: test2

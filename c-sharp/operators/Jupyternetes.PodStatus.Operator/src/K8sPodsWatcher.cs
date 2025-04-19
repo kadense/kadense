@@ -6,7 +6,7 @@ using Kadense.Logging;
 using System.Security.Cryptography.X509Certificates;
 using Kadense.Models.Jupyternetes;
 
-namespace Kadense.Jupyternetes.Pods.Operator
+namespace Kadense.Jupyternetes.PodStatus.Operator
 {
     public class K8sPodsWatcher : KadenseResourceWatcher<V1Pod>
     {
@@ -53,7 +53,7 @@ namespace Kadense.Jupyternetes.Pods.Operator
                 ),
                 group: "kadense.io",
                 version: "v1",
-                plural: "JupyterNotebookInstances",
+                plural: "jupyternotebookinstances",
                 namespaceParameter: resource.Metadata.NamespaceProperty!,
                 name: resource.Metadata.Name!
             );

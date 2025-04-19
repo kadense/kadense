@@ -25,6 +25,13 @@ WORKDIR /app
 ENTRYPOINT ["dotnet", "Kadense.Jupyternetes.Pods.Operator.dll"]
 USER 999
 
+FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_SDK_VERSION} AS jupyternetes-podstatus-operator
+ARG DOTNET_SDK_VERSION
+COPY --from=builder "/workspaces/kadense/c-sharp/operators/Jupyternetes.PodStatus.Operator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/" "/app"
+WORKDIR /app
+ENTRYPOINT ["dotnet", "Kadense.Jupyternetes.PodStatus.Operator.dll"]
+USER 999
+
 FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_SDK_VERSION} AS jupyternetes-pvcs-operator
 ARG DOTNET_SDK_VERSION
 COPY --from=builder "/workspaces/kadense/c-sharp/operators/Jupyternetes.Pvcs.Operator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/" "/app"

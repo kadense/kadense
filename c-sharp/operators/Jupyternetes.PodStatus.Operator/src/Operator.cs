@@ -2,7 +2,7 @@
 using Kadense.Logging;
 using Kadense.Jupyternetes.Watchers;
 
-namespace Kadense.Jupyternetes.Pods.Operator
+namespace Kadense.Jupyternetes.PodStatus.Operator
 {
     public class Operator
     {
@@ -10,8 +10,8 @@ namespace Kadense.Jupyternetes.Pods.Operator
         {
             KadenseLogger<Operator> logger = new KadenseLogger<Operator>();
             logger.LogInformation($"Starting Jupyternetes Pods Operator Version {System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version}");
-            var podWatcherService = new JupyternetesPodWatcherService(logger);
-            podWatcherService.StartAndWait();
+            var k8sPodsWatcher = new K8sPodsWatcher();
+            k8sPodsWatcher.StartAndWait();
         }
     }
 }

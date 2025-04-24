@@ -83,6 +83,9 @@ class JupyternetesUtils:
             "jupyterhub.user.name" : self.spawner.user.name,
             "jupyternetes.instance.name" : self.get_unique_instance_name(self.spawner.user.name),
             "jupyternetes.instance.namespace" : self.get_instance_namespace(),
+            "jupyterhub.api_token" : self.spawner.api_token,
+            "jupyterhub.namespace" : self.spawner.get_hub_namespace(),
+            "jupyterhub.oauth_client_id" : self.spawner.oauth_client_id,
         }
     
     def get_template_name(self):

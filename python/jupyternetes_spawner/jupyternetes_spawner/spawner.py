@@ -20,6 +20,13 @@ def get_default_template_namespace():
     else:
         return environ.get("JUPYTERNETES_TEMPLATE_NAMESPACE", "default")
 
+
+def get_hub_namespace():
+    """
+    Get the current namespace from the kubernetes service account
+    """
+    return environ.get("JUPYTERHUB_NAMESPACE", self.get_default_template_namespace())
+
 class JupyternetesSpawner(Spawner):
     utils : JupyternetesUtils = None
     instance_client : JupyterNotebookInstanceClient = None

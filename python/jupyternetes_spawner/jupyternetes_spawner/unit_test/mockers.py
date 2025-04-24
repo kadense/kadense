@@ -108,11 +108,16 @@ class MockSpawner:
     utils : JupyternetesUtils
     log : MockSpawnerLog
     status_check_max_wait : int = 1
+    api_token : str = "test-token"
+    oauth_client_id : str = "test-client-id"
 
     def __init__(self):
         self.user = MockUser()
         self.log = MockSpawnerLog()
         self.utils = JupyternetesUtils(self)
+
+    def get_hub_namespace(self):
+        return "default"
 
 class Mocker:
     """

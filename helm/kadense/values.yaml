@@ -70,7 +70,7 @@ jupyternetes:
         spec:
           containers:
           - name: notebook
-            image: quay.io/jupyter/datascience-notebook:latest
+            image: quay.io/jupyter/datascience-notebook:hub-5.2.1
             env:
             - name: JPY_API_TOKEN
               value: '{jupyterhub.api_token}'
@@ -107,9 +107,9 @@ jupyternetes:
             - name: JUPYTERHUB_USER
               value: '{jupyterhub.user.name}'
             - name: JUPYTER_IMAGE
-              value: quay.io/jupyter/datascience-notebook:latest
+              value: quay.io/jupyter/datascience-notebook:hub-5.2.1
             - name: JUPYTER_IMAGE_SPEC
-              value: quay.io/jupyter/datascience-notebook:latest
+              value: quay.io/jupyter/datascience-notebook:hub-5.2.1
             - name: MEM_GUARANTEE
               value: "1073741824"
             volumeMounts:

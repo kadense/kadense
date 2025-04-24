@@ -11,6 +11,20 @@ from .models import (
         V1ObjectMeta,
         PodResourceState
 )
+from os import environ, path
+
+
+def get_default_template_namespace():
+    """
+    Get the current namespace from the kubernetes service account
+    """
+    file_path = "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
+    if path.isfile(file_path):
+        with open(file_path, "r") as file:
+            return file.read()
+    else:
+        return environ.get("JUPYTERNETES_TEMPLATE_NAMESPACE", "default")
+
 
 class JupyternetesUtils:
     def __init__(self, spawner=None):
@@ -19,6 +33,13 @@ class JupyternetesUtils:
         self.non_alphanum_pattern = re.compile(r'[^a-zA-Z0-9]+')
         self.default_uuid = UUID("00000000-0000-0000-0000-000000000000")
         spawner.log.debug("JupyternetesUtils initialized")
+
+    def get_hub_namespace(self):
+        """
+        Get the current namespace from the kubernetes service account
+        """
+        return environ.get("JUPYTERHUB_NAMESPACE", get_default_template_namespace())
+
 
     def get_unique_instance_name(self, name: str) -> str:
         """
@@ -84,7 +105,7 @@ class JupyternetesUtils:
             "jupyternetes.instance.name" : self.get_unique_instance_name(self.spawner.user.name),
             "jupyternetes.instance.namespace" : self.get_instance_namespace(),
             "jupyterhub.api_token" : self.spawner.api_token,
-            "jupyterhub.namespace" : self.spawner.get_hub_namespace(),
+            "jupyterhub.namespace" : self.get_hub_namespace(),
             "jupyterhub.oauth_client_id" : self.spawner.oauth_client_id,
         }
     

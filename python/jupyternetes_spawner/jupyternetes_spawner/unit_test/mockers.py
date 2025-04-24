@@ -116,9 +116,6 @@ class MockSpawner:
         self.log = MockSpawnerLog()
         self.utils = JupyternetesUtils(self)
 
-    def get_hub_namespace(self):
-        return "default"
-
 class Mocker:
     """
     A class to mock objects for testing purposes.

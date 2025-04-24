@@ -1,7 +1,7 @@
 import jupyterhub
 from jupyterhub.spawner import Spawner
 from jupyterhub.utils import exponential_backoff, maybe_future
-from .utils import JupyternetesUtils
+from .utils import JupyternetesUtils, get_default_template_namespace
 from .clients import JupyterNotebookInstanceClient
 from jupyterhub.traitlets import Unicode, Integer
 from .models import V1JupyterNotebookInstance
@@ -9,23 +9,7 @@ from ._version import __version__
 from os import environ, path
 from kubernetes_asyncio import config
 
-def get_default_template_namespace():
-    """
-    Get the current namespace from the kubernetes service account
-    """
-    file_path = "/var/run/secrets/kubernetes.io/serviceaccount/namespace"
-    if path.isfile(file_path):
-        with open(file_path, "r") as file:
-            return file.read()
-    else:
-        return environ.get("JUPYTERNETES_TEMPLATE_NAMESPACE", "default")
 
-
-def get_hub_namespace():
-    """
-    Get the current namespace from the kubernetes service account
-    """
-    return environ.get("JUPYTERHUB_NAMESPACE", self.get_default_template_namespace())
 
 class JupyternetesSpawner(Spawner):
     utils : JupyternetesUtils = None

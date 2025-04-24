@@ -9,7 +9,7 @@ from .models import (
         V1JupyterNotebookInstanceList,
         V1JupyterNotebookInstanceStatus,
         V1ObjectMeta,
-        V1JupyterNotebookInstanceStatusPodResourceState
+        PodResourceState
 )
 
 class JupyternetesUtils:
@@ -114,11 +114,11 @@ class JupyternetesUtils:
         for pod_key in instance.status.pods: 
             self.spawner.log.debug(f"Getting Pod Details for pod key: {pod_key}")
             pod = instance.status.pods[pod_key]
-            self.spawner.log.debug(f"pod_address: {pod.pod_address}") 
-            self.spawner.log.debug(f"port_number: {pod.port_number}")
-            self.spawner.log.debug(f"resource_name: {pod.resource_name}")
+            self.spawner.log.debug(f"podAddress: {pod.podAddress}") 
+            self.spawner.log.debug(f"portNumber: {pod.portNumber}")
+            self.spawner.log.debug(f"resourceName: {pod.resourceName}")
 
-            return [pod.pod_address, pod.port_number]
+            return [pod.podAddress, pod.portNumber]
 
     async def start_instance(self) -> tuple[str, int]:
         instance : V1JupyterNotebookInstance = self.create_instance()
@@ -133,9 +133,9 @@ class JupyternetesUtils:
 
         wait : int = 1
         while ready == False:
-            if wait > status_check_max_wait:
-                wait = status_check_max_wait
-                
+            if wait > self.spawner.status_check_max_wait:
+                wait = self.spawner.status_check_max_wait
+
             self.spawner.log.debug(f"instance {instance.metadata.name} in {instance.metadata.namespace} is not ready waiting {wait} seconds")
             await sleep(wait)
             instance = await self.spawner.instance_client.get(namespace = instance.metadata.namespace, name = instance.metadata.name)
@@ -160,15 +160,17 @@ class JupyternetesUtils:
                 self.spawner.log.debug(f"Pods related to {instance.metadata.name} are provisioned")
                 if instance.status.pods:
                     for pod_key in instance.status.pods:
-                        self.spawner.log.debug(f"Pod {pod_key} related to {instance.metadata.name} are not not defined")
+                        self.spawner.log.debug(f"Pod {pod_key} related to {instance.metadata.name} is defined")
                         pod = instance.status.pods[pod_key]
+                        self.spawner.log.debug(f"Pod {pod_key} related to {instance.metadata.name} is {pod}")
+
                         if pod.state and pod.state == "Ready":
-                            self.spawner.log.debug(f"Pod {pod_key} : {pod.resource_name} related to {instance.metadata.name} is ready")
+                            self.spawner.log.debug(f"Pod {pod_key} : {pod.resourceName} related to {instance.metadata.name} is ready")
                             return True
                         else:
-                            self.spawner.log.debug(f"Pod {pod_key} : {pod.resource_name} related to {instance.metadata.name} is {pod.state}")
+                            self.spawner.log.debug(f"Pod {pod_key} : {pod.resourceName} related to {instance.metadata.name} is {pod.state}")
                 else:
-                    self.spawner.log.debug(f"Pods related to {instance.metadata.name} are not not defined")
+                    self.spawner.log.debug(f"Pods related to {instance.metadata.name} are not defined")
             else:
                 self.spawner.log.debug(f"Pods related to {instance.metadata.name} are not provisioned")
         else:

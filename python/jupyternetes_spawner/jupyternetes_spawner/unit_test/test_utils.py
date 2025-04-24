@@ -49,6 +49,14 @@ class TestJupyternetesUtils:
         assert instance.spec.variables["jupyternetes.instance.namespace"] == spawner.instance_namespace
 
     @pytest.mark.asyncio
+    async def test_check_instance_status(self):
+        mocker = Mocker()
+        spawner = mocker.mock_spawner()
+        instance = await mocker.mock_instance_client().get("default", "ebf60aed2fea54fba7f249898ad18b8c")
+        status = spawner.utils.check_instance_status(instance)
+        assert status == True
+
+    @pytest.mark.asyncio
     async def test_start_instance(self):
         mocker = Mocker()
         spawner = mocker.mock_spawner()

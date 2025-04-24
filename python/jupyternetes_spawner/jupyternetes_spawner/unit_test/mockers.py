@@ -7,7 +7,7 @@ from ..models import (
     V1JupyterNotebookInstanceSpecTemplate,
     V1JupyterNotebookInstanceStatus,
     V1JupyterNotebookInstanceStatusResourceState,
-    V1JupyterNotebookInstanceStatusPodResourceState,
+    PodResourceState,
     V1ListMeta,
     V1ObjectMeta as V1ObjectMetaKadense,
 )
@@ -33,13 +33,14 @@ class MockInstanceClient:
     async def get(self, namespace, name):
         await sleep(0.1)  # Simulate async delay
         self.logger.debug(f"MockInstanceClient.get called with namespace: {namespace}, name: {name}")
-
-        pod_status = V1JupyterNotebookInstanceStatusPodResourceState()
-        pod_status.resource_name = f"{name}-p24",
-        pod_status.state = "Processed",
-        pod_status.pod_address = "10.128.15.23"
         
-        return V1JupyterNotebookInstance(
+        pod_state = PodResourceState(
+            resourceName = f"{name}-p24",
+            state = "Ready",
+            podAddress = "10.128.15.23"
+        )
+
+        instance = V1JupyterNotebookInstance(
             metadata=V1ObjectMetaKadense(
                 name=name,
                 namespace=namespace,
@@ -64,11 +65,15 @@ class MockInstanceClient:
             ),
             status=V1JupyterNotebookInstanceStatus(
                 pods={
-                    "test-container": pod_status
+                    "test-container": pod_state
                 },
                 podsProvisioned="Processed"
             )
         )
+
+        print(pod_state)
+
+        return instance
     
     async def list(self, namespace, field_selector = None, label_selector = None):
         return V1JupyterNotebookInstanceList(
@@ -90,7 +95,7 @@ class MockSpawner:
     instance_namespace : str = "default"
     utils : JupyternetesUtils
     log : MockSpawnerLog
-    max_wait : int = 30
+    status_check_max_wait : int = 1
 
     def __init__(self):
         self.user = MockUser()

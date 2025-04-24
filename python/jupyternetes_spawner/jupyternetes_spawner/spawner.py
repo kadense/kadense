@@ -60,7 +60,7 @@ class JupyternetesSpawner(Spawner):
     ).tag(config=True)
 
     instance_port = Integer(
-        default_value=80,
+        default_value=8888,
         help = """
         The default instance port
         """

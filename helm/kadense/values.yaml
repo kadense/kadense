@@ -74,6 +74,10 @@ jupyternetes:
             volumeMounts:
             - name: workspace-pvc
               mountPath: /home/jovyan/work
+            ports:
+            - containerPort: 8888
+              name: http
+              protocol: TCP
           volumes:
           - name: workspace-pvc
             persistentVolumeClaim:

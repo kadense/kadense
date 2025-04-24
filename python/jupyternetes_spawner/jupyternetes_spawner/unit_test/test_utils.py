@@ -10,7 +10,7 @@ class TestJupyternetesUtils:
         spawner = mocker.mock_spawner()
 
         url = spawner.utils.get_pod_url(pod)
-        assert url == "http://10.128.15.51:80"
+        assert url == "http://10.128.15.51:8888"
 
     @pytest.mark.parametrize(
         "user_name, expected",

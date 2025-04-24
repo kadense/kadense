@@ -136,7 +136,7 @@ class Mocker:
                     V1Container(
                         name="test-container",
                         image="test-image",
-                        ports=[V1ContainerPort(container_port=80)]
+                        ports=[V1ContainerPort(container_port=8888)]
                     )
                 ],
                 

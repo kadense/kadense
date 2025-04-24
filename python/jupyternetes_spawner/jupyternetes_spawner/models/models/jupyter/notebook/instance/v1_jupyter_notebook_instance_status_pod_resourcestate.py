@@ -7,4 +7,4 @@ class PodResourceState(BaseModel):
     errorMessage : Optional[str] = Field(default = "", alias = "errorMessage")
     parameters : Optional[dict[str,str]] = Field(default = "", alias = "parameters")
     podAddress : Optional[str] = Field(default = "", alias = "podAddress")
-    portNumber : Optional[int] = Field(default = 80, alias = "portNumber")
+    portNumber : Optional[int] = Field(default = 8888, alias = "portNumber")

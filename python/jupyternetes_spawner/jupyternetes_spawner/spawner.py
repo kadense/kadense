@@ -155,9 +155,8 @@ class JupyternetesSpawner(Spawner):
             self.log.debug("Starting Jupyternetes Spawner")
             await self.init_client()
             pod_address, port_number = await self.utils.start_instance()
-            self.log.debug(f"instance {instance.metadata.name} in {instance.metadata.namespace} has pod address {pod_address} and port number {port_number}")
             instance_address = f"{self.instance_protocol}://{pod_address}:{port_number}"
-            self.log.debug(f"instance {instance.metadata.name} in {instance.metadata.namespace} is at url: \"{instance_address}\"")
+            self.log.debug(f"instance {self.instance_name} on {self.instance_namespace} is at url: \"{instance_address}\"")
             return instance_address
         
         except Exception as e:

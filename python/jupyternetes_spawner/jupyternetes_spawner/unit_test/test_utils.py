@@ -62,4 +62,4 @@ class TestJupyternetesUtils:
         spawner = mocker.mock_spawner()
         pod_address, port_number = await spawner.utils.start_instance()
         assert pod_address == "10.128.15.23"
-        assert port_number == 80
+        assert port_number == 8888

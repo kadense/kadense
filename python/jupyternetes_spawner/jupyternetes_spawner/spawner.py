@@ -50,6 +50,14 @@ class JupyternetesSpawner(Spawner):
         The name of the instance being created
         """
     ).tag(config=True)
+    
+
+    instance_protocol = Unicode(
+        default_value="http",
+        help = """
+        The protocol to use for the instance
+        """
+    ).tag(config=True)
 
     instance_port = Integer(
         default_value=80,
@@ -137,7 +145,7 @@ class JupyternetesSpawner(Spawner):
             self.instance_client = JupyterNotebookInstanceClient(configuration=configuration)
             
 
-    async def start(self):
+    async def start(self) -> str:
         """
         override from inherited class:
 
@@ -146,11 +154,15 @@ class JupyternetesSpawner(Spawner):
         try:
             self.log.debug("Starting Jupyternetes Spawner")
             await self.init_client()
-            return await self.utils.start_instance()
+            pod_address, port_number = await self.utils.start_instance()
+            self.spawner.log.debug(f"instance {instance.metadata.name} in {instance.metadata.namespace} has pod address {pod_address} and port number {port_number}")
+            instance_address = f"{self.instance_protocol}://{pod_address}:{port_number}"
+            self.spawner.log.debug(f"instance {instance.metadata.name} in {instance.metadata.namespace} is at url: \"{instance_address}\"")
+            return instance_address
+        
         except Exception as e:
             self.log.error(f"Error starting instance: {e}")
             raise e
-        
 
     async def stop(self, now=False):
         """

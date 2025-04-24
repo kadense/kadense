@@ -111,14 +111,17 @@ class JupyternetesUtils:
         if len(instance.status.pods) == 0:
             raise Exception("No pods found in instance status")
 
+        pod : PodResourceState = None
+
         for pod_key in instance.status.pods: 
             self.spawner.log.debug(f"Getting Pod Details for pod key: {pod_key}")
             pod = instance.status.pods[pod_key]
-            self.spawner.log.debug(f"podAddress: {pod.podAddress}") 
-            self.spawner.log.debug(f"portNumber: {pod.portNumber}")
-            self.spawner.log.debug(f"resourceName: {pod.resourceName}")
 
-            return [pod.podAddress, pod.portNumber]
+        self.spawner.log.debug(f"podAddress: {pod.podAddress}") 
+        self.spawner.log.debug(f"portNumber: {pod.portNumber}")
+        self.spawner.log.debug(f"resourceName: {pod.resourceName}")
+
+        return [pod.podAddress, pod.portNumber]
 
     async def start_instance(self) -> tuple[str, int]:
         instance : V1JupyterNotebookInstance = self.create_instance()
@@ -142,7 +145,9 @@ class JupyternetesUtils:
             ready = self.check_instance_status(instance)
             wait = wait * 2
         
-        return self.get_pod_details(instance)        
+        pod_address, port_number = self.get_pod_details(instance)
+        self.spawner.log.debug(f"instance {instance.metadata.name} in {instance.metadata.namespace} has pod address {pod_address} and port number {port_number}")
+        return [pod_address, port_number]        
 
     async def check_instance_exists(self, instance : V1JupyterNotebookInstance) -> tuple[bool, V1JupyterNotebookInstance]:
         existing_instances = await self.spawner.instance_client.list(instance.metadata.namespace, field_selector=f"metadata.name={instance.metadata.name}")

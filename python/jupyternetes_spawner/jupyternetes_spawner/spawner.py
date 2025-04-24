@@ -59,10 +59,10 @@ class JupyternetesSpawner(Spawner):
     ).tag(config=True)
 
     
-    max_wait = Integer(
-        default_value=300,
+    status_check_max_wait = Integer(
+        default_value=15,
         help = """
-        Max wait for an instance to be provisioned
+        Max wait in seconds for each status check
         """
     ).tag(config=True)
 

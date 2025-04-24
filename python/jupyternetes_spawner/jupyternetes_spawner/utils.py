@@ -153,10 +153,11 @@ class JupyternetesUtils:
         return [False, instance]
     
     def check_instance_status(self, instance : V1JupyterNotebookInstance) -> bool:
+        success : bool = False
         self.spawner.log.debug(f"Checking status of {instance.metadata.name} on {instance.metadata.namespace}")
         if instance.status:
             self.spawner.log.debug(f"Checking  {instance.metadata.name}")
-            if instance.status.podsProvisioned and instance.status.podsProvisioned == "Processed":
+            if instance.status.podsProvisioned is not None and instance.status.podsProvisioned == "Completed":
                 self.spawner.log.debug(f"Pods related to {instance.metadata.name} are provisioned")
                 if instance.status.pods:
                     for pod_key in instance.status.pods:
@@ -164,19 +165,22 @@ class JupyternetesUtils:
                         pod = instance.status.pods[pod_key]
                         self.spawner.log.debug(f"Pod {pod_key} related to {instance.metadata.name} is {pod}")
 
-                        if pod.state and pod.state == "Ready":
+                        if pod.state is not None and pod.state == "Running":
                             self.spawner.log.debug(f"Pod {pod_key} : {pod.resourceName} related to {instance.metadata.name} is ready")
-                            return True
+                            success = True
                         else:
-                            self.spawner.log.debug(f"Pod {pod_key} : {pod.resourceName} related to {instance.metadata.name} is {pod.state}")
+                            self.spawner.log.debug(f"Pod {pod_key} : {pod.resourceName} related to {instance.metadata.name} is \"{pod.state}\"")
                 else:
                     self.spawner.log.debug(f"Pods related to {instance.metadata.name} are not defined")
             else:
                 self.spawner.log.debug(f"Pods related to {instance.metadata.name} are not provisioned")
         else:
             self.spawner.log.debug(f"Instance {instance.metadata.name} is not defined")
-        self.spawner.log.debug(f"Instance {instance.metadata.name} is not ready")
-        return False
+        
+        if not success:
+            self.spawner.log.debug(f"Instance {instance.metadata.name} is not ready!")
+        
+        return success
         
     
         

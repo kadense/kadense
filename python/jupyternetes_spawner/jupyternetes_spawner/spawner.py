@@ -60,7 +60,7 @@ class JupyternetesSpawner(Spawner):
 
     
     status_check_max_wait = Integer(
-        default_value=15,
+        default_value=5,
         help = """
         Max wait in seconds for each status check
         """

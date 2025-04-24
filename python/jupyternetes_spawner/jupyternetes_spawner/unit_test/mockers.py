@@ -1,5 +1,6 @@
 from asyncio import sleep
 from kubernetes_asyncio.client.models import V1ObjectMeta, V1Pod, V1PodSpec, V1Container, V1ContainerPort, V1PodStatus
+from pydantic import TypeAdapter
 from ..models import (
     V1JupyterNotebookInstance,
     V1JupyterNotebookInstanceList,
@@ -33,45 +34,56 @@ class MockInstanceClient:
     async def get(self, namespace, name):
         await sleep(0.1)  # Simulate async delay
         self.logger.debug(f"MockInstanceClient.get called with namespace: {namespace}, name: {name}")
-        
-        pod_state = PodResourceState(
-            resourceName = f"{name}-p24",
-            state = "Ready",
-            podAddress = "10.128.15.23"
-        )
-
-        instance = V1JupyterNotebookInstance(
-            metadata=V1ObjectMetaKadense(
-                name=name,
-                namespace=namespace,
-                labels={
-                    'jupyternetes.kadense.io/test-label': 'test'
+        json = {
+            "apiVersion": "kadense.io/v1",
+            "kind": "JupyterNotebookInstance",
+            "metadata": {
+                "creationTimestamp": "2025-04-24T12:07:17Z",
+                "generation": 1,
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "328533",
+                "uid": "cecf55a9-be38-4452-9aa7-46e35db0c366"
+            },
+            "spec": {
+                "template": {
+                    "name": "default-template",
+                    "namespace": "kadense"
                 },
-                annotations={
-                    'jupyternetes.kadense.io/test-annotation': 'test'
-                },
-                resource_version="811600"
-            ),
-            spec = V1JupyterNotebookInstanceSpec(
-                template=V1JupyterNotebookInstanceSpecTemplate(
-                    name="py-test",
-                ),
-                variables={
-                    "jupyterhub.user.id": "1234",
-                    "jupyterhub.user.name": "test-user",
-                    "jupyternetes.instance.name": "ebf60aed2fea54fba7f249898ad18b8c",
+                "variables": {
+                    "jupyterhub.user.id": "1",
+                    "jupyterhub.user.name": "jovyan",
+                    "jupyternetes.instance.name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
                     "jupyternetes.instance.namespace": "default"
                 }
-            ),
-            status=V1JupyterNotebookInstanceStatus(
-                pods={
-                    "test-container": pod_state
+            },
+            "status": {
+                "otherResources": {},
+                "otherResourcesProvisioned": {},
+                "pods": {
+                    "test-container": {
+                        "errorMessage": "",
+                        "parameters": {},
+                        "podAddress": "10.128.15.23",
+                        "resourceName": f"{name}-p24",
+                        "state": "Running"
+                    }
                 },
-                podsProvisioned="Processed"
-            )
-        )
+                "podsProvisioned": "Completed",
+                "pvcs": {
+                    "workspace": {
+                        "parameters": {},
+                        "resourceName": "workspace-fphcr",
+                        "state": "Processed"
+                    }
+                },
+                "pvcsProvisioned": "Completed"
+            }
+        }
+        adapter = TypeAdapter(V1JupyterNotebookInstance)
+        instance = adapter.validate_python(json, by_alias=True)
 
-        print(pod_state)
+        print(instance)
 
         return instance
     

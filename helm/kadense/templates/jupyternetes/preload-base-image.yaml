@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: jupyternetes-preload-base
+  labels:
+    k8s-app: jupyternetes-preload-base
+spec:
+  selector:
+    matchLabels:
+      name: jupyternetes-preload-base
+  template:
+    metadata:
+      labels:
+        name: jupyternetes-preload-base
+    spec:
+      tolerations:
+      # these tolerations are to have the daemonset runnable on control plane nodes
+      # remove them if your control plane nodes should not run pods
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: preload
+        image: quay.io/jupyter/datascience-notebook:latest
+        command: [ "sleep", "inf" ]
+        resources:
+          limits:
+            memory: 64Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+      terminationGracePeriodSeconds: 30

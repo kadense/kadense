@@ -132,7 +132,8 @@ class JupyternetesUtils:
         ready = self.check_instance_status(instance)
 
         wait : int = 1
-        while not ready and wait < self.spawner.max_wait:
+        while ready == False and wait < self.spawner.max_wait:
+            self.spawner.log.debug(f"instance {instance.metadata.name} in {instance.metadata.namespace} is not ready waiting {wait} seconds")
             await sleep(wait)
             instance = await self.spawner.instance_client.get(namespace = instance.metadata.namespace, name = instance.metadata.name)
             ready = self.check_instance_status(instance)

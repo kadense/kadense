@@ -1,0 +1,9 @@
+jupyternetes:
+  label: Jupyternetes
+  permalink: /jupyternetes
+  description: Jupyternetes
+
+intro:
+  label: Introductions
+  permalink: /intro
+  description: Introductions to new features and updates

@@ -1,5 +1,5 @@
 # KADENSE
-![Kadence Logo](./docs/kadense.png)
+![Kadence Logo](./docusaurus/static/img/kadense.png)
 
 ## What is the KADENSE?
 **K**ubernetes **A**dvanced **D**ata **E**cosystem, **N**ourishing **S**ecure **E**nvironments.

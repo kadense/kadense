@@ -1,0 +1,18 @@
+on:
+    workflow_call:
+      inputs: {}
+
+permissions:
+    contents: read
+    pages: write
+
+jobs:
+    publish:
+        name: Publish Helm Chart
+        runs-on: ubuntu-latest
+        steps:  
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4
+          with:
+            artifact_name: docs-artifact-linux-amd64 

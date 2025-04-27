@@ -5,6 +5,7 @@ images:
   - python-libraries-artifact
   - jupyternetes-hub
   - jupyternetes-podstatus-operator
+  - docs-artifact
   
 platforms:
   - amd64

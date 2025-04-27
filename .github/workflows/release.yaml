@@ -10,6 +10,7 @@ permissions:
   packages: write
   contents: write
   id-token: write
+  pages: write
 
 jobs:
   setup:
@@ -58,6 +59,14 @@ jobs:
   
   publish-to-pypi:
     uses: headinthecloudsolutions/kadense/.github/workflows/publish-pypi.yaml@main
+    secrets: inherit
+    needs: 
+    - get-version
+    - setup
+    - container-images
+
+  publish-ghp:
+    uses: headinthecloudsolutions/kadense/.github/workflows/publish-ghp.yaml@main
     secrets: inherit
     needs: 
     - get-version

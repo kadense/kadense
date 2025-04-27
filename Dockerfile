@@ -75,3 +75,28 @@ USER root
 COPY --from=python-libraries /workspaces/kadense/python/jupyternetes_spawner/ /src/jupyternetes-spawner
 RUN python -mpip install /src/jupyternetes-spawner
 USER jovyan
+
+FROM node:lts AS docs
+ARG KADENSE_VERSION
+ENV FORCE_COLOR=0
+RUN corepack enable
+COPY ./docusaurus/package.json /opt/docusaurus/package.json
+COPY ./docusaurus/package-lock.json /opt/docusaurus/package-lock.json
+WORKDIR /opt/docusaurus
+RUN npm ci
+COPY ./docusaurus/*.ts /opt/docusaurus/
+COPY ./docusaurus/tsconfig.json /opt/docusaurus/
+COPY ./docusaurus/blog /opt/docusaurus/blog/
+COPY ./docusaurus/docs /opt/docusaurus/docs/
+COPY ./docusaurus/src /opt/docusaurus/src/
+COPY ./docusaurus/static /opt/docusaurus/static/
+
+FROM docs AS docs-build
+RUN npm run build
+
+FROM docs AS docs-dev
+EXPOSE 3000
+CMD [ "npm", "run", "start", "--", "--host", "0.0.0.0" ]
+
+FROM scratch AS docs-artifact
+COPY --from=docs-build /opt/docusaurus/build /outputs

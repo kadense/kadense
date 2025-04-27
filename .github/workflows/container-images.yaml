@@ -113,6 +113,11 @@ jobs:
         if-no-files-found: error
         retention-days: 1
 
+    - if: ${{ matrix.image == 'docs-artifact' }}
+      name: Upload Docs Artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: /tmp/docker-artifacts/outputs/
 
   merge-images:
     needs: 

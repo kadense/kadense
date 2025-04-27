@@ -129,7 +129,7 @@ jobs:
       run: |
         echo "image_name=ghcr.io/${GITHUB_REPOSITORY}/${{ matrix.image }}" >> $GITHUB_OUTPUT
         PUSH_IMAGE="true" 
-        if [[ "${{ matrix.image }}" == .*-artifact$ ]] then
+        if [[ "${{ matrix.image }}" =~ .*-artifact$ ]] then
           PUSH_IMAGE="false";
         fi;
         echo "PUSH_IMAGE=${PUSH_IMAGE}" >> $GITHUB_OUTPUT

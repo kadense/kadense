@@ -93,7 +93,7 @@ COPY ./docusaurus/static /opt/docusaurus/static/
 
 FROM docs AS docs-build
 RUN npm run build
-RUN chmod -R 664 /opt/docusaurus/build/*
+RUN chmod -R 0777 /opt/docusaurus/build/*
 RUN ls -lRa /opt/docusaurus/build
 
 FROM docs AS docs-dev

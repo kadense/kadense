@@ -1,0 +1,29 @@
+namespace Kadense.Malleable.Reflection
+{
+    public class MalleableAssembly
+    {
+        public string Name { get; set; }
+
+        public MalleableAssembly(string name)
+        {
+            Name = name;
+        }
+
+        public Dictionary<string, Type> Types { get; private set; } = new Dictionary<string, Type>();
+
+        public void AddType(string name, Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (Types.ContainsKey(name))
+            {
+                throw new ArgumentException($"Type {type.FullName} already exists in the assembly.");
+            }
+
+            Types.Add(name, type);
+        }
+    }
+}

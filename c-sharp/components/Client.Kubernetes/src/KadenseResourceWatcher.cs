@@ -27,6 +27,13 @@ namespace Kadense.Client.Kubernetes
             var k8sClientFactory = new KubernetesClientFactory();
             this.K8sClient = k8sClientFactory.CreateClient();
         }
+        
+        public KadenseResourceWatcher(IKubernetes client)
+        {
+            _logger = new KadenseLogger<KadenseResourceWatcher<T>>();
+            var k8sClientFactory = new KubernetesClientFactory();
+            this.K8sClient = client;
+        }
         public KadenseResourceWatcher(IKubernetes client, GenericClient genericClient)
         {
             _logger = new KadenseLogger<KadenseResourceWatcher<T>>();

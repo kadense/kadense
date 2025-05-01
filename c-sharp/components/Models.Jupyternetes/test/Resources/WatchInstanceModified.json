@@ -1,0 +1,52 @@
+{
+    "type": "MODIFIED",
+    "object": {
+        "apiVersion": "kadense.io/v1",
+        "kind": "JupyterNotebookInstance",
+        "metadata": {
+            "creationTimestamp": "2025-04-28T21:40:58Z",
+            "generation": 1,
+            "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+            "namespace": "default",
+            "resourceVersion": "477631",
+            "uid": "b88420bd-e8bd-41b7-a528-a1cd7eae6c4e"
+        },
+        "spec": {
+            "template": {
+                "name": "default-template",
+                "namespace": "kadense"
+            },
+            "variables": {
+                "jupyterhub.api_token": "6b3102b1a5d5479e8d29c69cda6146b0",
+                "jupyterhub.namespace": "kadense",
+                "jupyterhub.oauth_client_id": "jupyterhub-user-jovyan",
+                "jupyterhub.user.id": "1",
+                "jupyterhub.user.name": "jovyan",
+                "jupyternetes.instance.name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "jupyternetes.instance.namespace": "default"
+            }
+        },
+        "status": {
+            "otherResources": {},
+            "otherResourcesProvisioned": {},
+            "pods": {
+                "notebook": {
+                    "errorMessage": "",
+                    "parameters": {},
+                    "podAddress": "10.244.1.147",
+                    "resourceName": "notebook-kkxpm",
+                    "state": "Running"
+                }
+            },
+            "podsProvisioned": "Completed",
+            "pvcs": {
+                "workspace": {
+                    "parameters": {},
+                    "resourceName": "workspace-fphcr",
+                    "state": "Processed"
+                }
+            },
+            "pvcsProvisioned": "Completed"
+        }
+    }
+}

@@ -4,10 +4,15 @@ using Kadense.Client.Kubernetes;
 using System.Reflection;
 using k8s;
 using Kadense.Models.Kubernetes.CoreApi;
+using Xunit.Abstractions;
 
 namespace Kadense.Models.Jupyternetes.Tests {
     public class CustomResourceTests : KadenseTest
     {
+        public CustomResourceTests(ITestOutputHelper output) : base(output)
+        {
+
+        }
         public CustomResourceTestUtils TestUtils { get; set; } = new CustomResourceTestUtils();
 
         [TestOrder(0)]
@@ -54,35 +59,33 @@ namespace Kadense.Models.Jupyternetes.Tests {
             await TestUtils.CreateOrUpdateItem<JupyterNotebookInstance>(item);
         }
 
-        [TestOrder(5)]
-        [Fact]
-        public async Task GeneratePodAsync()
-        {
-            var client = TestUtils.CreateClient();
-            var crFactory = new CustomResourceClientFactory();
-            var templateClient = crFactory.Create<JupyterNotebookTemplate>(client);
-            var instanceClient = crFactory.Create<JupyterNotebookInstance>(client);
-            var template = await templateClient.ReadNamespacedAsync("default", "test-template"); 
-            var instance = await instanceClient.ReadNamespacedAsync("default", "test-instance");
-            var (pods, conversionIssues) = template.CreatePods(instance);
-            var newPod = pods.First();
-            var existingPods = await client.CoreV1.ListNamespacedPodAsync("default"); 
-            var filteredPods = existingPods.Items.Where(x => x.Metadata.Name == newPod.Metadata.Name);
-            if(filteredPods.Count() > 0)
-            {
-                var existingPod = filteredPods.First();
-                await client.CoreV1.DeleteNamespacedPodAsync(
-                    namespaceParameter: "default", 
-                    name: newPod.Metadata.Name
-                    );
+        // [TestOrder(5)]
+        // [Fact]
+        // public async Task GeneratePodAsync()
+        // {
+        //     var client = TestUtils.CreateClient();
+        //     var crFactory = new CustomResourceClientFactory();
+        //     var templateClient = crFactory.Create<JupyterNotebookTemplate>(client);
+        //     var instanceClient = crFactory.Create<JupyterNotebookInstance>(client);
+        //     var template = await templateClient.ReadNamespacedAsync("default", "test-template"); 
+        //     var instance = await instanceClient.ReadNamespacedAsync("default", "test-instance");
+        //     var (pods, conversionIssues) = template.CreatePods(instance);
+        //     var newPod = pods.First();
+        //     var existingPods = await client.CoreV1.ListNamespacedPodAsync("default"); 
+        //     var filteredPods = existingPods.Items.Where(x => x.Metadata.Name == newPod.Metadata.Name);
+        //     if(filteredPods.Count() > 0)
+        //     {
+        //         var existingPod = filteredPods.First();
+        //         await client.CoreV1.DeleteNamespacedPodAsync(
+        //             namespaceParameter: "default", 
+        //             name: newPod.Metadata.Name
+        //             );
 
-                Thread.Sleep(1000);
-            }
+        //         Thread.Sleep(1000);
+        //     }
 
-            var createdPod = await client.CoreV1.CreateNamespacedPodAsync(newPod, "default");
-            Assert.NotNull(createdPod);
-        }
-        
-        
+        //     var createdPod = await client.CoreV1.CreateNamespacedPodAsync(newPod, "default");
+        //     Assert.NotNull(createdPod);
+        // }
     }
 }

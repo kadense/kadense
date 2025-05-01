@@ -1,0 +1,695 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:19.751779Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477602"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:19Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.4tbbv",
+                "namespace": "default",
+                "resourceVersion": "477618",
+                "uid": "59bf613e-a036-4e22-8d17-e1e64d72e8f3"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pods.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Created",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T22:25:38.779207Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477631"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T22:25:39Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.57tsx",
+                "namespace": "default",
+                "resourceVersion": "481129",
+                "uid": "f7709d72-32f7-451c-8069-c0a0f6df673d"
+            },
+            "reason": "Resource Created",
+            "reportingComponent": "Kadense.Jupyternetes.Pods.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Created",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:09.459330Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477573"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:09Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.9wtcw",
+                "namespace": "default",
+                "resourceVersion": "477590",
+                "uid": "24e4fa48-a211-4125-8e3c-624822edd25a"
+            },
+            "reason": "Resource Created",
+            "reportingComponent": "Kadense.Jupyternetes.Pvcs.Operator",
+            "reportingInstance": "jupyternetes-pvcs-op-596f59465f-5n8s6",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:16.259609Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477587"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:16Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.br5sv",
+                "namespace": "default",
+                "resourceVersion": "477604",
+                "uid": "a91ffff0-cbed-4abe-a6fa-60ada7bbd770"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pods.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Created",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:45:30.137223Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477631"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:45:30Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.cr6gz",
+                "namespace": "default",
+                "resourceVersion": "477976",
+                "uid": "8ecb2c54-e4fe-4733-90d4-efed36a75058"
+            },
+            "reason": "Resource Created",
+            "reportingComponent": "Kadense.Jupyternetes.Pvcs.Operator",
+            "reportingInstance": "jupyternetes-pvcs-op-596f59465f-5n8s6",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:20.051869Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477617"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:20Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.dqpmd",
+                "namespace": "default",
+                "resourceVersion": "477620",
+                "uid": "5ad0b2c8-821b-443e-ab90-2b14c6edac73"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pvcs.Operator",
+            "reportingInstance": "jupyternetes-pvcs-op-596f59465f-5n8s6",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:22.461274Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477631"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:22Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.flx72",
+                "namespace": "default",
+                "resourceVersion": "477632",
+                "uid": "a40c323b-bed5-41d2-b14b-e8dfe211be44"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pvcs.Operator",
+            "reportingInstance": "jupyternetes-pvcs-op-596f59465f-5n8s6",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:20.257619Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477617"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:20Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.k9bvw",
+                "namespace": "default",
+                "resourceVersion": "477622",
+                "uid": "7862422f-b50e-4979-baf4-1136970d482b"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pods.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "PodStateUpdated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:21.963977Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477617",
+                "uid": "b88420bd-e8bd-41b7-a528-a1cd7eae6c4e"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "message": "Pod state on pod notebook is updated to Running",
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:21Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.nr2xh",
+                "namespace": "default",
+                "resourceVersion": "477630",
+                "uid": "903de6fa-ca4d-40b8-8826-af0114de34b4"
+            },
+            "reason": "PodIsRunning",
+            "related": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "notebook-kkxpm",
+                "namespace": "default",
+                "resourceVersion": "477626",
+                "uid": "efa25f41-6915-4290-9478-7344f1b63e62"
+            },
+            "reportingComponent": "Kadense.Jupyternetes.PodStatus.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:16.351728Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477602"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:16Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.nzsc7",
+                "namespace": "default",
+                "resourceVersion": "477603",
+                "uid": "9eb169f9-44ec-4867-ae7a-717ef51f6c24"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pvcs.Operator",
+            "reportingInstance": "jupyternetes-pvcs-op-596f59465f-5n8s6",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:22.557181Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477631"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:22Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.q2fhx",
+                "namespace": "default",
+                "resourceVersion": "477633",
+                "uid": "2da3744d-91fa-421c-98bc-96c479d2f0d1"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pods.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:20.053119Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477613"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:20Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.r4mfk",
+                "namespace": "default",
+                "resourceVersion": "477621",
+                "uid": "c5d206b4-baf7-4aba-be23-8c8b2c000776"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pods.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:10.652523Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477591"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:10Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.r7g9l",
+                "namespace": "default",
+                "resourceVersion": "477593",
+                "uid": "13e379b3-9a88-4c0e-a6a7-0ce5327a71ac"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pvcs.Operator",
+            "reportingInstance": "jupyternetes-pvcs-op-596f59465f-5n8s6",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Created",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:48:14.138779Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477631"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:48:14Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.rdmj8",
+                "namespace": "default",
+                "resourceVersion": "478198",
+                "uid": "590bcafc-16a4-4960-9393-ce2acee531a1"
+            },
+            "reason": "Resource Created",
+            "reportingComponent": "Kadense.Jupyternetes.Pods.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:10.551715Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477587"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:10Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.scwm5",
+                "namespace": "default",
+                "resourceVersion": "477592",
+                "uid": "751e221f-1cf5-45f5-ad9f-cff4a671c6aa"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pvcs.Operator",
+            "reportingInstance": "jupyternetes-pvcs-op-596f59465f-5n8s6",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:19.551048Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477591"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:19Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.wkrqk",
+                "namespace": "default",
+                "resourceVersion": "477614",
+                "uid": "9ffb9b9f-1fe5-4456-9141-e68d23de2ea3"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pods.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Processed Resource Updated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:19.660160Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477613"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:19Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.zmpcv",
+                "namespace": "default",
+                "resourceVersion": "477619",
+                "uid": "172d121d-4223-4923-b454-1106d1b87055"
+            },
+            "reason": "Resource Updated",
+            "reportingComponent": "Kadense.Jupyternetes.Pvcs.Operator",
+            "reportingInstance": "jupyternetes-pvcs-op-596f59465f-5n8s6",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "PodAddressUpdated",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:21.553266Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477617",
+                "uid": "b88420bd-e8bd-41b7-a528-a1cd7eae6c4e"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "message": "Pod notebook address updated to 10.244.1.147",
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:21Z",
+                "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.zxxcr",
+                "namespace": "default",
+                "resourceVersion": "477629",
+                "uid": "fd10bd26-cfe0-4121-a51e-295a973a7b81"
+            },
+            "reason": "PodAddressUpdated",
+            "related": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "notebook-kkxpm",
+                "namespace": "default",
+                "resourceVersion": "477626",
+                "uid": "efa25f41-6915-4290-9478-7344f1b63e62"
+            },
+            "reportingComponent": "Kadense.Jupyternetes.PodStatus.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "action": "Binding",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:19.126093Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "notebook-kkxpm",
+                "namespace": "default",
+                "resourceVersion": "477608",
+                "uid": "efa25f41-6915-4290-9478-7344f1b63e62"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "message": "Successfully assigned default/notebook-kkxpm to minikube",
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:19Z",
+                "name": "notebook-kkxpm.183a99686005899a",
+                "namespace": "default",
+                "resourceVersion": "477610",
+                "uid": "368d3465-fa2c-4341-9222-512f24cfc9d1"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "default-scheduler-minikube",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2025-04-28T21:41:20Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{notebook}",
+                "kind": "Pod",
+                "name": "notebook-kkxpm",
+                "namespace": "default",
+                "resourceVersion": "477609",
+                "uid": "efa25f41-6915-4290-9478-7344f1b63e62"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2025-04-28T21:41:20Z",
+            "message": "Container image \"quay.io/jupyter/datascience-notebook:hub-5.2.1\" already present on machine",
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:20Z",
+                "name": "notebook-kkxpm.183a9968a65d1244",
+                "namespace": "default",
+                "resourceVersion": "477623",
+                "uid": "3801364f-050b-402e-bcde-ad746a626dc4"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "minikube",
+            "source": {
+                "component": "kubelet",
+                "host": "minikube"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2025-04-28T21:41:20Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{notebook}",
+                "kind": "Pod",
+                "name": "notebook-kkxpm",
+                "namespace": "default",
+                "resourceVersion": "477609",
+                "uid": "efa25f41-6915-4290-9478-7344f1b63e62"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2025-04-28T21:41:20Z",
+            "message": "Created container: notebook",
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:20Z",
+                "name": "notebook-kkxpm.183a9968aad85437",
+                "namespace": "default",
+                "resourceVersion": "477624",
+                "uid": "9fa9951c-05e4-4ea6-a4da-0d2b1278cc95"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "minikube",
+            "source": {
+                "component": "kubelet",
+                "host": "minikube"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2025-04-28T21:41:20Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{notebook}",
+                "kind": "Pod",
+                "name": "notebook-kkxpm",
+                "namespace": "default",
+                "resourceVersion": "477609",
+                "uid": "efa25f41-6915-4290-9478-7344f1b63e62"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2025-04-28T21:41:20Z",
+            "message": "Started container notebook",
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:20Z",
+                "name": "notebook-kkxpm.183a9968afb91370",
+                "namespace": "default",
+                "resourceVersion": "477625",
+                "uid": "6ed4f8f9-30a8-458d-aa23-ca76e3a22f82"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "minikube",
+            "source": {
+                "component": "kubelet",
+                "host": "minikube"
+            },
+            "type": "Normal"
+        },
+        {
+            "action": "Pod Created",
+            "apiVersion": "v1",
+            "eventTime": "2025-04-28T21:41:19.351120Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "kind": "Pod",
+                "name": "notebook-kkxpm",
+                "namespace": "default"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "message": "Created from JupyterNotebookInstance/8dc366d8a0f05869bfdb6e7eb3d83f65",
+            "metadata": {
+                "creationTimestamp": "2025-04-28T21:41:19Z",
+                "generateName": "notebook-kkxpm.",
+                "name": "notebook-kkxpm.jmt7g",
+                "namespace": "default",
+                "resourceVersion": "477612",
+                "uid": "6af1c7a1-e7b3-474a-8b89-67acd74726d5"
+            },
+            "reason": "Pod Creation Triggered",
+            "related": {
+                "apiVersion": "kadense.io/v1",
+                "kind": "JupyterNotebookInstance",
+                "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+                "namespace": "default",
+                "resourceVersion": "477591"
+            },
+            "reportingComponent": "Kadense.Jupyternetes.Pods.Operator",
+            "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+            "source": {},
+            "type": "Normal"
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

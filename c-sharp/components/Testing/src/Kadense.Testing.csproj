@@ -4,20 +4,17 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
-    <PackageId>Kadense.Testing</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>Shaun Turner</Authors>
-    <Company>Head in the Cloud Solutions Ltd</Company>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <IsTestProject>false</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Reactive" Version="6.0.1" />
     <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-	  <None Include="../README.md" Pack="true" PackagePath="\"/>
+	  <None Include="../README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

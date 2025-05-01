@@ -1,0 +1,38 @@
+{
+    "kind": "Namespace",
+    "apiVersion": "v1",
+    "metadata": {
+      "name": "test-namespace",
+      "uid": "cc5dd774-7607-42d3-9761-8579e469513c",
+      "resourceVersion": "18810806",
+      "creationTimestamp": "2023-05-29T09:43:54Z",
+      "labels": {
+        "kubernetes.io/metadata.name": "test-namespace"
+      },
+      "managedFields": [
+        {
+          "manager": "kubectl-create",
+          "operation": "Update",
+          "apiVersion": "v1",
+          "time": "2023-05-29T09:43:54Z",
+          "fieldsType": "FieldsV1",
+          "fieldsV1": {
+            "f:metadata": {
+              "f:labels": {
+                ".": {},
+                "f:kubernetes.io/metadata.name": {}
+              }
+            }
+          }
+        }
+      ]
+    },
+    "spec": {
+      "finalizers": [
+        "kubernetes"
+      ]
+    },
+    "status": {
+      "phase": "Active"
+    }
+  }

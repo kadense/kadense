@@ -1,5 +1,6 @@
 using System.Reflection;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Kadense.Testing
 {
@@ -8,21 +9,11 @@ namespace Kadense.Testing
         ordererAssemblyName: "Kadense.Testing")]
     public class KadenseTest
     {
-        protected string GetEmbeddedResourceAsString(string resourceName)
+        public KadenseTest(ITestOutputHelper output)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            using (var stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                if (stream == null)
-                {
-                    throw new InvalidOperationException($"Resource '{resourceName}' not found.");
-                }
-
-                using (var reader = new StreamReader(stream))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
+            this.Output = output;
         }
+
+        public ITestOutputHelper Output { get; }
     }
 }

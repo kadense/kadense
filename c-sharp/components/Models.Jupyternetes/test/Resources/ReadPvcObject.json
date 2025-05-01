@@ -1,0 +1,51 @@
+{
+    "apiVersion": "v1",
+    "kind": "PersistentVolumeClaim",
+    "metadata": {
+        "annotations": {
+            "pv.kubernetes.io/bind-completed": "yes",
+            "pv.kubernetes.io/bound-by-controller": "yes",
+            "volume.beta.kubernetes.io/storage-provisioner": "k8s.io/minikube-hostpath",
+            "volume.kubernetes.io/storage-provisioner": "k8s.io/minikube-hostpath"
+        },
+        "creationTimestamp": "2025-04-16T16:00:36Z",
+        "finalizers": [
+            "kubernetes.io/pvc-protection"
+        ],
+        "generateName": "test-pvc-",
+        "labels": {
+            "jupyternetes.kadense.io/instance": "jo-pod-test",
+            "jupyternetes.kadense.io/instanceNamespace": "default",
+            "jupyternetes.kadense.io/pvcName": "test-pvc",
+            "jupyternetes.kadense.io/template": "jo-pod-test",
+            "jupyternetes.kadense.io/templateNamespace": "default",
+            "jupyternetes.kadense.io/testProperty": "test2-instance"
+        },
+        "name": "test-pvc-csv5s",
+        "namespace": "default",
+        "resourceVersion": "158009",
+        "uid": "6fbf7e89-fd2f-4c6b-b3be-4213bc85516e"
+    },
+    "spec": {
+        "accessModes": [
+            "ReadWriteOnce"
+        ],
+        "resources": {
+            "requests": {
+                "storage": "1Gi"
+            }
+        },
+        "storageClassName": "standard",
+        "volumeMode": "Filesystem",
+        "volumeName": "pvc-6fbf7e89-fd2f-4c6b-b3be-4213bc85516e"
+    },
+    "status": {
+        "accessModes": [
+            "ReadWriteOnce"
+        ],
+        "capacity": {
+            "storage": "1Gi"
+        },
+        "phase": "Bound"
+    }
+}

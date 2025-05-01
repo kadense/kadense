@@ -1,0 +1,31 @@
+{
+    "type": "DELETED",
+    "object": {
+        "action": "Processed Resource Updated",
+        "apiVersion": "v1",
+        "eventTime": "2025-04-28T21:41:19.751779Z",
+        "firstTimestamp": null,
+        "involvedObject": {
+            "apiVersion": "kadense.io/v1",
+            "kind": "JupyterNotebookInstance",
+            "name": "8dc366d8a0f05869bfdb6e7eb3d83f65",
+            "namespace": "default",
+            "resourceVersion": "477602"
+        },
+        "kind": "Event",
+        "lastTimestamp": null,
+        "metadata": {
+            "creationTimestamp": "2025-04-28T21:41:19Z",
+            "generateName": "8dc366d8a0f05869bfdb6e7eb3d83f65.",
+            "name": "8dc366d8a0f05869bfdb6e7eb3d83f65.4tbbv",
+            "namespace": "default",
+            "resourceVersion": "477618",
+            "uid": "59bf613e-a036-4e22-8d17-e1e64d72e8f3"
+        },
+        "reason": "Resource Updated",
+        "reportingComponent": "Kadense.Jupyternetes.Pods.Operator",
+        "reportingInstance": "jupyternetes-pods-op-866c55b96b-h72xt",
+        "source": {},
+        "type": "Normal"
+    }
+}

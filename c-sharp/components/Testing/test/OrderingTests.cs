@@ -1,6 +1,11 @@
+using Xunit.Abstractions;
+
 namespace Kadense.Testing.Tests {
     public class OrderingTests : KadenseTest
-    {
+    { 
+        public OrderingTests(ITestOutputHelper output) : base(output)
+        {
+        }
         private static bool _TestA = false;
         private static bool _TestZ = false;
         private static bool _TestY = false;

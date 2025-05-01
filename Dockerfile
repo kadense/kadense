@@ -11,6 +11,9 @@ ARG DOTNET_SDK_VERSION
 COPY ./c-sharp /workspaces/kadense/c-sharp
 WORKDIR /workspaces/kadense/c-sharp
 RUN dotnet build
+RUN mkdir -p /root/.kube && \
+    touch /root/.kube/config
+RUN dotnet test 
 RUN dotnet publish -c Release /p:Version=${KADENSE_VERSION}${KADENSE_VERSION_SUFFIX} /p:AssemblyVersion=${KADENSE_VERSION}
 RUN mkdir -p /outputs/crds && \
     dotnet /workspaces/kadense/c-sharp/cli/CustomResourceDefinition.Generator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/Kadense.CustomResourceDefinition.Generator.dll /outputs/crds

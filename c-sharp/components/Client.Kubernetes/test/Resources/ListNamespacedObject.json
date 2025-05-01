@@ -1,0 +1,685 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "metadata": {
+                "annotations": {
+                    "deployment.kubernetes.io/revision": "1",
+                    "meta.helm.sh/release-name": "jupyterhub",
+                    "meta.helm.sh/release-namespace": "default"
+                },
+                "creationTimestamp": "2025-04-24T13:19:24Z",
+                "generation": 1,
+                "labels": {
+                    "app": "jupyterhub",
+                    "app.kubernetes.io/component": "hub",
+                    "app.kubernetes.io/instance": "jupyterhub",
+                    "app.kubernetes.io/managed-by": "Helm",
+                    "app.kubernetes.io/name": "jupyterhub",
+                    "chart": "jupyterhub-4.2.0",
+                    "component": "hub",
+                    "helm.sh/chart": "jupyterhub-4.2.0",
+                    "heritage": "Helm",
+                    "release": "jupyterhub"
+                },
+                "name": "hub",
+                "namespace": "default",
+                "resourceVersion": "455482",
+                "uid": "3e240598-3bbd-4dd0-8c3a-90738b411371"
+            },
+            "spec": {
+                "progressDeadlineSeconds": 600,
+                "replicas": 1,
+                "revisionHistoryLimit": 10,
+                "selector": {
+                    "matchLabels": {
+                        "app": "jupyterhub",
+                        "component": "hub",
+                        "release": "jupyterhub"
+                    }
+                },
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "template": {
+                    "metadata": {
+                        "annotations": {
+                            "checksum/config-map": "6e014813187035a5b7ea862a5fbda788af7071448d6fadd5bc32f23e9f03f291",
+                            "checksum/secret": "8c1699469f939a032a1c4f294a83db014257d78e88b09a2ad67d6691eaa94d33"
+                        },
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app": "jupyterhub",
+                            "app.kubernetes.io/component": "hub",
+                            "app.kubernetes.io/instance": "jupyterhub",
+                            "app.kubernetes.io/name": "jupyterhub",
+                            "component": "hub",
+                            "hub.jupyter.org/network-access-proxy-api": "true",
+                            "hub.jupyter.org/network-access-proxy-http": "true",
+                            "hub.jupyter.org/network-access-singleuser": "true",
+                            "release": "jupyterhub"
+                        }
+                    },
+                    "spec": {
+                        "affinity": {
+                            "nodeAffinity": {
+                                "preferredDuringSchedulingIgnoredDuringExecution": [
+                                    {
+                                        "preference": {
+                                            "matchExpressions": [
+                                                {
+                                                    "key": "hub.jupyter.org/node-purpose",
+                                                    "operator": "In",
+                                                    "values": [
+                                                        "core"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "weight": 100
+                                    }
+                                ]
+                            }
+                        },
+                        "containers": [
+                            {
+                                "args": [
+                                    "jupyterhub",
+                                    "--config",
+                                    "/usr/local/etc/jupyterhub/jupyterhub_config.py",
+                                    "--upgrade-db"
+                                ],
+                                "env": [
+                                    {
+                                        "name": "PYTHONUNBUFFERED",
+                                        "value": "1"
+                                    },
+                                    {
+                                        "name": "HELM_RELEASE_NAME",
+                                        "value": "jupyterhub"
+                                    },
+                                    {
+                                        "name": "POD_NAMESPACE",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "apiVersion": "v1",
+                                                "fieldPath": "metadata.namespace"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "CONFIGPROXY_AUTH_TOKEN",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "key": "hub.config.ConfigurableHTTPProxy.auth_token",
+                                                "name": "hub"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "image": "quay.io/jupyterhub/k8s-hub:4.2.0",
+                                "imagePullPolicy": "IfNotPresent",
+                                "livenessProbe": {
+                                    "failureThreshold": 30,
+                                    "httpGet": {
+                                        "path": "/hub/health",
+                                        "port": "http",
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 300,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "timeoutSeconds": 3
+                                },
+                                "name": "hub",
+                                "ports": [
+                                    {
+                                        "containerPort": 8081,
+                                        "name": "http",
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "failureThreshold": 1000,
+                                    "httpGet": {
+                                        "path": "/hub/health",
+                                        "port": "http",
+                                        "scheme": "HTTP"
+                                    },
+                                    "periodSeconds": 2,
+                                    "successThreshold": 1,
+                                    "timeoutSeconds": 1
+                                },
+                                "resources": {},
+                                "securityContext": {
+                                    "allowPrivilegeEscalation": false,
+                                    "capabilities": {
+                                        "drop": [
+                                            "ALL"
+                                        ]
+                                    },
+                                    "runAsGroup": 1000,
+                                    "runAsUser": 1000
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "File",
+                                "volumeMounts": [
+                                    {
+                                        "mountPath": "/usr/local/etc/jupyterhub/jupyterhub_config.py",
+                                        "name": "config",
+                                        "subPath": "jupyterhub_config.py"
+                                    },
+                                    {
+                                        "mountPath": "/usr/local/etc/jupyterhub/z2jh.py",
+                                        "name": "config",
+                                        "subPath": "z2jh.py"
+                                    },
+                                    {
+                                        "mountPath": "/usr/local/etc/jupyterhub/config/",
+                                        "name": "config"
+                                    },
+                                    {
+                                        "mountPath": "/usr/local/etc/jupyterhub/secret/",
+                                        "name": "secret"
+                                    },
+                                    {
+                                        "mountPath": "/srv/jupyterhub",
+                                        "name": "pvc"
+                                    }
+                                ]
+                            }
+                        ],
+                        "dnsPolicy": "ClusterFirst",
+                        "restartPolicy": "Always",
+                        "schedulerName": "default-scheduler",
+                        "securityContext": {
+                            "fsGroup": 1000,
+                            "runAsNonRoot": true,
+                            "seccompProfile": {
+                                "type": "RuntimeDefault"
+                            }
+                        },
+                        "serviceAccount": "hub",
+                        "serviceAccountName": "hub",
+                        "terminationGracePeriodSeconds": 30,
+                        "tolerations": [
+                            {
+                                "effect": "NoSchedule",
+                                "key": "hub.jupyter.org/dedicated",
+                                "operator": "Equal",
+                                "value": "core"
+                            },
+                            {
+                                "effect": "NoSchedule",
+                                "key": "hub.jupyter.org_dedicated",
+                                "operator": "Equal",
+                                "value": "core"
+                            }
+                        ],
+                        "volumes": [
+                            {
+                                "configMap": {
+                                    "defaultMode": 420,
+                                    "name": "hub"
+                                },
+                                "name": "config"
+                            },
+                            {
+                                "name": "secret",
+                                "secret": {
+                                    "defaultMode": 420,
+                                    "secretName": "hub"
+                                }
+                            },
+                            {
+                                "name": "pvc",
+                                "persistentVolumeClaim": {
+                                    "claimName": "hub-db-dir"
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "status": {
+                "availableReplicas": 1,
+                "conditions": [
+                    {
+                        "lastTransitionTime": "2025-04-24T13:19:24Z",
+                        "lastUpdateTime": "2025-04-24T13:19:47Z",
+                        "message": "ReplicaSet \"hub-56bbf8bbb7\" has successfully progressed.",
+                        "reason": "NewReplicaSetAvailable",
+                        "status": "True",
+                        "type": "Progressing"
+                    },
+                    {
+                        "lastTransitionTime": "2025-04-28T14:17:15Z",
+                        "lastUpdateTime": "2025-04-28T14:17:15Z",
+                        "message": "Deployment has minimum availability.",
+                        "reason": "MinimumReplicasAvailable",
+                        "status": "True",
+                        "type": "Available"
+                    }
+                ],
+                "observedGeneration": 1,
+                "readyReplicas": 1,
+                "replicas": 1,
+                "updatedReplicas": 1
+            }
+        },
+        {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "metadata": {
+                "annotations": {
+                    "deployment.kubernetes.io/revision": "1",
+                    "meta.helm.sh/release-name": "jupyterhub",
+                    "meta.helm.sh/release-namespace": "default"
+                },
+                "creationTimestamp": "2025-04-24T13:19:24Z",
+                "generation": 1,
+                "labels": {
+                    "app": "jupyterhub",
+                    "app.kubernetes.io/component": "proxy",
+                    "app.kubernetes.io/instance": "jupyterhub",
+                    "app.kubernetes.io/managed-by": "Helm",
+                    "app.kubernetes.io/name": "jupyterhub",
+                    "chart": "jupyterhub-4.2.0",
+                    "component": "proxy",
+                    "helm.sh/chart": "jupyterhub-4.2.0",
+                    "heritage": "Helm",
+                    "release": "jupyterhub"
+                },
+                "name": "proxy",
+                "namespace": "default",
+                "resourceVersion": "332860",
+                "uid": "d696ad2f-9292-470b-a49c-e52b51d79def"
+            },
+            "spec": {
+                "progressDeadlineSeconds": 600,
+                "replicas": 1,
+                "revisionHistoryLimit": 10,
+                "selector": {
+                    "matchLabels": {
+                        "app": "jupyterhub",
+                        "component": "proxy",
+                        "release": "jupyterhub"
+                    }
+                },
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "template": {
+                    "metadata": {
+                        "annotations": {
+                            "checksum/auth-token": "6d69",
+                            "checksum/proxy-secret": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+                        },
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app": "jupyterhub",
+                            "app.kubernetes.io/component": "proxy",
+                            "app.kubernetes.io/instance": "jupyterhub",
+                            "app.kubernetes.io/name": "jupyterhub",
+                            "component": "proxy",
+                            "hub.jupyter.org/network-access-hub": "true",
+                            "hub.jupyter.org/network-access-singleuser": "true",
+                            "release": "jupyterhub"
+                        }
+                    },
+                    "spec": {
+                        "affinity": {
+                            "nodeAffinity": {
+                                "preferredDuringSchedulingIgnoredDuringExecution": [
+                                    {
+                                        "preference": {
+                                            "matchExpressions": [
+                                                {
+                                                    "key": "hub.jupyter.org/node-purpose",
+                                                    "operator": "In",
+                                                    "values": [
+                                                        "core"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "weight": 100
+                                    }
+                                ]
+                            }
+                        },
+                        "containers": [
+                            {
+                                "command": [
+                                    "configurable-http-proxy",
+                                    "--ip=",
+                                    "--api-ip=",
+                                    "--api-port=8001",
+                                    "--default-target=http://hub:$(HUB_SERVICE_PORT)",
+                                    "--error-target=http://hub:$(HUB_SERVICE_PORT)/hub/error",
+                                    "--port=8000"
+                                ],
+                                "env": [
+                                    {
+                                        "name": "CONFIGPROXY_AUTH_TOKEN",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "key": "hub.config.ConfigurableHTTPProxy.auth_token",
+                                                "name": "hub"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "image": "quay.io/jupyterhub/configurable-http-proxy:4.6.3",
+                                "imagePullPolicy": "IfNotPresent",
+                                "livenessProbe": {
+                                    "failureThreshold": 30,
+                                    "httpGet": {
+                                        "path": "/_chp_healthz",
+                                        "port": "http",
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 60,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "timeoutSeconds": 3
+                                },
+                                "name": "chp",
+                                "ports": [
+                                    {
+                                        "containerPort": 8000,
+                                        "name": "http",
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 8001,
+                                        "name": "api",
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "failureThreshold": 1000,
+                                    "httpGet": {
+                                        "path": "/_chp_healthz",
+                                        "port": "http",
+                                        "scheme": "HTTP"
+                                    },
+                                    "periodSeconds": 2,
+                                    "successThreshold": 1,
+                                    "timeoutSeconds": 1
+                                },
+                                "resources": {},
+                                "securityContext": {
+                                    "allowPrivilegeEscalation": false,
+                                    "capabilities": {
+                                        "drop": [
+                                            "ALL"
+                                        ]
+                                    },
+                                    "runAsGroup": 65534,
+                                    "runAsNonRoot": true,
+                                    "runAsUser": 65534,
+                                    "seccompProfile": {
+                                        "type": "RuntimeDefault"
+                                    }
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "File"
+                            }
+                        ],
+                        "dnsPolicy": "ClusterFirst",
+                        "restartPolicy": "Always",
+                        "schedulerName": "default-scheduler",
+                        "securityContext": {},
+                        "terminationGracePeriodSeconds": 60,
+                        "tolerations": [
+                            {
+                                "effect": "NoSchedule",
+                                "key": "hub.jupyter.org/dedicated",
+                                "operator": "Equal",
+                                "value": "core"
+                            },
+                            {
+                                "effect": "NoSchedule",
+                                "key": "hub.jupyter.org_dedicated",
+                                "operator": "Equal",
+                                "value": "core"
+                            }
+                        ]
+                    }
+                }
+            },
+            "status": {
+                "availableReplicas": 1,
+                "conditions": [
+                    {
+                        "lastTransitionTime": "2025-04-24T13:19:37Z",
+                        "lastUpdateTime": "2025-04-24T13:19:37Z",
+                        "message": "Deployment has minimum availability.",
+                        "reason": "MinimumReplicasAvailable",
+                        "status": "True",
+                        "type": "Available"
+                    },
+                    {
+                        "lastTransitionTime": "2025-04-24T13:19:24Z",
+                        "lastUpdateTime": "2025-04-24T13:19:37Z",
+                        "message": "ReplicaSet \"proxy-57d7bc598f\" has successfully progressed.",
+                        "reason": "NewReplicaSetAvailable",
+                        "status": "True",
+                        "type": "Progressing"
+                    }
+                ],
+                "observedGeneration": 1,
+                "readyReplicas": 1,
+                "replicas": 1,
+                "updatedReplicas": 1
+            }
+        },
+        {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "metadata": {
+                "annotations": {
+                    "deployment.kubernetes.io/revision": "1",
+                    "meta.helm.sh/release-name": "jupyterhub",
+                    "meta.helm.sh/release-namespace": "default"
+                },
+                "creationTimestamp": "2025-04-24T13:19:24Z",
+                "generation": 1,
+                "labels": {
+                    "app": "jupyterhub",
+                    "app.kubernetes.io/component": "user-scheduler",
+                    "app.kubernetes.io/instance": "jupyterhub",
+                    "app.kubernetes.io/managed-by": "Helm",
+                    "app.kubernetes.io/name": "jupyterhub",
+                    "chart": "jupyterhub-4.2.0",
+                    "component": "user-scheduler",
+                    "helm.sh/chart": "jupyterhub-4.2.0",
+                    "heritage": "Helm",
+                    "release": "jupyterhub"
+                },
+                "name": "user-scheduler",
+                "namespace": "default",
+                "resourceVersion": "455424",
+                "uid": "18541949-ae3d-4a7f-88f8-e652f53762ed"
+            },
+            "spec": {
+                "progressDeadlineSeconds": 600,
+                "replicas": 2,
+                "revisionHistoryLimit": 10,
+                "selector": {
+                    "matchLabels": {
+                        "app": "jupyterhub",
+                        "component": "user-scheduler",
+                        "release": "jupyterhub"
+                    }
+                },
+                "strategy": {
+                    "rollingUpdate": {
+                        "maxSurge": "25%",
+                        "maxUnavailable": "25%"
+                    },
+                    "type": "RollingUpdate"
+                },
+                "template": {
+                    "metadata": {
+                        "annotations": {
+                            "checksum/config-map": "217af6041cbdc73fa8c9c94def209e97d07fe65db65446d6f7110ef18b2ca571"
+                        },
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app": "jupyterhub",
+                            "app.kubernetes.io/component": "user-scheduler",
+                            "app.kubernetes.io/instance": "jupyterhub",
+                            "app.kubernetes.io/name": "jupyterhub",
+                            "component": "user-scheduler",
+                            "release": "jupyterhub"
+                        }
+                    },
+                    "spec": {
+                        "affinity": {
+                            "nodeAffinity": {
+                                "preferredDuringSchedulingIgnoredDuringExecution": [
+                                    {
+                                        "preference": {
+                                            "matchExpressions": [
+                                                {
+                                                    "key": "hub.jupyter.org/node-purpose",
+                                                    "operator": "In",
+                                                    "values": [
+                                                        "core"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "weight": 100
+                                    }
+                                ]
+                            }
+                        },
+                        "containers": [
+                            {
+                                "command": [
+                                    "/usr/local/bin/kube-scheduler",
+                                    "--config=/etc/user-scheduler/config.yaml",
+                                    "--authentication-skip-lookup=true",
+                                    "--v=4"
+                                ],
+                                "image": "registry.k8s.io/kube-scheduler:v1.30.11",
+                                "imagePullPolicy": "IfNotPresent",
+                                "livenessProbe": {
+                                    "failureThreshold": 3,
+                                    "httpGet": {
+                                        "path": "/healthz",
+                                        "port": 10259,
+                                        "scheme": "HTTPS"
+                                    },
+                                    "initialDelaySeconds": 15,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "timeoutSeconds": 1
+                                },
+                                "name": "kube-scheduler",
+                                "readinessProbe": {
+                                    "failureThreshold": 3,
+                                    "httpGet": {
+                                        "path": "/healthz",
+                                        "port": 10259,
+                                        "scheme": "HTTPS"
+                                    },
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "timeoutSeconds": 1
+                                },
+                                "resources": {},
+                                "securityContext": {
+                                    "allowPrivilegeEscalation": false,
+                                    "capabilities": {
+                                        "drop": [
+                                            "ALL"
+                                        ]
+                                    },
+                                    "runAsGroup": 65534,
+                                    "runAsNonRoot": true,
+                                    "runAsUser": 65534,
+                                    "seccompProfile": {
+                                        "type": "RuntimeDefault"
+                                    }
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "File",
+                                "volumeMounts": [
+                                    {
+                                        "mountPath": "/etc/user-scheduler",
+                                        "name": "config"
+                                    }
+                                ]
+                            }
+                        ],
+                        "dnsPolicy": "ClusterFirst",
+                        "restartPolicy": "Always",
+                        "schedulerName": "default-scheduler",
+                        "securityContext": {},
+                        "serviceAccount": "user-scheduler",
+                        "serviceAccountName": "user-scheduler",
+                        "terminationGracePeriodSeconds": 30,
+                        "tolerations": [
+                            {
+                                "effect": "NoSchedule",
+                                "key": "hub.jupyter.org/dedicated",
+                                "operator": "Equal",
+                                "value": "core"
+                            },
+                            {
+                                "effect": "NoSchedule",
+                                "key": "hub.jupyter.org_dedicated",
+                                "operator": "Equal",
+                                "value": "core"
+                            }
+                        ],
+                        "volumes": [
+                            {
+                                "configMap": {
+                                    "defaultMode": 420,
+                                    "name": "user-scheduler"
+                                },
+                                "name": "config"
+                            }
+                        ]
+                    }
+                }
+            },
+            "status": {
+                "availableReplicas": 2,
+                "conditions": [
+                    {
+                        "lastTransitionTime": "2025-04-24T13:19:24Z",
+                        "lastUpdateTime": "2025-04-24T13:19:49Z",
+                        "message": "ReplicaSet \"user-scheduler-6d5b7bdb56\" has successfully progressed.",
+                        "reason": "NewReplicaSetAvailable",
+                        "status": "True",
+                        "type": "Progressing"
+                    },
+                    {
+                        "lastTransitionTime": "2025-04-28T14:16:55Z",
+                        "lastUpdateTime": "2025-04-28T14:16:55Z",
+                        "message": "Deployment has minimum availability.",
+                        "reason": "MinimumReplicasAvailable",
+                        "status": "True",
+                        "type": "Available"
+                    }
+                ],
+                "observedGeneration": 1,
+                "readyReplicas": 2,
+                "replicas": 2,
+                "updatedReplicas": 2
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

@@ -29,6 +29,15 @@ namespace Kadense.Jupyternetes.Watchers
             var clientFactory = new CustomResourceClientFactory();
             this.TemplateClient = clientFactory.Create<JupyterNotebookTemplate>(this.K8sClient);
         }
+        public JupyternetesPvcWatcherService(IKubernetes k8sClient, IKadenseLogger logger) : base(k8sClient)
+        {
+            var type = typeof(JupyterNotebookInstance);
+            this.CustomResourceAttribute = type.GetCustomAttributes<Kadense.Models.Kubernetes.KubernetesCustomResourceAttribute>(true).First()!;
+            _logger = logger.Create<JupyternetesPvcWatcherService>();
+            this.K8sClient = k8sClient;
+            var clientFactory = new CustomResourceClientFactory();
+            this.TemplateClient = clientFactory.Create<JupyterNotebookTemplate>(this.K8sClient);
+        }
 
         public override async Task<(JupyterNotebookInstance?, k8s.Models.Corev1Event?)> OnAddedAsync(JupyterNotebookInstance resource)
         {

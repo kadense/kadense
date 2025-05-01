@@ -1,0 +1,90 @@
+{
+    "apiVersion": "apiextensions.k8s.io/v1",
+    "kind": "CustomResourceDefinition",
+    "metadata": {
+        "creationTimestamp": "2025-04-28T14:26:37Z",
+        "generation": 1,
+        "name": "kadensetests.kadense.io",
+        "resourceVersion": "456243",
+        "uid": "82f4caca-011d-4470-9488-f5e924a54bf5"
+    },
+    "spec": {
+        "conversion": {
+            "strategy": "None"
+        },
+        "group": "kadense.io",
+        "names": {
+            "kind": "kadensetest",
+            "listKind": "kadensetestList",
+            "plural": "kadensetests",
+            "singular": "kadensetest"
+        },
+        "scope": "Namespaced",
+        "versions": [
+            {
+                "name": "v1",
+                "schema": {
+                    "openAPIV3Schema": {
+                        "properties": {
+                            "Value": {
+                                "type": "integer"
+                            },
+                            "ValueChildObject": {
+                                "properties": {
+                                    "Description": {
+                                        "type": "string"
+                                    },
+                                    "Name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "ValueEnum": {
+                                "enum": [
+                                    "Testing123",
+                                    "OMG",
+                                    "WHY"
+                                ],
+                                "type": "string"
+                            },
+                            "myName": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "served": true,
+                "storage": true
+            }
+        ]
+    },
+    "status": {
+        "acceptedNames": {
+            "kind": "kadensetest",
+            "listKind": "kadensetestList",
+            "plural": "kadensetests",
+            "singular": "kadensetest"
+        },
+        "conditions": [
+            {
+                "lastTransitionTime": "2025-04-28T14:26:37Z",
+                "message": "no conflicts found",
+                "reason": "NoConflicts",
+                "status": "True",
+                "type": "NamesAccepted"
+            },
+            {
+                "lastTransitionTime": "2025-04-28T14:26:37Z",
+                "message": "the initial names have been accepted",
+                "reason": "InitialNamesAccepted",
+                "status": "True",
+                "type": "Established"
+            }
+        ],
+        "storedVersions": [
+            "v1"
+        ]
+    }
+}

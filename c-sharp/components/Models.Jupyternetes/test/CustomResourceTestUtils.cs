@@ -2,14 +2,16 @@ using k8s;
 using Kadense.Models.Kubernetes;
 using Kadense.Models.Kubernetes.CoreApi;
 using Kadense.Client.Kubernetes;
+using Kadense.Client.Kubernetes.Tests;
 
 namespace Kadense.Models.Jupyternetes.Tests {
     public class CustomResourceTestUtils
     {
         public IKubernetes CreateClient()
         {
-            KubernetesClientFactory clientFactory = new KubernetesClientFactory();
-            return clientFactory.CreateClient();
+            var MockedKubeApiServer = new JupyternetesMockApi();
+            MockedKubeApiServer.Start();
+            return MockedKubeApiServer.CreateClient();
         }
 
         public async Task CreateOrUpdateItem<T>(T item)

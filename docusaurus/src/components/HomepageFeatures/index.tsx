@@ -15,7 +15,7 @@ const FeatureList: FeatureItem[] = [
     MyImage: 'img/kadense-icon.png',
     description: (
       <>
-        Kadense makes it easy to unleash the power of Kubernetes to build robust, highly scalable applications and services.
+        Kadense simplifies harnessing the power of Kubernetes, enabling the creation of robust and highly scalable applications and services.
       </>
     ),
   },
@@ -24,7 +24,7 @@ const FeatureList: FeatureItem[] = [
     MyImage: 'img/jupyternetes.png',
     description: (
       <>
-        Jupyternetes allows you to run Jupyter Notebooks in a Kubernetes cluster, enabling you to leverage the power of Kubernetes for your data science and machine learning workflows.
+        Jupyternetes enables running Jupyter Notebooks within a Kubernetes cluster, harnessing Kubernetes' power for data science and machine learning workflows.
       </>
     ),
   }

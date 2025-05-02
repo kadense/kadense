@@ -18,12 +18,8 @@ namespace Kadense.Malleable.Reflection
                 throw new ArgumentNullException(nameof(type));
             }
 
-            if (Types.ContainsKey(name))
-            {
-                throw new ArgumentException($"Type {type.FullName} already exists in the assembly.");
-            }
-
-            Types.Add(name, type);
+            if (!Types.ContainsKey(name))
+                Types.Add(name, type);
         }
     }
 }

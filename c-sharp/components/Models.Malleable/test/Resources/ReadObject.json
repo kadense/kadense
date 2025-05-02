@@ -1,0 +1,41 @@
+{
+    "apiVersion": "kadense.io/v1",
+    "kind": "MalleableModule",
+    "metadata": {
+        "creationTimestamp": "2025-04-28T21:40:58Z",
+        "generation": 1,
+        "name": "test-module",
+        "namespace": "default",
+        "resourceVersion": "477631",
+        "uid": "b88420bd-e8bd-41b7-a528-a1cd7eae6c4e"
+    },
+    "spec": {
+        "classes": {
+            "TestClass": {
+                "properties": {
+                    "TestProperty": {
+                        "type": "string"
+                    }
+                }
+            },
+            "TestClass2" : {
+                "baseClass": "TestClass",
+                "properties": {
+                    "TestProperty2": {
+                        "type": "list",
+                        "subType": "string"
+                    }
+                }
+            },
+            "TestClass3" : {
+                "baseClass": "TestClass2",
+                "properties": {
+                    "TestProperty3": {
+                        "type": "list",
+                        "subType": "TestClass"
+                    }
+                }
+            }
+        }                
+    }
+}

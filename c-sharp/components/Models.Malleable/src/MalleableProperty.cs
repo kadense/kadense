@@ -5,7 +5,7 @@ namespace Kadense.Models.Malleable
         [JsonPropertyName("description")]
         public string? Description { get; set; }
 
-        [JsonPropertyName("propertyType")]
+        [JsonPropertyName("type")]
         public string PropertyType { get; set; } = "string";
 
         [JsonPropertyName("subType")]

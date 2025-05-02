@@ -23,6 +23,7 @@ namespace Kadense.CustomResourceDefinition.Generator
             // Create a CRD for JupyterNotebookTemplate and JupyterNotebookInstance
             var notebookTemplateCRD = SerializeToYaml<JupyterNotebookTemplate>(serializer, outputPath);
             var notebookInstanceCRD = SerializeToYaml<JupyterNotebookInstance>(serializer, outputPath);
+            var malleableCRD = SerializeToYaml<MalleableModule>(serializer, outputPath);
 
             // Output the CRDs to the console or use them as needed
             

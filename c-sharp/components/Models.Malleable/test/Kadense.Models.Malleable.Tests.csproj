@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -24,6 +24,12 @@
     <ProjectReference Include="..\src\Kadense.Models.Malleable.csproj" />
     <ProjectReference Include="..\..\..\components\Testing\src\Kadense.Testing.csproj" />
     <ProjectReference Include="..\..\Client.Kubernetes\src\Kadense.Client.Kubernetes.csproj" />
+    <ProjectReference Include="..\..\Client.Kubernetes\test\Kadense.Client.Kubernetes.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Resources/*.json" />
+    <EmbeddedResource Include="Resources/*.json" />
   </ItemGroup>
 
 </Project>

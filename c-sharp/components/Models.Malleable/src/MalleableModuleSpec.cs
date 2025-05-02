@@ -13,11 +13,5 @@ namespace Kadense.Models.Malleable
         /// </summary>
         [JsonPropertyName("classes")]
         public Dictionary<string, MalleableClass>? Classes { get; set; }
-
-        /// <summary>
-        /// Type converters for this module
-        /// </summary>
-        [JsonPropertyName("typeConverters")]
-        public List<MalleableTypeConverter>? TypeConverters { get; set; }
     }
 }

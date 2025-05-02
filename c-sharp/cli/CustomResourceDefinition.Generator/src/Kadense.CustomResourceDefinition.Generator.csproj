@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\components\Models.Jupyternetes\src\Kadense.Models.Jupyternetes.csproj" />
     <ProjectReference Include="..\..\..\components\Client.Kubernetes\src\Kadense.Client.Kubernetes.csproj" />
+    <ProjectReference Include="..\..\..\components\Models.Malleable\src\Kadense.Models.Malleable.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <Using Include="Kadense.Models.Jupyternetes" />
+    <Using Include="Kadense.Models.Malleable" />
     <Using Include="Kadense.Client.Kubernetes" />
     <Using Include="YamlDotNet.Serialization" />
     <Using Include="YamlDotNet.Serialization.NamingConventions" />

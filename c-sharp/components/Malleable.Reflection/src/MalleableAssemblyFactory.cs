@@ -8,6 +8,88 @@ namespace Kadense.Malleable.Reflection
 {
     public class MalleableAssemblyFactory
     {
+        public MalleableAssembly CreateAssembly(MalleableConverterModule module, IDictionary<string, MalleableAssembly> involvedAssemblies)
+        {
+            return CreateAssembly(module.Metadata.Name, module.Spec!, involvedAssemblies);
+        }
+        public MalleableAssembly CreateAssembly(string name, MalleableConverterModuleSpec moduleSpec, IDictionary<string, MalleableAssembly> involvedAssemblies)
+        {
+            var assembly = new MalleableAssembly(name);
+            var assemblyName = new AssemblyName(name!);
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+            var moduleBuilder = assemblyBuilder.DefineDynamicModule(name);
+            
+            var typeBuilder = DefineConverters(assembly, moduleBuilder, moduleSpec, involvedAssemblies);
+            
+            var type = typeBuilder.CreateType();
+            assembly.AddType("Converter", type);
+            return assembly;            
+        }
+
+        public TypeBuilder DefineConverters(MalleableAssembly assembly, ModuleBuilder moduleBuilder, MalleableConverterModuleSpec moduleSpec, IDictionary<string, MalleableAssembly> InvolvedAssemblies)
+        {
+            
+            var converterType = moduleBuilder.DefineType("MalleableConverter", TypeAttributes.Public, typeof(MalleableConverterBase));
+            var constructor = converterType.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName, CallingConventions.Standard, Type.EmptyTypes);
+            var constructorIL = constructor.GetILGenerator();
+
+            foreach (var converter in moduleSpec.Converters)
+            {
+                DefineConverter(assembly, converter.Key, converter.Value, InvolvedAssemblies, converterType, constructorIL);
+            }
+            constructorIL.Emit(OpCodes.Ret);
+
+            return converterType;
+        }
+
+        public void DefineConverter(MalleableAssembly assembly, string name, MalleableTypeConverter converterSpec, IDictionary<string, MalleableAssembly> InvolvedAssemblies, TypeBuilder typeBuilder, ILGenerator constructorIL)
+        {
+            var fromQualifiedName = converterSpec.From!.GetQualifiedModuleName();
+            var toQualifiedName = converterSpec.To!.GetQualifiedModuleName();
+            var fromAssembly = InvolvedAssemblies[fromQualifiedName];
+            var toAssembly = InvolvedAssemblies[toQualifiedName];
+            var fromType = fromAssembly.Types[converterSpec.From.ClassName!];
+            var toType = toAssembly.Types[converterSpec.To.ClassName!];
+
+            assembly.AddType(converterSpec.From.ClassName!, fromType);
+            assembly.AddType(converterSpec.To.ClassName!, toType);
+
+            // Get the dictionary of expressions
+            var expressions = converterSpec.Expressions;
+            
+            // Define a readonly field for the dictionary
+            var expressionDelegatesField = typeBuilder.DefineField($"_{name}_delegates", typeof(IDictionary<string, Delegate>), FieldAttributes.Private | FieldAttributes.InitOnly);
+
+            // non-static field initialization
+            constructorIL.Emit(OpCodes.Ldarg_0); // Load 'this' onto the stack
+            constructorIL.Emit(OpCodes.Newobj, typeof(Dictionary<string, Delegate>).GetConstructor(Type.EmptyTypes)!);
+            constructorIL.Emit(OpCodes.Stfld, expressionDelegatesField); // Use Stfld for non-static fields
+            var compileMethod = typeof(MalleableConverterBase).GetMethod("CompileExpression", BindingFlags.NonPublic | BindingFlags.Instance)!.MakeGenericMethod(new Type[] { fromType, toType });
+
+            foreach (var kvp in expressions)
+            {
+                constructorIL.Emit(OpCodes.Ldarg_0); // Load 'this' onto the stack
+                constructorIL.Emit(OpCodes.Ldstr, kvp.Key);
+                constructorIL.Emit(OpCodes.Ldstr, kvp.Value);
+                constructorIL.Emit(OpCodes.Ldarg_0); // Load 'this' onto the stack
+                constructorIL.Emit(OpCodes.Ldfld, expressionDelegatesField); // Use Ldfld for non-static fields
+                constructorIL.Emit(OpCodes.Call, compileMethod); // Call the static Convert method
+            }
+
+            // Define the method to convert from the source type to the destination type
+            var method = typeBuilder.DefineMethod($"Convert{name}", MethodAttributes.Public, toType, new Type[] { fromType });
+            var methodIL = method.GetILGenerator();
+            var convertMethod = typeof(MalleableConverterBase).GetMethod("Convert", BindingFlags.NonPublic | BindingFlags.Instance )!.MakeGenericMethod(new Type[] { fromType, toType });
+
+            methodIL.Emit(OpCodes.Ldarg_0); // Load 'this' onto the stack
+            methodIL.Emit(OpCodes.Ldarg_1); // Load the fromObject argument
+            methodIL.Emit(OpCodes.Ldarg_0); // Load 'this' onto the stack
+            methodIL.Emit(OpCodes.Ldfld, expressionDelegatesField); // Use Ldfld for non-static fields
+            methodIL.Emit(OpCodes.Call, convertMethod); // Call the static Convert method
+            methodIL.Emit(OpCodes.Ret);
+
+
+        }
         public MalleableAssembly CreateAssembly(MalleableModule module)
         {
             return CreateAssembly(module.Metadata.Name, module.Spec!);

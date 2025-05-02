@@ -3,7 +3,7 @@ title: How Jupyternetes Works
 sidebar_position: 2
 ---
 
-The Jupyternetes leverages custom resource definitions (CRD's) in Kubernetes to define templates:
+The Jupyternetes leverages custom resource definitions (CRDs) in Kubernetes to define templates:
 
 ```yaml
 apiVersion: kadense.io/v1
@@ -93,10 +93,9 @@ spec:
           storage: 1Gi
 ``` 
 
-You can do just about anything with this template that you can do in a standard pod spec in kubernetes, making it incredibly flexible. You can use parameters which are passed into the solution from the hub in this template by wrapping them in curly brackets. 
+You can do just about anything with this template that you can do in a standard pod spec in Kubernetes, making it incredibly flexible. You can use parameters which are passed into the solution from the hub in this template by wrapping them in curly brackets. 
 
-
-Based upon this Jupyternetes will create a JupyterNotebookInstance resource in kubernetes:
+Based on this, Jupyternetes creates a JupyterNotebookInstance resource in Kubernetes:
 
 ```yaml
 apiVersion: kadense.io/v1
@@ -156,6 +155,6 @@ flowchart TD
 
 ```
 
-* [PVC Operator](./Operators/pvc-operator/intro.md) - Watches for JupyterNotebookInstances and creates Persistent Volume Claims based upon the related template.
-* [Pod Operator](./Operators/pod-operator/intro.md) - Watches for JupyterNotebookInstances and creates Pods based upon the related template.
+* [PVC Operator](./Operators/pvc-operator/intro.md) - Watches for JupyterNotebookInstances and creates Persistent Volume Claims based on the related template.
+* [Pod Operator](./Operators/pod-operator/intro.md) - Watches for JupyterNotebookInstances and creates Pods based on the related template.
 * [Pod Status Operator](./Operators/pod-status-operator/intro.md) - Watches Pods and updates related JupyterNotebookInstances with the pod status as it changes.

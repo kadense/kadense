@@ -3,13 +3,13 @@ title: Installing Jupyternetes
 sidebar_position: 3
 ---
 
-
 ## Prerequisites
-In order to install jupyternetes you will need to install and configure helm.
+To install Jupyternetes, you need to install and configure Helm. Follow the instructions at:
 
 https://helm.sh/docs/intro/install/
 
-Once installed you will need to add the helm charts for both helm and jupyter
+After installation, add the Helm charts for both Kadense and JupyterHub by running the following commands in your terminal:
+
 ```bash
 helm repo add hitcs https://headinthecloudsolutions.github.io/helm-charts/
 helm repo add jupyterhub https://hub.jupyter.org/helm-chart/                   
@@ -17,15 +17,17 @@ helm repo update
 ```
 
 ## Installing Kadense
+Run the following commands to install Kadense:
+
 ```bash
 helm upgrade --install kadense-crds hitcs/kadense-crds -n kadense --create-namespace
 helm upgrade --install kadense hitcs/kadense -n kadense --create-namespace
 ```
 
-## Installing Jupyter Hub
-First you will need to create a basic configuration file:
+## Installing JupyterHub
+First, create a basic configuration file named `config.yaml` with the following content:
 
-```yaml config.yaml
+```yaml
 hub:
   image:
     name: ghcr.io/headinthecloudsolutions/kadense/jupyternetes-hub
@@ -42,15 +44,15 @@ scheduling:
     enabled: false
 ```
 
-Once you've got your config file you can then install jupyter hub using the zero-to-jupyterhub helm chart.
+Once you've created the configuration file, install JupyterHub using the zero-to-jupyterhub Helm chart:
 
 ```bash
 helm upgrade --install jupyterhub jupyterhub/jupyterhub -n jupyterhub --create-namespace
 ```
 
-You'll need to give the jupyter hub service permissions to the JupyterNotebookInstances. To do this you can create a roles.yaml file:
+Next, grant the JupyterHub service permissions to manage JupyterNotebookInstances. Create a file named `roles.yaml` with the following content:
 
-```yaml roles.yaml
+```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -78,14 +80,14 @@ subjects:
   namespace: jupyterhub
 ```
 
-And then apply this using the following command:
+Apply the roles using the following command:
 
 ```bash
 kubectl apply -f ./roles.yaml
 ```
 
-You can then expose the jupyterhub service by forwarding the port to your local machine:
+Finally, expose the JupyterHub service by forwarding the port to your local machine:
 
 ```bash
- kubectl port-forward svc/proxy-public -n jupyterhub 8081:80
- ```
+kubectl port-forward svc/proxy-public -n jupyterhub 8081:80
+```

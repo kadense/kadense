@@ -3,15 +3,30 @@ namespace Kadense.Models.Malleable
     public class MalleableTypeReference
     {
         /// <summary>
-        /// The description of the converter
+        /// The name of the module that this type is defined in
         /// </summary>
-        [JsonPropertyName("typeName")]
-        public string? TypeName { get; set; }
+        [JsonPropertyName("moduleName")]
+        public string? ModuleName { get; set; }
 
         /// <summary>
-        /// If this is a collection type, the type of the collection
+        /// The namespace of the module that this type is defined in
         /// </summary>
-        [JsonPropertyName("subTypeName")]
-        public string? SubTypeName { get; set; }
+        [JsonPropertyName("moduleNamespace")]
+        public string? ModuleNamespace { get; set; }
+
+        /// <summary>
+        /// The name of the class being referenced
+        /// </summary>
+        [JsonPropertyName("className")]
+        public string? ClassName { get; set; }
+
+        public string GetQualifiedModuleName()
+        {
+            return $"{ModuleNamespace}:{ModuleName}";
+        }
+        public string GetQualifiedClassName()
+        {
+            return $"{ModuleNamespace}:{ModuleName}:{ClassName}";
+        }
     }
 }

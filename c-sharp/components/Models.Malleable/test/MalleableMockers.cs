@@ -4,6 +4,51 @@ namespace Kadense.Models.Malleable.Tests
 {
     public class MalleableMockers
     {
+        public MalleableConverterModule MockConverterModule()
+        {
+            return new MalleableConverterModule
+            {
+                Metadata = new V1ObjectMeta
+                {
+                    Name = "test-converter-module",
+                    NamespaceProperty = "test-namespace",
+                    Labels = new Dictionary<string, string>
+                    {
+                        { "app", "test-app" }
+                    }
+                },
+                Spec = new MalleableConverterModuleSpec
+                {
+                    Converters = new Dictionary<string, MalleableTypeConverter>
+                    {
+                        {
+                            "FromTestInheritedClassToTestClass",
+                            new MalleableTypeConverter
+                            {
+                                From = new MalleableTypeReference()
+                                {
+                                    ClassName = "TestInheritedClass",
+                                    ModuleName = "test-module",
+                                    ModuleNamespace = "test-namespace"
+                                },
+                                To = new MalleableTypeReference()
+                                {
+                                    ClassName = "ConvertedClass",
+                                    ModuleName = "test-module",
+                                    ModuleNamespace = "test-namespace"
+                                },
+                                Expressions = new Dictionary<string, string>
+                                {
+                                    { "TestStringV1", "Source.TestString" },
+                                    { "TestStringPrefix", "Source.TestString.Substring(0, 1)" },
+                                },
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
         public MalleableModule MockModule()
         {
             return new MalleableModule
@@ -81,6 +126,32 @@ namespace Kadense.Models.Malleable.Tests
                                             Description = "Test Reference",
                                             PropertyType = "dictionary",
                                             SubType = "TestInheritedClass",
+                                        }
+                                    },
+                                },
+                            }
+                        },
+                        {
+                            "ConvertedClass",
+                            new MalleableClass
+                            {
+                                Description = "Test of Converted class",
+                                Properties = new Dictionary<string, MalleableProperty>
+                                {
+                                    {
+                                        "TestStringV1",
+                                        new MalleableProperty
+                                        {
+                                            Description = "string property",
+                                            PropertyType = "string",
+                                        }
+                                    },
+                                    {
+                                        "TestStringPrefix",
+                                        new MalleableProperty
+                                        {
+                                            Description = "string property",
+                                            PropertyType = "string",
                                         }
                                     },
                                 },

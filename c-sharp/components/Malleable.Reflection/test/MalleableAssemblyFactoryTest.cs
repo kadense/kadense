@@ -1,5 +1,7 @@
 using YamlDotNet.RepresentationModel;
 using Xunit.Abstractions;
+using Kadense.Client.Kubernetes;
+using Kadense.Models.Malleable;
 
 namespace Kadense.Malleable.Reflection.Tests {
     public class MalleableAssemblyFactoryTest : KadenseTest
@@ -45,6 +47,43 @@ namespace Kadense.Malleable.Reflection.Tests {
         }
 
         [Fact]
+        public void TestInitialiseAndConvert()
+        {
+            var mocker = new MalleableMockers();
+            var malleableModule = mocker.MockModule();
+            var malleableAssemblyFactory = new MalleableAssemblyFactory();
+            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(malleableModule);
+            var type = malleableAssembly.Types["TestInheritedClass"];
+            var instance = Activator.CreateInstance(type);
+            Assert.NotNull(instance);
+            instance.GetType().GetProperty("TestString")!.SetValue(instance, "test1");
+            var converter = mocker.MockConverterModule();
+            var converterAssembly = malleableAssemblyFactory.CreateAssembly(
+                converter,
+                new Dictionary<string, MalleableAssembly>
+                {
+                    { $"{malleableModule.Metadata.NamespaceProperty}:{malleableModule.Metadata.Name}", malleableAssembly }
+                });
+            Assert.Contains("TestInheritedClass", converterAssembly.Types);
+            Assert.Contains("ConvertedClass", converterAssembly.Types);
+            Assert.Contains("Converter", converterAssembly.Types);
+
+            var converterType = converterAssembly.Types["Converter"];
+            var testInheritedClassType = converterAssembly.Types["TestInheritedClass"];
+            var convertedClassType = converterAssembly.Types["ConvertedClass"];
+
+            var converterInstance = Activator.CreateInstance(converterType);
+            var method = converterType.GetMethod("ConvertFromTestInheritedClassToTestClass")!;
+            
+            var convertedInstance = method.Invoke(converterInstance, new object[] { instance });
+            Assert.NotNull(convertedInstance);
+            var testString = convertedClassType.GetProperty("TestStringV1")!.GetValue(convertedInstance);
+            var testStringPrefix = convertedClassType.GetProperty("TestStringPrefix")!.GetValue(convertedInstance);
+            Assert.Equal("test1", testString);
+            Assert.Equal("t", testStringPrefix);
+        }
+
+        [Fact]
         public void TestAssignProperties()
         {
             var mocker = new MalleableMockers();
@@ -81,6 +120,26 @@ namespace Kadense.Malleable.Reflection.Tests {
             referencingType.GetProperty("DictionaryReference")!.SetValue(referenceInstance, dictionaryInstance);
             var dictionaryReferenceValue = referencingType.GetProperty("DictionaryReference")!.GetValue(referenceInstance);
             Assert.NotNull(dictionaryReferenceValue);
+        }
+
+        [Fact]
+        public async Task TestK8sApi()
+        {
+            var server = new MalleableMockApi();
+            server.Start(this.Output);
+            var client = server.CreateClient();
+            var crFactory = new CustomResourceClientFactory();
+            var customResourceClient = crFactory.Create<MalleableModule>(client);
+            var item = await customResourceClient.ReadNamespacedAsync("default", "test-module");
+            var malleableAssemblyFactory = new MalleableAssemblyFactory();
+            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(item);
+            Assert.Contains("TestClass3", malleableAssembly.Types);
+            var type = malleableAssembly.Types["TestClass3"];
+            var instance = Activator.CreateInstance(type);
+            Assert.NotNull(instance);
+            type.GetProperty("TestProperty")!.SetValue(instance, "test1");
+            var value = (string?)type.GetProperty("TestProperty")!.GetValue(instance);
+            Assert.Equal("test1", value);
         }
     }
 }

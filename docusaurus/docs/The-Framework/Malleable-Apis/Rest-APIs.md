@@ -20,13 +20,22 @@ This can be done by adding a **MalleableRestApiFileServer** to the **UseEndpoint
 
 It will create the following endpoints:
 
-| Method | Path | Description |
-| --- | --- | --- |
-| GET | /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className} | Gets a list of the available items currently saved |
-| GET | /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className}/{identifier} | Gets a unique item based upon its identifier |
-| POST | /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className} | Creates an instance of the item |
-| PUT | /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className}/{identifier} | Updates an existing item with a new definition |
-| DELETE | /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className}/{identifier} | Deletes an item |
+```text
+# Gets a list of the available items currently saved
+GET /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className} 
+
+# Gets a unique item based upon its identifier
+GET /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className}/{identifier}
+
+# Creates an instance of the item
+POST /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className}
+
+# Updates an existing item with a new definition |
+PUT /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className}/{identifier}
+
+# Deletes an item
+DELETE /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className}/{identifier}
+``` 
 
 It will access the files for each of the data types in the folder:
 

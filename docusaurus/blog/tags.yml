@@ -7,3 +7,24 @@ intro:
   label: Introductions
   permalink: /intro
   description: Introductions to new features and updates
+
+
+malleable:
+  label: Malleable
+  permalink: /malleable
+  description: Malleable Models, Converters and APIs
+  
+api:
+  label: API
+  permalink: /api
+  description: API, SDK and CLI
+
+events-driven:
+  label: Events Driven
+  permalink: /events-driven
+  description: Events driven Architecture  
+  
+models:
+  label: Models
+  permalink: /models
+  description: Models and Model Management

@@ -21,9 +21,10 @@ This can be done by adding a **MalleableIngressApiFileServer** to the **UseEndpo
 
 It will create the following endpoint:
 
-| Method | Path | Description |
-| --- | --- | --- |
-| POST | /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className} | Creates an instance of the item |
+```text
+# Creates an instance of the item
+POST /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className}
+```
 
 When called it will validate the components and write them to the following path:
 

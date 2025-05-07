@@ -199,7 +199,7 @@ namespace Kadense.Client.Kubernetes.Tests {
                     cfg.MapPost($"/apis/{{apiGroup}}/{{version}}/{{kind}}", (string apiGroup, string version, string kind, HttpContext ctx) => this.OnPostClusterObjectAsync(apiGroup, version, kind, ctx));
                     
                     cfg.MapDelete($"/apis/{{apiGroup}}/{{version}}/{{kind}}/{{name}}", (string apiGroup, string version, string kind, string name, HttpContext ctx) => this.OnDeleteClusterObjectAsync(apiGroup, version, kind, name, ctx));
-
+                    
                 });
             })
             .UseKestrel(options => { options.Listen(System.Net.IPAddress.Loopback, 0, (_) => {}); })

@@ -89,6 +89,7 @@ namespace Kadense.Models.Malleable.Tests
                             new MalleableClass
                             {
                                 BaseClass = "TestClass",
+                                IdentifierExpression = "Input.TestString",
                                 Description = "Test of Inherited class",
                                 Properties = new Dictionary<string, MalleableProperty>
                                 {

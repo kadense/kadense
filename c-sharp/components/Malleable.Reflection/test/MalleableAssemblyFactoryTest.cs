@@ -81,6 +81,12 @@ namespace Kadense.Malleable.Reflection.Tests {
             var testStringPrefix = convertedClassType.GetProperty("TestStringPrefix")!.GetValue(convertedInstance);
             Assert.Equal("test1", testString);
             Assert.Equal("t", testStringPrefix);
+
+            Assert.IsAssignableFrom<IMalleableIdentifiable>(instance);
+            var identifiable = (IMalleableIdentifiable)instance;
+            var identifier = identifiable.GetIdentifier();
+            Assert.NotNull(identifier);
+            Assert.Equal("test1", identifier);
         }
 
         [Fact]
@@ -140,6 +146,35 @@ namespace Kadense.Malleable.Reflection.Tests {
             type.GetProperty("TestProperty")!.SetValue(instance, "test1");
             var value = (string?)type.GetProperty("TestProperty")!.GetValue(instance);
             Assert.Equal("test1", value);
+        }
+
+        [Fact]
+        public void TestGetIdentifier()
+        {
+            var mocker = new MalleableMockers();
+            var malleableModule = mocker.MockModule();
+            var malleableAssemblyFactory = new MalleableAssemblyFactory();
+            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(malleableModule);
+            var type = malleableAssembly.Types["TestInheritedClass"];
+            var instance = Activator.CreateInstance(type);
+            type.GetProperty("TestString")!.SetValue(instance, "test1");
+            type.GetProperty("TestList")!.SetValue(instance, new List<string> { "test2", "test3" });
+
+            Assert.NotNull(instance);
+
+            // Log the emitted IL code for debugging
+            var identifiable = (IMalleableIdentifiable)instance;
+            try
+            {
+                var identifier = identifiable.GetIdentifier();
+                Assert.NotNull(identifier);
+                Assert.Equal("test1", identifier);
+            }
+            catch (InvalidProgramException ex)
+            {
+                Console.WriteLine("InvalidProgramException occurred: " + ex.Message);
+                throw;
+            }
         }
     }
 }

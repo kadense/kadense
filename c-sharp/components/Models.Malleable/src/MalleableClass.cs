@@ -20,10 +20,16 @@ namespace Kadense.Models.Malleable
         public Dictionary<string, MalleableProperty>? Properties { get; set; }
 
         /// <summary>
-        /// The module parameters
+        /// The discriminator property for this class
         /// </summary>
         [JsonPropertyName("discriminatorProperty")]
         public string? DiscriminatorProperty { get; set; }
+
+        /// <summary>
+        /// An expression that can be used to uniquely identify this class
+        /// </summary>
+        [JsonPropertyName("identifierExpression")]
+        public string? IdentifierExpression { get; set; }
 
         /// <summary>
         /// The module parameters

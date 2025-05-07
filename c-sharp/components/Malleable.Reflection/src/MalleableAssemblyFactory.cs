@@ -92,17 +92,17 @@ namespace Kadense.Malleable.Reflection
         }
         public MalleableAssembly CreateAssembly(MalleableModule module)
         {
-            return CreateAssembly(module.Metadata.Name, module.Spec!);
+            return CreateAssembly(module.Metadata.Name, module.Metadata.NamespaceProperty, module.Spec!);
         }
 
-        public MalleableAssembly CreateAssembly(string name, MalleableModuleSpec moduleSpec)
+        public MalleableAssembly CreateAssembly(string name, string @namespace, MalleableModuleSpec moduleSpec)
         {
             var assemblyName = new AssemblyName(name!);
             var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(name);
             var buildOrder = CalculateBuildOrder(moduleSpec);
             var reflectedTypes = DefineTypeBuilders(moduleBuilder, buildOrder);
-            PrepareTypes(moduleBuilder, buildOrder, reflectedTypes);
+            PrepareTypes(moduleBuilder, buildOrder, reflectedTypes, @namespace, name);
             return CompileTypes(name, buildOrder, reflectedTypes);
         }
 
@@ -160,19 +160,19 @@ namespace Kadense.Malleable.Reflection
         /// <summary>
         /// Prepare the types for the module spec. This will create the constructors, and define the properties for the types.
         /// </summary>
-        protected virtual void PrepareTypes(ModuleBuilder moduleBuilder, IList<KeyValuePair<string,MalleableClass>> buildOrder, IDictionary<string, TypeBuilder> reflectedTypes)
+        protected virtual void PrepareTypes(ModuleBuilder moduleBuilder, IList<KeyValuePair<string,MalleableClass>> buildOrder, IDictionary<string, TypeBuilder> reflectedTypes, string @namespace, string name)
         {
             var reflectedConstructors = new Dictionary<string, ConstructorBuilder>();
             foreach (var typeDefinition in buildOrder)
             {
-                PrepareType(moduleBuilder, typeDefinition.Key, typeDefinition.Value, reflectedTypes, reflectedConstructors);                
+                PrepareType(moduleBuilder, typeDefinition.Key, typeDefinition.Value, reflectedTypes, reflectedConstructors, @namespace, name);                
             }
         }
 
         /// <summary>
         /// Prepare the type for the module spec. This will create the constructors, and define the properties for the types.
         /// </summary>
-        protected virtual void PrepareType(ModuleBuilder moduleBuilder, string name, MalleableClass typeDefinition, IDictionary<string, TypeBuilder> reflectedTypes, IDictionary<string, ConstructorBuilder> reflectedConstructors)
+        protected virtual void PrepareType(ModuleBuilder moduleBuilder, string name, MalleableClass typeDefinition, IDictionary<string, TypeBuilder> reflectedTypes, IDictionary<string, ConstructorBuilder> reflectedConstructors, string moduleNamespace, string moduleName)
         {
             var typeBuilder = reflectedTypes[name];
             var parentConstructor = !string.IsNullOrEmpty(typeDefinition.BaseClass) ? reflectedConstructors[typeDefinition.BaseClass] : typeof(object).GetConstructor(new Type[0]);
@@ -183,6 +183,53 @@ namespace Kadense.Malleable.Reflection
             constructorIL.Emit(OpCodes.Call, parentConstructor!);
             PrepareProperties(typeBuilder, typeDefinition, constructorIL, reflectedTypes);
             constructorIL.Emit(OpCodes.Ret);
+
+            var customAttributeBuilder = new CustomAttributeBuilder(
+                typeof(MalleableClassAttribute).GetConstructor(new[] { typeof(string), typeof(string), typeof(string) })!,
+                new object[] { moduleNamespace, moduleName, name }
+            );
+            typeBuilder.SetCustomAttribute(customAttributeBuilder);
+
+            if(!string.IsNullOrEmpty(typeDefinition.IdentifierExpression))
+            {
+                ImplementIdentifierExpression(typeBuilder,typeDefinition.IdentifierExpression);
+            }
+        }
+
+        private void ImplementIdentifierExpression(TypeBuilder typeBuilder, string expression)
+        {
+            var compileStringExpressionMethod = typeof(MalleableBase).GetMethod("CompileStringExpression", BindingFlags.Public | BindingFlags.Static, new [] { typeof(string) })!
+                .MakeGenericMethod(new Type[] { typeBuilder });
+
+        
+            // Add the identifier expression static field
+            var identifierField = typeBuilder.DefineField($"_identifierExpression", typeof(Func<,>).MakeGenericType(new Type[] { typeBuilder, typeof(string)}), FieldAttributes.Public | FieldAttributes.Static);
+
+            // Define a static constructor to initialize the static field
+            var staticConstructor = typeBuilder.DefineConstructor(MethodAttributes.Static, CallingConventions.Standard, Type.EmptyTypes);
+            var staticConstructorIL = staticConstructor.GetILGenerator();
+
+            // Initialize the static field in the static constructor
+            staticConstructorIL.Emit(OpCodes.Ldstr, expression); // Load the expression string onto the stack
+            staticConstructorIL.Emit(OpCodes.Call, compileStringExpressionMethod); // Call CompileStringExpressionMethod to get the delegate
+            staticConstructorIL.Emit(OpCodes.Stsfld, identifierField); // Store the delegate in the static field
+            staticConstructorIL.Emit(OpCodes.Ret);
+
+            // Implement the interface IMalleableIdentifiable
+            var identifiableInterface = typeof(IMalleableIdentifiable);
+            typeBuilder.AddInterfaceImplementation(identifiableInterface);
+
+            // Implement the GetIdentifier method from IMalleableIdentifiable
+            var getIdentifierMethod = typeBuilder.DefineMethod("GetIdentifier", MethodAttributes.Public | MethodAttributes.Virtual, typeof(string), Type.EmptyTypes);
+            var il = getIdentifierMethod.GetILGenerator();
+            var invokeMethod = typeof(MalleableBase).GetMethod("GetExpressionResult", BindingFlags.Public | BindingFlags.Static)!.MakeGenericMethod(typeBuilder);
+            // Load the delegate from the static field and invoke it
+            il.Emit(OpCodes.Ldarg_0); // Load 'this' onto the stack
+            il.Emit(OpCodes.Ldsfld, identifierField); // Load identifierField
+            il.Emit(OpCodes.Call, invokeMethod); // Call Invoke on the delegate
+            il.Emit(OpCodes.Ret); // Return the string value
+
+            typeBuilder.DefineMethodOverride(getIdentifierMethod, identifiableInterface.GetMethod("GetIdentifier")!);
         }
 
         protected virtual void PrepareProperties(TypeBuilder typeBuilder, MalleableClass typeDefinition, ILGenerator constructorIL, IDictionary<string, TypeBuilder> reflectedTypes)

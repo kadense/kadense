@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <PackageId>Kadense.Malleable.API</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Shaun Turner</Authors>
+    <Company>Head in the Cloud Solutions Ltd</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <None Include="../README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Malleable.Reflection\src\Kadense.Malleable.Reflection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Kadense.Malleable.Reflection" />
+  </ItemGroup>
+</Project>

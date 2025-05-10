@@ -4,6 +4,81 @@ namespace Kadense.Models.Malleable.Tests
 {
     public class MalleableMockers
     {
+        public MalleableWorkflow MockWorkflow()
+        {
+            return new MalleableWorkflow
+            {
+                Metadata = new V1ObjectMeta
+                {
+                    Name = "test-workflow",
+                    NamespaceProperty = "test-namespace",
+                    Labels = new Dictionary<string, string>
+                    {
+                        { "app", "test-app" }
+                    }
+                },
+                Spec = new MalleableWorkflowSpec
+                {
+                    Description = "Test workflow description",
+                    APIs = new Dictionary<string, MalleableWorkflowApi>
+                    {
+                        {
+                            "TestApi",
+                            new MalleableWorkflowApi
+                            {
+                                UnderlyingType = new MalleableTypeReference(){
+                                    ClassName = "TestInheritedClass",
+                                    ModuleName = "test-module",
+                                    ModuleNamespace = "test-namespace"
+                                },
+                                IngressOptions = new MalleableWorkflowApiOptions()
+                                {
+                                    NextStep = "TestConditional",
+                                }
+                            }
+                        }
+                    },
+                    Steps = new Dictionary<string, MalleableWorkflowStep>
+                    {
+                        {
+                            "TestConditional",
+                            new MalleableWorkflowStep
+                            {
+                                Action = "IfElse",
+                                IfElseOptions = new MalleableWorkflowIfElseActionOptions
+                                {
+                                    Expressions = new List<MalleableWorkflowIfElseExpression>
+                                    {
+                                        new MalleableWorkflowIfElseExpression
+                                        {
+                                            Expression = "Input.TestString == \"test1\"",
+                                            NextStep = "TestStep"
+                                        }
+                                    },
+                                }
+                            }
+                        },
+                        {
+                            "TestStep",
+                            new MalleableWorkflowStep
+                            {
+                                Action = "Convert",
+                                ConverterOptions = new MalleableWorkflowConverterActionOptions
+                                {
+                                    Converter = new MalleableConverterReference
+                                    {
+                                        ConverterName = "FromTestInheritedClassToTestClass",
+                                        ModuleName = "test-converter-module",
+                                        ModuleNamespace = "test-namespace"
+                                    }
+                                },
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
         public MalleableConverterModule MockConverterModule()
         {
             return new MalleableConverterModule

@@ -10,39 +10,32 @@ namespace Kadense.Malleable.Reflection
     {
         public MalleableAssembly CreateAssembly(MalleableConverterModule module, IDictionary<string, MalleableAssembly> involvedAssemblies)
         {
-            return CreateAssembly(module.Metadata.Name, module.Spec!, involvedAssemblies);
+            return CreateAssembly(module.Metadata.NamespaceProperty, module.Metadata.Name, module.Spec!, involvedAssemblies);
         }
-        public MalleableAssembly CreateAssembly(string name, MalleableConverterModuleSpec moduleSpec, IDictionary<string, MalleableAssembly> involvedAssemblies)
+        public MalleableAssembly CreateAssembly(string @namespace, string name, MalleableConverterModuleSpec moduleSpec, IDictionary<string, MalleableAssembly> involvedAssemblies)
         {
-            var assembly = new MalleableAssembly(name);
-            var assemblyName = new AssemblyName(name!);
+            var assemblyName = new AssemblyName(name);
             var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(name);
             
-            var typeBuilder = DefineConverters(assembly, moduleBuilder, moduleSpec, involvedAssemblies);
-            
-            var type = typeBuilder.CreateType();
-            assembly.AddType("Converter", type);
+            var typeBuilder = DefineConverters(moduleBuilder, @namespace, name, moduleSpec, involvedAssemblies);
+            var assembly = CompileTypes($"{@namespace}:{name}", typeBuilder);
             return assembly;            
         }
 
-        public TypeBuilder DefineConverters(MalleableAssembly assembly, ModuleBuilder moduleBuilder, MalleableConverterModuleSpec moduleSpec, IDictionary<string, MalleableAssembly> InvolvedAssemblies)
+        public IDictionary<string, TypeBuilder> DefineConverters(ModuleBuilder moduleBuilder, string moduleNamespace, string moduleName, MalleableConverterModuleSpec moduleSpec, IDictionary<string, MalleableAssembly> InvolvedAssemblies)
         {
-            
-            var converterType = moduleBuilder.DefineType("MalleableConverter", TypeAttributes.Public, typeof(MalleableConverterBase));
-            var constructor = converterType.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName, CallingConventions.Standard, Type.EmptyTypes);
-            var constructorIL = constructor.GetILGenerator();
+            var builders = new Dictionary<string, TypeBuilder>();
 
             foreach (var converter in moduleSpec.Converters)
             {
-                DefineConverter(assembly, converter.Key, converter.Value, InvolvedAssemblies, converterType, constructorIL);
+                var converterType = DefineConverter(moduleBuilder, moduleNamespace, moduleName, converter.Key, converter.Value, InvolvedAssemblies);
+                builders.Add(converter.Key, converterType);
             }
-            constructorIL.Emit(OpCodes.Ret);
-
-            return converterType;
+            return builders;
         }
 
-        public void DefineConverter(MalleableAssembly assembly, string name, MalleableTypeConverter converterSpec, IDictionary<string, MalleableAssembly> InvolvedAssemblies, TypeBuilder typeBuilder, ILGenerator constructorIL)
+        public TypeBuilder DefineConverter(ModuleBuilder moduleBuilder, string moduleNamespace, string moduleName, string name, MalleableTypeConverter converterSpec, IDictionary<string, MalleableAssembly> InvolvedAssemblies)
         {
             var fromQualifiedName = converterSpec.From!.GetQualifiedModuleName();
             var toQualifiedName = converterSpec.To!.GetQualifiedModuleName();
@@ -50,9 +43,29 @@ namespace Kadense.Malleable.Reflection
             var toAssembly = InvolvedAssemblies[toQualifiedName];
             var fromType = fromAssembly.Types[converterSpec.From.ClassName!];
             var toType = toAssembly.Types[converterSpec.To.ClassName!];
+            var fromTypeAttribute = MalleableClassAttribute.FromType(fromType);
+            var convertFromModuleNamespace = fromTypeAttribute.ModuleNamespace;
+            var convertFromModuleName = fromTypeAttribute.ModuleName;
+            var convertFromClassName = fromTypeAttribute.ClassName;
+            
+            var toTypeAttribute = MalleableClassAttribute.FromType(toType);
+            var convertToModuleNamespace = toTypeAttribute.ModuleNamespace;
+            var convertToModuleName = toTypeAttribute.ModuleName;
+            var convertToClassName = toTypeAttribute.ClassName;
 
-            assembly.AddType(converterSpec.From.ClassName!, fromType);
-            assembly.AddType(converterSpec.To.ClassName!, toType);
+            
+            var parentType = typeof(MalleableConverterBase<,>).MakeGenericType(new Type[] { fromType, toType });
+            var typeBuilder = moduleBuilder.DefineType(name, TypeAttributes.Public, parentType);
+            
+            var customAttributeBuilder = new CustomAttributeBuilder(
+                typeof(MalleableConverterAttribute).GetConstructor(new[] { typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string) })!,
+                new object[] { moduleNamespace, moduleName, name, convertFromModuleNamespace, convertFromModuleName, convertFromClassName, convertToModuleNamespace, convertToModuleName, convertToClassName }
+            );
+            typeBuilder.SetCustomAttribute(customAttributeBuilder);
+
+            var constructor = typeBuilder.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName, CallingConventions.Standard, Type.EmptyTypes);
+            var constructorIL = constructor.GetILGenerator();
+            
 
             // Get the dictionary of expressions
             var expressions = converterSpec.Expressions;
@@ -64,7 +77,7 @@ namespace Kadense.Malleable.Reflection
             constructorIL.Emit(OpCodes.Ldarg_0); // Load 'this' onto the stack
             constructorIL.Emit(OpCodes.Newobj, typeof(Dictionary<string, Delegate>).GetConstructor(Type.EmptyTypes)!);
             constructorIL.Emit(OpCodes.Stfld, expressionDelegatesField); // Use Stfld for non-static fields
-            var compileMethod = typeof(MalleableConverterBase).GetMethod("CompileExpression", BindingFlags.NonPublic | BindingFlags.Instance)!.MakeGenericMethod(new Type[] { fromType, toType });
+            var compileMethod = parentType.GetMethod("CompileExpression", BindingFlags.NonPublic | BindingFlags.Instance)!;
 
             foreach (var kvp in expressions)
             {
@@ -77,9 +90,10 @@ namespace Kadense.Malleable.Reflection
             }
 
             // Define the method to convert from the source type to the destination type
-            var method = typeBuilder.DefineMethod($"Convert{name}", MethodAttributes.Public, toType, new Type[] { fromType });
+            var method = typeBuilder.DefineMethod($"Convert", MethodAttributes.Public | MethodAttributes.Virtual, toType, new Type[] { fromType });
+            typeBuilder.DefineMethodOverride(method, parentType.GetMethod("Convert", BindingFlags.Public | BindingFlags.Instance)!);
             var methodIL = method.GetILGenerator();
-            var convertMethod = typeof(MalleableConverterBase).GetMethod("Convert", BindingFlags.NonPublic | BindingFlags.Instance )!.MakeGenericMethod(new Type[] { fromType, toType });
+            var convertMethod = parentType.GetMethod("Convert", BindingFlags.NonPublic | BindingFlags.Instance )!;
 
             methodIL.Emit(OpCodes.Ldarg_0); // Load 'this' onto the stack
             methodIL.Emit(OpCodes.Ldarg_1); // Load the fromObject argument
@@ -88,7 +102,8 @@ namespace Kadense.Malleable.Reflection
             methodIL.Emit(OpCodes.Call, convertMethod); // Call the static Convert method
             methodIL.Emit(OpCodes.Ret);
 
-
+            constructorIL.Emit(OpCodes.Ret);
+            return typeBuilder;
         }
         public MalleableAssembly CreateAssembly(MalleableModule module)
         {
@@ -103,7 +118,7 @@ namespace Kadense.Malleable.Reflection
             var buildOrder = CalculateBuildOrder(moduleSpec);
             var reflectedTypes = DefineTypeBuilders(moduleBuilder, buildOrder);
             PrepareTypes(moduleBuilder, buildOrder, reflectedTypes, @namespace, name);
-            return CompileTypes(name, buildOrder, reflectedTypes);
+            return CompileTypes($"{@namespace}:{name}", buildOrder, reflectedTypes);
         }
 
         protected virtual IList<KeyValuePair<string,MalleableClass>> CalculateBuildOrder(MalleableModuleSpec moduleSpec)
@@ -351,6 +366,20 @@ namespace Kadense.Malleable.Reflection
             var assembly = new MalleableAssembly(name);
             
             foreach (var typeDefinition in buildOrder)
+            {
+                var typeBuilder = reflectedTypes[typeDefinition.Key];
+                var type = typeBuilder.CreateType();
+                assembly.AddType(typeDefinition.Key, type);     
+            }
+            return assembly;
+        }
+
+        
+        protected virtual MalleableAssembly CompileTypes(string name, IDictionary<string, TypeBuilder> reflectedTypes)
+        {
+            var assembly = new MalleableAssembly(name);
+            
+            foreach (var typeDefinition in reflectedTypes)
             {
                 var typeBuilder = reflectedTypes[typeDefinition.Key];
                 var type = typeBuilder.CreateType();

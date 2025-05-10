@@ -19,11 +19,11 @@ namespace Kadense.Malleable.API
                 return $"{BasePath}/{attr.ModuleNamespace}/{attr.ModuleName}/{attr.ClassName}";
         }
         
-        protected override IEndpointRouteBuilder MapRoutes<T>(IEndpointRouteBuilder endpoints)
+        protected override IEndpointRouteBuilder MapRoutes<T>(IEndpointRouteBuilder endpoints, string prefix, string? suffix)
         {
             var path = CreatePath<T>();
             var directoryInfo = Directory.CreateDirectory(path);
-            return base.MapRoutes<T>(endpoints);
+            return base.MapRoutes<T>(endpoints, prefix, suffix);
         }
 
         protected override async Task ProcessPostAsync<T>(HttpContext context, T content)

@@ -3,9 +3,11 @@ using System.Linq.Expressions;
 
 namespace Kadense.Malleable.Reflection
 {
-    public abstract class MalleableConverterBase
+    public abstract class MalleableConverterBase<TFrom, TTo>
+        where TFrom : MalleableBase
+        where TTo : MalleableBase
     {
-        protected void CompileExpression<TFrom, TTo>(string name, string expression, IDictionary<string, Delegate> expressions)
+        protected void CompileExpression(string name, string expression, IDictionary<string, Delegate> expressions)
         {
             var typeTo = typeof(TTo);
             var property = typeTo.GetProperty(name)!;
@@ -20,7 +22,7 @@ namespace Kadense.Malleable.Reflection
             expressions.Add(name, parsedExpression.Compile());
         }
 
-        protected TTo Convert<TFrom, TTo>(TFrom fromObject, IDictionary<string, Delegate> expressions)        
+        protected TTo Convert(TFrom fromObject, IDictionary<string, Delegate> expressions)        
         {
             var toObject = Activator.CreateInstance<TTo>();
 
@@ -32,5 +34,7 @@ namespace Kadense.Malleable.Reflection
             }
             return toObject;
         }
+
+        public abstract TTo Convert(TFrom fromObject);
     }
 }

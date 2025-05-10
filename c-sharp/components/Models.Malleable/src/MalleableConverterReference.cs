@@ -1,6 +1,8 @@
+using Microsoft.Extensions.Logging;
+
 namespace Kadense.Models.Malleable
 {
-    public class MalleableTypeReference : IMalleableHasModules
+    public class MalleableConverterReference : IMalleableValidated, IMalleableHasModules
     {
         /// <summary>
         /// The name of the module that this type is defined in
@@ -17,16 +19,27 @@ namespace Kadense.Models.Malleable
         /// <summary>
         /// The name of the class being referenced
         /// </summary>
-        [JsonPropertyName("className")]
-        public string? ClassName { get; set; }
+        [JsonPropertyName("converterName")]
+        public string? ConverterName { get; set; }
 
         public string GetQualifiedModuleName()
         {
             return $"{ModuleNamespace}:{ModuleName}";
         }
-        public string GetQualifiedClassName()
+
+        public string GetQualifiedConverterName()
         {
-            return $"{ModuleNamespace}:{ModuleName}:{ClassName}";
+            return $"{ModuleNamespace}:{ModuleName}:{ConverterName}";
+        }
+
+        public bool IsValid(ILogger logger)
+        {
+            if (string.IsNullOrEmpty(ModuleName) || string.IsNullOrEmpty(ModuleNamespace) || string.IsNullOrEmpty(ConverterName))
+            {
+                logger.LogError("ConverterReference is missing required fields");
+                return false;
+            }
+            return true;
         }
 
         public IEnumerable<string> GetModuleNames()

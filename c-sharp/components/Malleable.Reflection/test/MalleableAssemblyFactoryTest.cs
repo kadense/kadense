@@ -64,16 +64,13 @@ namespace Kadense.Malleable.Reflection.Tests {
                 {
                     { $"{malleableModule.Metadata.NamespaceProperty}:{malleableModule.Metadata.Name}", malleableAssembly }
                 });
-            Assert.Contains("TestInheritedClass", converterAssembly.Types);
-            Assert.Contains("ConvertedClass", converterAssembly.Types);
-            Assert.Contains("Converter", converterAssembly.Types);
+            Assert.Contains("FromTestInheritedClassToTestClass", converterAssembly.Types);
 
-            var converterType = converterAssembly.Types["Converter"];
-            var testInheritedClassType = converterAssembly.Types["TestInheritedClass"];
-            var convertedClassType = converterAssembly.Types["ConvertedClass"];
+            var converterType = converterAssembly.Types["FromTestInheritedClassToTestClass"];
+            var convertedClassType = malleableAssembly.Types["ConvertedClass"];
 
             var converterInstance = Activator.CreateInstance(converterType);
-            var method = converterType.GetMethod("ConvertFromTestInheritedClassToTestClass")!;
+            var method = converterType.GetMethod("Convert")!;
             
             var convertedInstance = method.Invoke(converterInstance, new object[] { instance });
             Assert.NotNull(convertedInstance);

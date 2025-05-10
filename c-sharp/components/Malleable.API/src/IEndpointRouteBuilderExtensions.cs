@@ -7,13 +7,8 @@ namespace Kadense.Malleable.API
 {
     public static class IEndpointRouteBuilderExtensions
     {
-        public static IEndpointRouteBuilder MapPost<T>(this IEndpointRouteBuilder endpoints, Delegate handler)
-            where T : MalleableBase
-        {
-            return MapPost<T>(endpoints, handler, "/api/namespaces");
-        }
 
-        public static IEndpointRouteBuilder MapPost<T>(this IEndpointRouteBuilder endpoints, Delegate handler, string prefix = "/api/namespaces")
+        public static IEndpointRouteBuilder MapPost<T>(this IEndpointRouteBuilder endpoints, Delegate handler, string prefix = "/api/namespaces", string? suffix = null)
             where T : MalleableBase
         {
             var type = typeof(T);
@@ -23,16 +18,22 @@ namespace Kadense.Malleable.API
                 throw new InvalidOperationException($"The type {type.Name} does not have the MalleableClassAttribute.");
             }
             var malleableClassAttribute = (MalleableClassAttribute)malleableClassAttributes.First();
-            endpoints.MapPost($"{prefix}/{malleableClassAttribute!.ModuleNamespace}/{malleableClassAttribute!.ModuleName}/{malleableClassAttribute.ClassName}", handler);
+            
+            if(string.IsNullOrEmpty(suffix))
+            {
+                suffix = $"{malleableClassAttribute!.ModuleNamespace}/{malleableClassAttribute!.ModuleName}/{malleableClassAttribute.ClassName}";
+            }
+            
+            endpoints.MapPost($"{prefix}/{suffix}", handler);
             return endpoints;
         }
 
-        public static IEndpointRouteBuilder MapPost(this IEndpointRouteBuilder endpoints, Type malleableType, Delegate handler)
+        public static IEndpointRouteBuilder MapPost(this IEndpointRouteBuilder endpoints, Type malleableType, Delegate handler, string prefix = "/api/namespaces", string? suffix = null)
         {
             typeof(IEndpointRouteBuilderExtensions)
                 .GetMethod(nameof(MapPost), new Type[] { typeof(IEndpointRouteBuilder), typeof(Delegate) })
                 ?.MakeGenericMethod(malleableType)
-                .Invoke(null, new object[] { endpoints, handler });
+                .Invoke(null, new object?[] { endpoints, handler, prefix, suffix });
             return endpoints;
         }
 
@@ -128,15 +129,10 @@ namespace Kadense.Malleable.API
             return endpoints;
         }
 
-        public static IEndpointRouteBuilder MapMalleableApi<T>(this IEndpointRouteBuilder endpoints, MalleableApiBase malleableApi)
-            where T : MalleableBase
-        {
-            return malleableApi.Process<T>(endpoints);
-        }
 
-        public static IEndpointRouteBuilder MapMalleableApi(this IEndpointRouteBuilder endpoints, MalleableApiBase malleableApi, Type type)
+        public static IEndpointRouteBuilder MapMalleableApi(this IEndpointRouteBuilder endpoints, MalleableApiBase malleableApi, Type type, string prefix = "/api/namespaces", string? suffix = null)
         {
-            return malleableApi.Process(endpoints, type);
+            return malleableApi.Process(endpoints, type, prefix, suffix);
         }
     }
 }

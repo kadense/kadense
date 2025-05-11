@@ -30,5 +30,30 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Extensions
             });
             return factory;
         }
+
+        public static MalleableWorkflowCoordinatorFactory AddRabbitMQWriter(this MalleableWorkflowCoordinatorFactory factory, string actionType = "RabbitMQWriter")
+        {
+            factory.AddAction(actionType, (ctx, stepName) =>
+            {
+                var step = ctx.Workflow.Spec!.Steps![stepName];
+                var inputType = ctx.StepInputTypes[stepName];
+                Type? outputType = null;
+                if(step.Options != null)
+                {
+                    if(step.Options.OutputType != null)
+                    {
+                        var outputTypeName = step.Options.OutputType.GetQualifiedModuleName();
+                        outputType = ctx.Assemblies[outputTypeName].Types[step.Options.OutputType.ClassName!];
+                    }
+                }
+                if (outputType == null)
+                    outputType = inputType;
+                
+                var processorType = typeof(RMQWriteProcessor<,>).MakeGenericType(new Type[] { inputType, outputType }); 
+                
+                return processorType;
+            });
+            return factory;
+        }
     }
 }

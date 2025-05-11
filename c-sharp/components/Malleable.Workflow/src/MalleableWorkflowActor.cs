@@ -44,10 +44,6 @@ namespace Kadense.Malleable.Workflow
                     if(!String.IsNullOrEmpty(destination))
                         this.WorkflowContext.Send(destination, processedResult);
 
-                    if (this.WorkflowContext.DebugMode)
-                    {
-                        Sender.Tell(processedResult);
-                    }
                 }
                 catch(Exception ex)
                 {
@@ -61,16 +57,7 @@ namespace Kadense.Malleable.Workflow
                     {
                         this.WorkflowContext.Send(errorDestination, errorMessage);
                     }
-
-                    if(this.WorkflowContext.DebugMode)
-                    {
-                        Sender.Tell(errorMessage);
-                    }
                 }
-            }
-            else if(message is MalleableWorkflowError)
-            {
-                Sender.Tell(message);
             }
             else
             {

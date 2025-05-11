@@ -102,8 +102,8 @@ namespace Kadense.Models.Malleable
                     return true;
 
                 default:
-                    logger.LogError($"Unknown action type: {Action}");
-                    return false;
+                
+                    return true;
             }
         }
 

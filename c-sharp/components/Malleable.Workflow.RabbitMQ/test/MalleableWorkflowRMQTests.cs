@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Xunit.Abstractions;
 using RabbitMQ.Client;
 using Kadense.Malleable.Workflow.RabbitMQ.Extensions;
+using Kadense.Models.Malleable;
 
 namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
     public class MalleableWorkflowRMQTests : KadenseTest
@@ -37,11 +38,23 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
             malleableAssemblyList.Add(converterAssembly.Name, converterAssembly);
             var workflow = mocker.MockWorkflow();
             workflow.Spec!.Steps!["TestStep"].ExecutorType = "RabbitMQ";
+            workflow.Spec.Steps["WriteApi"].Options!.NextStep = "RMQWrite";
+            workflow.Spec.Steps["RMQWrite"] = new MalleableWorkflowStep()
+            {
+                Action = "RabbitMQWriter",
+                Options = new MalleableWorkflowStandardActionOptions()
+                {
+                    Parameters = new Dictionary<string, string>()
+                    {
+                    }
+                }
+            };
             var rabbitMqFactory = new ConnectionFactory{ HostName = "localhost", Port = 5672 };
             var rabbitMqConnection = await rabbitMqFactory.CreateConnectionAsync(); 
             var results = new List<MalleableBase>();
             var builder = System
             .AddWorkflow(workflow, malleableAssemblyList)
+            .AddRabbitMQWriter()
             .WithDebugMode()
             .Validate()
             .AddRMQConnection(rabbitMqConnection)
@@ -73,7 +86,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
             });
 
             response.EnsureSuccessStatusCode();
-            await Task.Delay(1000);
+            await Task.Delay(2000);
 
             Assert.NotEmpty(results);
             Assert.Single(results);

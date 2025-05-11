@@ -26,6 +26,7 @@ namespace Kadense.Models.Malleable.Tests
                             "TestApi",
                             new MalleableWorkflowApi
                             {
+                                ApiType = "Ingress",
                                 UnderlyingType = new MalleableTypeReference(){
                                     ClassName = "TestInheritedClass",
                                     ModuleName = "test-module",
@@ -70,8 +71,24 @@ namespace Kadense.Models.Malleable.Tests
                                         ConverterName = "FromTestInheritedClassToTestClass",
                                         ModuleName = "test-converter-module",
                                         ModuleNamespace = "test-namespace"
-                                    }
+                                    },
+                                    NextStep = "WriteApi",
                                 },
+                            }
+                        },
+                        {
+                            "WriteApi",
+                            new MalleableWorkflowStep
+                            {
+                                Action = "WriteApi",
+                                Options = new MalleableWorkflowStandardActionOptions
+                                {
+                                    Parameters = new Dictionary<string, string>
+                                    {
+                                        { "baseUrl", "http://localhost:8080" },
+                                        { "Path", "\"test\"" }
+                                    }
+                                }
                             }
                         }
                     }

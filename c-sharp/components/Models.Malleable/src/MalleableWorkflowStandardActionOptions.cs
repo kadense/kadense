@@ -9,11 +9,6 @@ namespace Kadense.Models.Malleable
 
         public override bool IsValid(ILogger logger)
         {
-            if (string.IsNullOrEmpty(NextStep))
-            {
-                logger.LogError("NextStep is null or empty");
-                return false;
-            }
             return true;
         }
     }

@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Kadense.Malleable.Workflow.Extensions;
+using Kadense.Malleable.Workflow.Apis;
+using Kadense.Malleable.API;
 
 namespace Kadense.Malleable.Workflow.Tests
 {
@@ -14,7 +16,7 @@ namespace Kadense.Malleable.Workflow.Tests
         public IWebHost? Host { get; set; }
 
 
-        public void Start(ITestOutputHelper? testOutput, MalleableWorkflowContext workflowContext)
+        public void Start(ITestOutputHelper? testOutput, MalleableWorkflowContext workflowContext, MalleableWorkflowApiAction apiActions, Delegate testHandler)
         {
             Host = WebHost.CreateDefaultBuilder()
             .ConfigureServices(services =>
@@ -28,7 +30,9 @@ namespace Kadense.Malleable.Workflow.Tests
                 .UseRouting()
                 .UseEndpoints(cfg =>
                 {
-                    cfg.MapWorkflow(workflowContext);
+                    cfg
+                    .MapWorkflow(workflowContext, apiActions)
+                    .MapPost("/test", testHandler);
                 });
             })
             .UseKestrel(options => { options.Listen(System.Net.IPAddress.Loopback, 0, (_) => { }); })

@@ -26,6 +26,26 @@ namespace Kadense.Malleable.Workflow.Processing
                 var actorType = typeof(MalleableWorkflowActor<,,>).MakeGenericType(new Type[] { inputType, inputType, processorType });
                 
                 return Props.Create(actorType, new object[] { ctx, stepName });
+            })
+            .AddNext("WriteApi", (ctx, stepName) => {
+                var step = ctx.Workflow.Spec!.Steps![stepName];
+                var inputType = ctx.StepInputTypes[stepName];
+                Type? outputType = null;
+                if(step.Options != null)
+                {
+                    if(step.Options.OutputType != null)
+                    {
+                        var outputTypeName = step.Options.OutputType.GetQualifiedModuleName();
+                        outputType = ctx.Assemblies[outputTypeName].Types[step.Options.OutputType.ClassName!];
+                    }
+                }
+                if (outputType == null)
+                    outputType = inputType;
+                
+                var processorType = typeof(ApiWriteProcessor<,>).MakeGenericType(new Type[] { inputType, outputType }); 
+                var actorType = typeof(MalleableWorkflowActor<,,>).MakeGenericType(new Type[] { inputType, outputType, processorType });
+                
+                return Props.Create(actorType, new object[] { ctx, stepName });
             });
         }
         public MalleableWorkflowAction(MalleableWorkflowCoordinatorActorFactory factory, string action, Func<MalleableWorkflowContext, string, Props> actionFunction)

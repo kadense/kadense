@@ -39,5 +39,8 @@ namespace Kadense.Models.Malleable
         [JsonPropertyName("inputType")] 
         public MalleableTypeReference? InputType { get; set; }
 
+        [JsonPropertyName("outputType")] 
+        public MalleableTypeReference? OutputType { get; set; }
+
     }
 }

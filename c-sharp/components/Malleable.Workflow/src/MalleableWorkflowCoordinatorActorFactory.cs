@@ -5,6 +5,7 @@ using k8s.Models;
 using Kadense.Malleable.Workflow.Validation;
 using Kadense.Logging;
 using Microsoft.Extensions.Logging;
+using Kadense.Malleable.Workflow.Apis;
 
 namespace Kadense.Malleable.Workflow
 {
@@ -16,10 +17,10 @@ namespace Kadense.Malleable.Workflow
             Logger = new KadenseLogger<MalleableWorkflowCoordinatorActor>();
             System = system;
             Workflow = workflow;
-            Assemblies = assemblies;
             ActionMapper = MalleableWorkflowAction.CreateDefault(this);
             ValidatorMapper = MalleableWorkflowValidator.CreateDefault(this, Logger);
-            WorkflowContext = new MalleableWorkflowContext(Workflow, Assemblies, false);
+            ApiActionMapper = MalleableWorkflowApiAction.CreateDefault(this);
+            WorkflowContext = new MalleableWorkflowContext(Workflow, assemblies, false);
         }
 
         public MalleableWorkflowCoordinatorActorFactory(ActorSystem system, MalleableWorkflow workflow, IDictionary<string, MalleableAssembly> assemblies, ILogger logger) : this(system, workflow, assemblies)
@@ -29,11 +30,14 @@ namespace Kadense.Malleable.Workflow
 
         public ILogger Logger { get; } 
         public ActorSystem System { get; }
-        public MalleableWorkflowValidator ValidatorMapper { get; } 
-        public MalleableWorkflowAction ActionMapper { get; } 
+        protected MalleableWorkflowValidator ValidatorMapper { get; set; } 
+        protected MalleableWorkflowAction ActionMapper { get; set;}
+        protected MalleableWorkflowApiAction ApiActionMapper { get; set; } 
         public MalleableWorkflow Workflow { get; } 
-        public IDictionary<string, MalleableAssembly> Assemblies { get; }
 
+        public MalleableWorkflowValidator GetValidators() => ValidatorMapper.GetFirst();
+        public MalleableWorkflowAction GetActions() => ActionMapper.GetFirst();
+        public MalleableWorkflowApiAction GetApiActions() => ApiActionMapper.GetFirst();
 
         public MalleableWorkflowCoordinatorActorFactory WithDebugMode(bool debugMode = true)
         {
@@ -45,7 +49,7 @@ namespace Kadense.Malleable.Workflow
 
         public IActorRef Build()
         {
-            var actorProps = Props.Create<MalleableWorkflowCoordinatorActor>(new object[] { WorkflowContext, ActionMapper.GetFirst(), ValidatorMapper.GetFirst() });
+            var actorProps = Props.Create<MalleableWorkflowCoordinatorActor>(new object[] { WorkflowContext, GetActions(), GetValidators() });
             return System.ActorOf(actorProps, Workflow.Metadata.Name);
         }
     }

@@ -58,6 +58,58 @@ public static class WorkflowTypeValidation
                     }
                 }
                 break;
+            
+            default:
+                if(step.Options != null)
+                {
+                    if(step.Options.InputType != null)
+                    {
+                        var inputType = ctx.Assemblies[step.Options.InputType.GetQualifiedModuleName()].Types[step.Options.InputType.ClassName!];
+                        if(inputType != lastType)
+                        {
+                            logger.LogError($"Type {lastType} is not valid for step {name} which expects {inputType}");
+                            return false;
+                        }
+                    }
+                    ctx.StepInputTypes.Add(name, lastType);
+
+                    if(step.Options.OutputType != null)
+                    {
+                        var outputType = ctx.Assemblies[step.Options.OutputType.GetQualifiedModuleName()].Types[step.Options.OutputType.ClassName!];
+                        if(step.Options.NextStep != null)
+                        {
+                            if(!ValidateStep(ctx, step.Options.NextStep!, outputType, logger))
+                            {
+                                logger.LogError($"Step {step.Options.NextStep} is invalid");
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if(step.Options.NextStep != null)
+                        {
+                            if(!ValidateStep(ctx, step.Options.NextStep!, lastType, logger))
+                            {
+                                logger.LogError($"Step {step.Options.NextStep} is invalid");
+                                return false;
+                            }
+                        }
+                    }
+                    if(step.Options.ErrorStep != null)
+                    {
+                        if(!ValidateStep(ctx, step.Options.ErrorStep, lastType, logger))
+                        {
+                            logger.LogError($"Step {step.Options.ErrorStep} is invalid");
+                            return false;
+                        }
+                    }
+                }
+                else 
+                {
+                    ctx.StepInputTypes.Add(name, lastType);
+                }
+                break;
         }
         return true;
     }
@@ -123,7 +175,7 @@ public static class WorkflowTypeValidation
         {
             if (!ctx.StepInputTypes.ContainsKey(step.Key))
             {
-                logger.LogError($"Step {step.Key} is invalid");
+                logger.LogError($"Could not determine input type of {step.Key}");
                 return false;
             }
         }

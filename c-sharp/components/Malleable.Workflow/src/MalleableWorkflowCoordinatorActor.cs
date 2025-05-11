@@ -16,13 +16,21 @@ namespace Kadense.Malleable.Workflow
 
             foreach(var step in WorkflowContext.Workflow.Spec!.Steps!)
             {
-                Props props = actionMapper.CreateProps(WorkflowContext, step.Key)!;
+                var executorType = step.Value.ExecutorType ?? "Akka.Net";
+                if(executorType == "Akka.Net")
+                {
+                    var processorType = actionMapper.Create(WorkflowContext, step.Key)!;
+                    var inputType = WorkflowContext.StepInputTypes[step.Key];
+                    var outputType = WorkflowContext.StepOutputTypes[step.Key];
+                    var actorType  = typeof(MalleableWorkflowActor<,,>).MakeGenericType(new Type[] { inputType, outputType, processorType });
+                    Props props = Props.Create(actorType, new object[] { WorkflowContext, step.Key });
 
-                if (props == null)
-                    throw new InvalidOperationException($"Action function for step {step.Key} returned null.");
-                
-                var actor = Context.ActorOf(props, step.Key);
-                this.WorkflowContext.Destinations.Add(step.Key, new ActorConnection(actor));
+                    if (props == null)
+                        throw new InvalidOperationException($"Action function for step {step.Key} returned null.");
+                    
+                    var actor = Context.ActorOf(props, step.Key);
+                    this.WorkflowContext.Destinations.Add(step.Key, new ActorConnection(actor));
+                }
             }
         }
 

@@ -4,21 +4,25 @@ using Kadense.Malleable.Reflection;
 using Kadense.Malleable.Reflection.Tests;
 using Kadense.Malleable.Workflow.Extensions;
 using Kadense.Malleable.Workflow.Processing;
+using Kadense.Malleable.Workflow.Tests;
 using Kadense.Models.Malleable.Tests;
 using Microsoft.AspNetCore.Http;
 using Xunit.Abstractions;
+using RabbitMQ.Client;
+using Kadense.Malleable.Workflow.RabbitMQ.Extensions;
 
-namespace Kadense.Malleable.Workflow.Tests {
-    public class MalleableWorkflowTests : KadenseTest
+namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
+    public class MalleableWorkflowRMQTests : KadenseTest
     {
-        public MalleableWorkflowTests(ITestOutputHelper output) : base(output)
+        public MalleableWorkflowRMQTests(ITestOutputHelper output) : base(output)
         {
             System = ActorSystem.Create($"kadense-{this.GetType().Name}");
         }
 
         ActorSystem System { get; set; }
 
-        [Fact]
+        [Fact(Skip = "Requires RabbitMQ to be running")]
+        [Trait("Category", "Integration")]
         public async Task TestAkkaWorkflowAsync()
         {
             var mocker = new MalleableMockers();
@@ -32,11 +36,15 @@ namespace Kadense.Malleable.Workflow.Tests {
             var converterAssembly = malleableAssemblyFactory.CreateAssembly(converterDefinition, malleableAssemblyList);
             malleableAssemblyList.Add(converterAssembly.Name, converterAssembly);
             var workflow = mocker.MockWorkflow();
-            
+            workflow.Spec!.Steps!["TestStep"].ExecutorType = "RabbitMQ";
+            var rabbitMqFactory = new ConnectionFactory{ HostName = "localhost", Port = 5672 };
+            var rabbitMqConnection = await rabbitMqFactory.CreateConnectionAsync(); 
             var results = new List<MalleableBase>();
             var builder = System
             .AddWorkflow(workflow, malleableAssemblyList)
             .WithDebugMode()
+            .Validate()
+            .AddRMQConnection(rabbitMqConnection)
             .WithExternalStepActions();
             var server = new MalleableWorkflowApiMockServer();
             var actorRef = builder.BuildCoordinatorActor();
@@ -71,6 +79,9 @@ namespace Kadense.Malleable.Workflow.Tests {
             Assert.Single(results);
             var convertedInstance = results.First();
             Assert.IsType(malleableAssembly.Types["ConvertedClass"]!, convertedInstance);
+            Assert.Contains("TestStep", builder.WorkflowContext.ExternalSteps);
+            Assert.Contains("TestStep", builder.WorkflowContext.Destinations);
+            Assert.IsAssignableFrom<MalleableWorkflowRMQConnection>(builder.WorkflowContext.Destinations["TestStep"]);
             //var convertedInstance = await actor.Ask(instance);
             //Assert.NotNull(convertedInstance);
             //Assert.IsType(malleableAssembly.Types["ConvertedClass"]!, convertedInstance);

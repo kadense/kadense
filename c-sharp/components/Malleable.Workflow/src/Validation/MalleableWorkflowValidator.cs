@@ -6,7 +6,7 @@ namespace Kadense.Malleable.Workflow.Validation
 {
     public class MalleableWorkflowValidator
     {
-        public static MalleableWorkflowValidator CreateDefault(MalleableWorkflowCoordinatorActorFactory factory, ILogger logger)
+        public static MalleableWorkflowValidator CreateDefault(MalleableWorkflowCoordinatorFactory factory, ILogger logger)
         {
             return new MalleableWorkflowValidator(factory, "BasicValidation", (ctx) => {
                 if(ctx.Workflow == null)
@@ -26,7 +26,7 @@ namespace Kadense.Malleable.Workflow.Validation
             });
         }
 
-        public MalleableWorkflowValidator(MalleableWorkflowCoordinatorActorFactory factory, string name, Func<MalleableWorkflowContext, bool> actionFunction, ILogger logger)
+        public MalleableWorkflowValidator(MalleableWorkflowCoordinatorFactory factory, string name, Func<MalleableWorkflowContext, bool> actionFunction, ILogger logger)
         {
             Name = name;
             Factory = factory;
@@ -34,14 +34,14 @@ namespace Kadense.Malleable.Workflow.Validation
             Logger = logger;
         }
 
-        public MalleableWorkflowValidator(MalleableWorkflowCoordinatorActorFactory factory, string name, Func<MalleableWorkflowContext, bool> actionFunction, ILogger logger, MalleableWorkflowValidator previous) : this(factory, name, actionFunction, logger)
+        public MalleableWorkflowValidator(MalleableWorkflowCoordinatorFactory factory, string name, Func<MalleableWorkflowContext, bool> actionFunction, ILogger logger, MalleableWorkflowValidator previous) : this(factory, name, actionFunction, logger)
         {
             Previous = previous;
         }
 
         private ILogger Logger { get; }
 
-        private MalleableWorkflowCoordinatorActorFactory Factory { get; }
+        private MalleableWorkflowCoordinatorFactory Factory { get; }
 
         private string Name { get; }
 
@@ -57,7 +57,7 @@ namespace Kadense.Malleable.Workflow.Validation
             return next;
         }
 
-        public MalleableWorkflowCoordinatorActorFactory CompleteValidations()
+        public MalleableWorkflowCoordinatorFactory CompleteValidations()
         {
             return Factory;
         }

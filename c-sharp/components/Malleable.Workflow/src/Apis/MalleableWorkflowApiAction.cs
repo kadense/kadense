@@ -7,7 +7,7 @@ namespace Kadense.Malleable.Workflow.Apis
 {
     public class MalleableWorkflowApiAction 
     {
-        public static MalleableWorkflowApiAction CreateDefault(MalleableWorkflowCoordinatorActorFactory factory)
+        public static MalleableWorkflowApiAction CreateDefault(MalleableWorkflowCoordinatorFactory factory)
         {
             return new MalleableWorkflowApiAction(factory, "Ingress", (context, apiName, endpoints) => {
                 var workflow = context.Workflow;
@@ -23,18 +23,18 @@ namespace Kadense.Malleable.Workflow.Apis
             });
         }
 
-        public MalleableWorkflowApiAction(MalleableWorkflowCoordinatorActorFactory factory, string apiType, Func<MalleableWorkflowContext, string, IEndpointRouteBuilder, IEndpointRouteBuilder> actionFunction)
+        public MalleableWorkflowApiAction(MalleableWorkflowCoordinatorFactory factory, string apiType, Func<MalleableWorkflowContext, string, IEndpointRouteBuilder, IEndpointRouteBuilder> actionFunction)
         {
             ApiType = apiType;
             ActionFunction = actionFunction;
             Factory = factory;
         }
-        public MalleableWorkflowApiAction(MalleableWorkflowCoordinatorActorFactory factory, string apiType, Func<MalleableWorkflowContext, string, IEndpointRouteBuilder, IEndpointRouteBuilder> actionFunction, MalleableWorkflowApiAction previous) : this(factory, apiType, actionFunction)
+        public MalleableWorkflowApiAction(MalleableWorkflowCoordinatorFactory factory, string apiType, Func<MalleableWorkflowContext, string, IEndpointRouteBuilder, IEndpointRouteBuilder> actionFunction, MalleableWorkflowApiAction previous) : this(factory, apiType, actionFunction)
         {
             Previous = previous;
         }
 
-        private MalleableWorkflowCoordinatorActorFactory Factory { get; }
+        private MalleableWorkflowCoordinatorFactory Factory { get; }
 
         private string ApiType { get; }
 
@@ -50,7 +50,7 @@ namespace Kadense.Malleable.Workflow.Apis
             return next;
         }
 
-        public MalleableWorkflowCoordinatorActorFactory CompleteActions()
+        public MalleableWorkflowCoordinatorFactory CompleteActions()
         {
             return Factory;
         }

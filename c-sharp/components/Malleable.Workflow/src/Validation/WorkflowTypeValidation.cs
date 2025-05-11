@@ -26,7 +26,8 @@ public static class WorkflowTypeValidation
                 var convertToModuleName = converterAttribute.GetConvertToModuleName();
                 var convertToClassName = converterAttribute.ConvertToClassName;
                 var newType = ctx.Assemblies[convertToModuleName].Types[convertToClassName!];
-                ctx.StepInputTypes.Add(name, newType);
+                ctx.StepInputTypes.Add(name, lastType);
+                ctx.StepOutputTypes.Add(name, newType);
                 if(step.ConverterOptions.NextStep != null)
                 {
                     if (!ctx.StepInputTypes.ContainsKey(step.ConverterOptions.NextStep!))
@@ -45,10 +46,12 @@ public static class WorkflowTypeValidation
                 {
                     if(expression.NextStep != null)
                     {
+                        ctx.StepInputTypes.Add(name, lastType);
+                        ctx.StepOutputTypes.Add(name, lastType);
+
                         if (!ctx.StepInputTypes.ContainsKey(expression.NextStep!))
                         {
-                            ctx.StepInputTypes.Add(name, lastType);
-
+                            
                             if(!ValidateStep(ctx, expression.NextStep!, lastType, logger))
                             {
                                 logger.LogError($"Step {expression.NextStep} is invalid");
@@ -76,6 +79,8 @@ public static class WorkflowTypeValidation
                     if(step.Options.OutputType != null)
                     {
                         var outputType = ctx.Assemblies[step.Options.OutputType.GetQualifiedModuleName()].Types[step.Options.OutputType.ClassName!];
+                        ctx.StepOutputTypes.Add(name, outputType);
+
                         if(step.Options.NextStep != null)
                         {
                             if(!ValidateStep(ctx, step.Options.NextStep!, outputType, logger))
@@ -87,6 +92,7 @@ public static class WorkflowTypeValidation
                     }
                     else
                     {
+                        ctx.StepOutputTypes.Add(name, lastType);
                         if(step.Options.NextStep != null)
                         {
                             if(!ValidateStep(ctx, step.Options.NextStep!, lastType, logger))

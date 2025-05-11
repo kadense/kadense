@@ -5,7 +5,7 @@ namespace Kadense.Malleable.Workflow.Processing
 {
     public class MalleableWorkflowAction
     {
-        public static MalleableWorkflowAction CreateDefault(MalleableWorkflowCoordinatorActorFactory factory)
+        public static MalleableWorkflowAction CreateDefault(MalleableWorkflowCoordinatorFactory factory)
         {
             return new MalleableWorkflowAction(factory, "Convert", (ctx, stepName) => {
                 var step = ctx.Workflow.Spec!.Steps![stepName];
@@ -16,16 +16,14 @@ namespace Kadense.Malleable.Workflow.Processing
                 var convertFromType = ctx.Assemblies[converterAttribute.GetConvertFromModuleName()].Types[converterAttribute.ConvertFromClassName];
                 var convertToType = ctx.Assemblies[converterAttribute.GetConvertToModuleName()].Types[converterAttribute.ConvertToClassName]; 
                 var processorType = typeof(ConversionProcessor<,>).MakeGenericType(new Type[] { convertFromType, convertToType }); 
-                var actorType = typeof(MalleableWorkflowActor<,,>).MakeGenericType(new Type[] { convertFromType, convertToType, processorType });
-                return Props.Create(actorType, new object[] { ctx, stepName });
+                return processorType;
             })
             .AddNext("IfElse", (ctx, stepName) => {
                 var inputType = ctx.StepInputTypes[stepName];
                 
                 var processorType = typeof(IfElseProcessor<>).MakeGenericType(new Type[] { inputType }); 
-                var actorType = typeof(MalleableWorkflowActor<,,>).MakeGenericType(new Type[] { inputType, inputType, processorType });
                 
-                return Props.Create(actorType, new object[] { ctx, stepName });
+                return processorType;
             })
             .AddNext("WriteApi", (ctx, stepName) => {
                 var step = ctx.Workflow.Spec!.Steps![stepName];
@@ -43,56 +41,55 @@ namespace Kadense.Malleable.Workflow.Processing
                     outputType = inputType;
                 
                 var processorType = typeof(ApiWriteProcessor<,>).MakeGenericType(new Type[] { inputType, outputType }); 
-                var actorType = typeof(MalleableWorkflowActor<,,>).MakeGenericType(new Type[] { inputType, outputType, processorType });
                 
-                return Props.Create(actorType, new object[] { ctx, stepName });
+                return processorType;
             });
         }
-        public MalleableWorkflowAction(MalleableWorkflowCoordinatorActorFactory factory, string action, Func<MalleableWorkflowContext, string, Props> actionFunction)
+        public MalleableWorkflowAction(MalleableWorkflowCoordinatorFactory factory, string action, Func<MalleableWorkflowContext, string, Type> actionFunction)
         {
             Action = action;
             ActionFunction = actionFunction;
             Factory = factory;
         }
-        public MalleableWorkflowAction(MalleableWorkflowCoordinatorActorFactory factory, string action, Func<MalleableWorkflowContext, string, Props> actionFunction, MalleableWorkflowAction previous) : this(factory, action, actionFunction)
+        public MalleableWorkflowAction(MalleableWorkflowCoordinatorFactory factory, string action, Func<MalleableWorkflowContext, string, Type> actionFunction, MalleableWorkflowAction previous) : this(factory, action, actionFunction)
         {
             Previous = previous;
         }
 
-        private MalleableWorkflowCoordinatorActorFactory Factory { get; }
+        private MalleableWorkflowCoordinatorFactory Factory { get; }
 
         private string Action { get; }
 
-        private Func<MalleableWorkflowContext, string, Props?> ActionFunction { get; }
+        private Func<MalleableWorkflowContext, string, Type > ActionFunction { get; }
 
         private MalleableWorkflowAction? Previous { get; set; }
         private MalleableWorkflowAction? Next { get; set; }
 
-        public MalleableWorkflowAction AddNext(string action, Func<MalleableWorkflowContext, string, Props> actionFunction)
+        public MalleableWorkflowAction AddNext(string action, Func<MalleableWorkflowContext, string, Type> actionFunction)
         {
             var next = new MalleableWorkflowAction(Factory, action, actionFunction, this);
             Next = next;
             return next;
         }
 
-        public MalleableWorkflowCoordinatorActorFactory CompleteActions()
+        public MalleableWorkflowCoordinatorFactory CompleteActions()
         {
             return Factory;
         }
 
-        public Props? CreateProps(MalleableWorkflowContext context, string stepName)
+        public Type? Create(MalleableWorkflowContext context, string stepName)
         {
             if(context.Workflow.Spec!.Steps![stepName].Action == Action)
             {
-                var props = ActionFunction(context, stepName);
-                if (props != null)
-                    return props;
+                var type = ActionFunction(context, stepName);
+                if (type != null)
+                    return type;
 
                 throw new InvalidOperationException($"Action function for step {stepName} returned null.");
             }
             else if(Next != null)
             {
-                return Next.CreateProps(context, stepName);
+                return Next.Create(context, stepName);
             }
 
             throw new InvalidOperationException($"No action found for step {stepName}.");

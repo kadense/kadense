@@ -33,22 +33,9 @@ WriteSuccess:
 ## Parameters
 | Name | Description | Required |
 | --- | --- | --- |
-| baseUrl | The base URL to send to | true | 
-| path | An expression to create the the path |
-
-When the API is written, the body will be the data type that is input into the step. The solution assumes that it will get a response in the same format as is sent to it, however if you wish you can specify another type:
-
-```yaml
-WriteSuccessApi:
-    action: WriteApi
-    options:
-        parameters:
-            baseUrl: http://localhost:8080/
-            path: >
-                "api/success"
-        outputType:
-            className: TestResponse
-            moduleName: test-module
-            moduleNamespace: test-namespace
-
-```
+| hostName | The URL for the server | true | 
+| port | The port number for the service | false |
+| queueName| The queue name to write to | false |
+| exchangeKey | The exchange key, if not supplied no exchange is created | false |
+| routingKey | the routing key to write to | false |
+| exchangeType | if the exchangeKey is populated, the type of exchange to create (defaults to fanout) | false |

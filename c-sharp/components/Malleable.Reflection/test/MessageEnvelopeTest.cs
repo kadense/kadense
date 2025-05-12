@@ -9,11 +9,11 @@ namespace Kadense.Malleable.Reflection.Tests
         }
 
         [Theory()]
-        [InlineData(null, null, "Pm6DwwEyIJX1yONGQm2xnS9rSD7wiRUMgkv1o25HQAM=")]
-        [InlineData("TestEntry", null, "5jsDoWVcH+qBviFVlvbvoJJpWtQQ+FSPr+9b8wSNkfs=")]
-        [InlineData("TestEntry", "5jsDoWVcH+qBviFVlvbvoJJpWtQQ+FSPr+9b8wSNkfs=", "BIZYSkmUDL92NTsrwSJ+V2XFTEVB09qGWqvsVjDFwnM=")]
-        [InlineData("TestEntry2", null, "7IB8LO8CFkpLT/cKRCO4eUG7STxd8TbT3Mw6E5ledEg=")]
-        [InlineData("TestEntry2", "5jsDoWVcH+qBviFVlvbvoJJpWtQQ+FSPr+9b8wSNkfs=", "sD/NtZLyb2RNOXY6FGeQt8ecLBUu37FJtE7u6uKahRE=")]
+        [InlineData(null, null, "zz6q+SdIr+vrer+vl6Q4a37G8zD3u6wCalN79Qkz5WQ=")]
+        [InlineData("TestEntry", null, "n6VdiCx3+PXF1XnbVapNtobm8Yu6KcQlLytutkcBhdU=")]
+        [InlineData("TestEntry", "n6VdiCx3+PXF1XnbVapNtobm8Yu6KcQlLytutkcBhdU=", "bBMoYHlCZGxtka2UMl65aIljdQng+EJDUREdSph7L5Q=")]
+        [InlineData("TestEntry2", null, "x5AiAzcHobVdQMyIqRlNk1URtKtx0Mkr60aDd/F0Kw8=")]
+        [InlineData("TestEntry2", "n6VdiCx3+PXF1XnbVapNtobm8Yu6KcQlLytutkcBhdU=", "C4aVTjE1NeiZq9mMjZ3X7CFfvaoRIiL/tZ1QvxWrwGM=")]
         public void TestGenerateSignature(string? value, string? previousSignature, string expectedValue)
         {
             var message = new MalleableBasicMockClass

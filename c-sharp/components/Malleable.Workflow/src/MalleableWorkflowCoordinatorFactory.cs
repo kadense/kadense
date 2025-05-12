@@ -81,6 +81,12 @@ namespace Kadense.Malleable.Workflow
             return this;
         }
 
+        public MalleableWorkflowCoordinatorFactory WithMessageSigning(bool enableMessageSigning = true)
+        {
+            this.WorkflowContext.EnableMessageSigning = enableMessageSigning;
+            return this;
+        }
+
         public MalleableWorkflowContext WorkflowContext { get; protected set; }
 
         public MalleableWorkflowCoordinatorFactory WithExternalStepActions()

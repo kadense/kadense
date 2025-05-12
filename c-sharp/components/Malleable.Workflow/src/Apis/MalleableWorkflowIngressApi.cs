@@ -1,3 +1,4 @@
+using Kadense.Logging;
 using Kadense.Malleable.API;
 using Kadense.Malleable.Reflection;
 using Kadense.Malleable.Workflow.Connections;
@@ -16,6 +17,8 @@ namespace Kadense.Malleable.Workflow.Apis
             Connection = workflowContext.Destinations[StepName];
         }
 
+        private KadenseLogger<MalleableWorkflowIngressApi> logger = new KadenseLogger<MalleableWorkflowIngressApi>();
+
         public string ApiName { get; set; }
         public string StepName { get; set; }
 
@@ -23,13 +26,24 @@ namespace Kadense.Malleable.Workflow.Apis
 
         public MalleableWorkflowContext WorkflowContext { get; set; }
         
+        private string processSignature = string.Empty;
 
         protected override async Task ProcessPostAsync<T>(HttpContext context, T content)
         {
             var identifier = Guid.NewGuid().ToString();
-            
-            Connection.Send<T>(content);
-
+            MalleableEnvelope<T> envelope = new MalleableEnvelope<T>(content, identifier, $"api://{ApiName}");
+    
+            if(WorkflowContext.EnableMessageSigning)
+            {
+                envelope.GenerateSignatures(null, processSignature);
+                
+                lock(processSignature)
+                {
+                    processSignature = envelope.ProcessSignature!;
+                }
+            }
+            logger.LogInformation($"{envelope.Step} {StepName ?? "{abandoned}"} {envelope.LineageId} {envelope.RawSignature} {envelope.LineageSignature} {envelope.ProcessSignature} {envelope.CombinedSignature} ");
+            Connection.Send(envelope);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = 200;
             context.Response.Headers.Append("X-Identifier", identifier);

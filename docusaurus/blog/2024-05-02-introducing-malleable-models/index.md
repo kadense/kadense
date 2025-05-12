@@ -38,7 +38,7 @@ spec:
 
 This is then ingested by kadense components and converted into classes in .Net, so the above would essentially become the equivalent of the following:
 
-```c#
+```csharp
 
 public class TestClass
 {

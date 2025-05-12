@@ -22,7 +22,7 @@ spec:
 
 This will cause the MalleableAssemblyBuilder to add the **IMalleableIdentifiable** interface to the object, and create a method for this based upon the expression defined in the property.
 
-```c#
+```csharp
 var identifiable = (IMalleableIdentifiable)malleableInstance;
 identifiable.GetIdentifier()
 ```

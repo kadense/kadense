@@ -34,7 +34,7 @@ spec:
 
 This will essentially create a module which would be the equivalent of the following:
 
-```c#
+```csharp
 public class TestClass
 {
     public string TestProperty { get; set; }

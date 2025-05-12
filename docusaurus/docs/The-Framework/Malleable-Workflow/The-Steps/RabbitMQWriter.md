@@ -8,7 +8,7 @@ Writes the contents to a RabbitMQ Queue
 
 This extension needs to be added to the service:
 
-```c#
+```csharp
 var builder = System
     .AddWorkflow(workflow, malleableAssemblyList)
     .AddRabbitMQWriter()

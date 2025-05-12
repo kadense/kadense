@@ -3,7 +3,8 @@ using Xunit.Abstractions;
 using Kadense.Client.Kubernetes;
 using Kadense.Models.Malleable;
 
-namespace Kadense.Malleable.Reflection.Tests {
+namespace Kadense.Malleable.Reflection.Tests 
+{
     public class MalleableAssemblyFactoryTest : KadenseTest
     {
         public MalleableAssemblyFactoryTest(ITestOutputHelper output) : base(output)

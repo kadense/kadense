@@ -33,36 +33,8 @@ namespace Kadense.Malleable.Workflow
 
         protected override void OnReceive(object message)
         {
-            if (message is TIn input)
-            {
-                try 
-                {
-                    (string? destination, MalleableBase result) = Processor.Process(input);
-                    if(result is not TOut processedResult)
-                        throw new InvalidOperationException($"Invalid result type. Expected {typeof(TOut)}, but got {result.GetType()}.");
-                    
-                    if(!String.IsNullOrEmpty(destination))
-                        this.WorkflowContext.Send(destination, processedResult);
-
-                }
-                catch(Exception ex)
-                {
-                    var errorDestination = Processor.GetErrorDestination();
-
-                    if (errorDestination == null && !this.WorkflowContext.DebugMode)
-                        throw;
-
-                    var errorMessage = new MalleableWorkflowError<TIn>(input, ex);
-                    if (errorDestination != null)
-                    {
-                        this.WorkflowContext.Send(errorDestination, errorMessage);
-                    }
-                }
-            }
-            else
-            {
+            if (!MalleableWorkflowQueueProcessor.OnReceive<TIn, TOut, TProcessor>(message, WorkflowContext, Processor, StepName))
                 Unhandled(message);
-            }
         }
     }
 }

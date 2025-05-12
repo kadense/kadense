@@ -28,3 +28,9 @@ models:
   label: Models
   permalink: /models
   description: Models and Model Management
+
+
+workflow:
+  label: Workflow
+  permalink: /workflows
+  description: Workflows

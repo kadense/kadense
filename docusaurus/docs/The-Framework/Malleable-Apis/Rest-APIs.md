@@ -7,7 +7,7 @@ In addition to a the basic API's, you can also have it create more complex API's
 
 This can be done by adding a **MalleableRestApiFileServer** to the **UseEndpoints** section of your host configuration.
 
-```c#
+```csharp
 .UseEndpoints(cfg =>
 {
     var malleableApi = new MalleableRestApiFileServer(basePath: basePath);
@@ -39,13 +39,13 @@ DELETE /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className}/{id
 
 It will access the files for each of the data types in the folder:
 
-```c#
+```csharp
 $"{basePath}/{moduleNamespace}/{moduleName}/{className}"
 ```
 
 and each file will be named as follows:
 
-```c#
+```csharp
 $"{basePath}/{moduleNamespace}/{moduleName}/{className}/{identifier}.json"
 ```
 

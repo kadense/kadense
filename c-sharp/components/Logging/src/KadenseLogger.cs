@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging.Console;
+
 namespace Kadense.Logging
 {
     public interface IKadenseLogger : ILogger
@@ -13,10 +15,17 @@ namespace Kadense.Logging
         
         public KadenseLogger()
         {
+            
             this.LogFactory = LoggerFactory.Create(logs => {
                 logs.Configure(logging => {
                     logging.ActivityTrackingOptions = ActivityTrackingOptions.SpanId | ActivityTrackingOptions.TraceId;
-                }).AddConsole();
+                })
+                .AddSimpleConsole(cfg =>
+                {
+                    cfg.TimestampFormat = "yyyy-MM-dd HH:mm:ss.fff ";
+                    cfg.SingleLine = true;
+                    cfg.UseUtcTimestamp = true;
+                });
             });
             this.Logger = this.LogFactory.CreateLogger<T>();
         }

@@ -7,7 +7,7 @@ You can use the following methodology to create your own Basic API's with any ba
 
 The following method need to be implemented:
 
-```c#
+```csharp
 protected Task ProcessPostAsync<T>(HttpContext context, T content)
 {
     // implement your logic for creating the item on the backend

@@ -5,7 +5,7 @@ sidebar_position: 2
 
 You can add the RabbitMQ Executor type using the following command:
 
-```c#
+```csharp
 // prepare the rabbit mq connection factory
 var rabbitMqFactory = new ConnectionFactory{ HostName = "localhost", Port = 5672 };
 

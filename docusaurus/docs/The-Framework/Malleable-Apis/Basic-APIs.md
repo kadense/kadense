@@ -9,7 +9,7 @@ Kadense provides a framework for creating your own uniform API's with any backin
 
 This can be done by adding a **MalleableIngressApiFileServer** to the **UseEndpoints** section of your host configuration.
 
-```c#
+```csharp
 .UseEndpoints(cfg =>
 {
     var malleableApi = new MalleableIngressApiFileServer(basePath: basePath);
@@ -28,7 +28,7 @@ POST /api/namespaces/{basePath}/{moduleNamespace}/{moduleName}/{className}
 
 When called it will validate the components and write them to the following path:
 
-```c#
+```csharp
 $"{basePath}/{moduleNamespace}/{moduleName}/{className}/{guid}"
 ```
 

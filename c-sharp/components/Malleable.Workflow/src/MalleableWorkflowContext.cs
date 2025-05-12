@@ -15,6 +15,8 @@ namespace Kadense.Malleable.Workflow
 
         public bool DebugMode { get; set; }
 
+        public bool EnableMessageSigning { get; set; } = true;
+
         public MalleableWorkflow Workflow { get; } 
         public IDictionary<string, MalleableWorkflowConnection> Destinations { get; }
 

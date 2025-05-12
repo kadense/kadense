@@ -8,7 +8,7 @@ You can use the following methodology to create your own API's with any backends
 The following methods need to be implemented:
 
 
-```c#
+```csharp
 protected Task ProcessGetAsync<T>(HttpContext context, string identifier)
 {
     // implement your logic for getting the item on the backend

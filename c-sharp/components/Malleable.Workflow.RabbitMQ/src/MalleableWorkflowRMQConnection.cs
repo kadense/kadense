@@ -25,10 +25,10 @@ namespace Kadense.Malleable.Workflow.RabbitMQ
             {
                 var body = ea.Body.ToArray();
                 using var stream = new MemoryStream(body);
-                var message = await JsonSerializer.DeserializeAsync<TMessage>(stream);
-                if (message != null)
+                var envelope = await JsonSerializer.DeserializeAsync<MalleableEnvelope<TMessage>>(stream);
+                if (envelope != null)
                 {
-                    var task = (Task)OnReceive.DynamicInvoke(message)!;
+                    var task = (Task)OnReceive.DynamicInvoke(envelope)!;
                     await task;
                 }
             };

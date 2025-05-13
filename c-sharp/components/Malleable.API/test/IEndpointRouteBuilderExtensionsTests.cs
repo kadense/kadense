@@ -21,8 +21,9 @@ namespace Kadense.Malleable.API.Tests {
             var module = mocker.MockModule();
             var assemblyBuilder = new MalleableAssemblyFactory();
             var assembly = assemblyBuilder.CreateAssembly(module);
+            var assemblies = new List<MalleableAssembly> { assembly };
             var inheritingType = assembly.Types["TestInheritedClass"];
-            server.Start(Output, [ inheritingType ]);
+            server.Start(assemblies, Output, [ inheritingType ]);
 
             var url = server.GetUrl();
             client.BaseAddress = new Uri(url);

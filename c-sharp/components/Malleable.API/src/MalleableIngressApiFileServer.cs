@@ -2,7 +2,7 @@ namespace Kadense.Malleable.API
 {
     public class MalleableIngressApiFileServer : MalleableApiBase
     {
-        public MalleableIngressApiFileServer(string? basePath = null, string prefix = "/api/namespaces") : base(prefix)
+        public MalleableIngressApiFileServer(IList<MalleableAssembly> assemblies, string? basePath = null, string prefix = "/api/namespaces") : base(assemblies, prefix)
         {
             BasePath = basePath ?? Environment.GetEnvironmentVariable("MFS_BASE_PATH")!;
         }
@@ -42,8 +42,8 @@ namespace Kadense.Malleable.API
             context.Response.Headers.Append("X-Identifier", identifier);
             using(var stream = fileInfo.Create())
             {
-                await System.Text.Json.JsonSerializer.SerializeAsync<T>(stream, content);
-                await context.Response.WriteAsJsonAsync<T>(content);
+                await System.Text.Json.JsonSerializer.SerializeAsync<T>(stream, content, this.GetJsonSerializerOptions());
+                await context.Response.WriteAsJsonAsync<T>(content, this.GetJsonSerializerOptions());
                 await context.Response.CompleteAsync();
                 stream.Close();
             }

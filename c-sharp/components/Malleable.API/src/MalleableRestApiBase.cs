@@ -1,9 +1,12 @@
+using System.Text.Json;
+
 namespace Kadense.Malleable.API
 {
     public abstract class MalleableRestApiBase
     {
-        public MalleableRestApiBase(string prefix = "/api/namespaces") 
+        public MalleableRestApiBase(IList<MalleableAssembly> assemblies, string prefix = "/api/namespaces") 
         {
+            Assemblies = assemblies;
             Prefix = prefix;
         }
 
@@ -75,5 +78,26 @@ namespace Kadense.Malleable.API
             where T : MalleableBase, IMalleableIdentifiable;
         protected abstract Task ProcessDeleteAsync<T>(HttpContext context, T content, string identifier)
             where T : MalleableBase, IMalleableIdentifiable;
+
+        protected MalleablePolymorphicTypeResolver? TypeResolver { get; set; }
+        public IList<MalleableAssembly> Assemblies { get; }
+        public JsonSerializerOptions GetJsonSerializerOptions()
+        {
+            if(TypeResolver == null)
+            {
+                TypeResolver = new MalleablePolymorphicTypeResolver();
+                foreach (var assembly in Assemblies)
+                {
+                    TypeResolver.MalleableAssembly.Add(assembly);
+                }
+            }
+            var options = new JsonSerializerOptions
+            {
+                TypeInfoResolver = TypeResolver,
+                WriteIndented = true
+            };
+
+            return options;
+        }
     }
 }

@@ -1,0 +1,15 @@
+{
+  "TestStringV2": "test123",
+  "PolymorphicList": [
+    {
+      "id": "DerivedString",
+      "DerivedStringProperty": "testString",
+      "BaseStringProperty": null
+    },
+    {
+      "id": "DerivedInt",
+      "DerivedIntProperty": 123,
+      "BaseStringProperty": null
+    }
+  ]
+}

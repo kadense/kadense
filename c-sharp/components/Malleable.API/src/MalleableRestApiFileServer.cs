@@ -3,7 +3,7 @@ namespace Kadense.Malleable.API
 {
     public class MalleableRestApiFileServer : MalleableRestApiBase
     {
-        public MalleableRestApiFileServer(string? basePath = null, string prefix = "/api/namespaces") : base(prefix)
+        public MalleableRestApiFileServer(IList<MalleableAssembly> assemblies, string? basePath = null, string prefix = "/api/namespaces") : base(assemblies, prefix)
         {
             BasePath = basePath ?? Environment.GetEnvironmentVariable("MFS_BASE_PATH")!;
         }
@@ -59,14 +59,14 @@ namespace Kadense.Malleable.API
             {
                 using(var stream = file.OpenRead())
                 {
-                    var item = await System.Text.Json.JsonSerializer.DeserializeAsync<T>(stream);
+                    var item = await System.Text.Json.JsonSerializer.DeserializeAsync<T>(stream, this.GetJsonSerializerOptions());
                     items.Add(item!);
                     stream.Close();
                 }
             }
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = 200;
-            await context.Response.WriteAsJsonAsync(items);
+            await context.Response.WriteAsJsonAsync(items, this.GetJsonSerializerOptions());
             await context.Response.CompleteAsync();
         }
         override protected async Task ProcessPutAsync<T>(HttpContext context, T content, string identifier)
@@ -84,8 +84,8 @@ namespace Kadense.Malleable.API
             fileInfo.Delete();
             using(var stream = fileInfo.Create())
             {
-                await System.Text.Json.JsonSerializer.SerializeAsync<T>(stream, content);
-                await context.Response.WriteAsJsonAsync<T>(content);
+                await System.Text.Json.JsonSerializer.SerializeAsync<T>(stream, content, this.GetJsonSerializerOptions());
+                await context.Response.WriteAsJsonAsync<T>(content, this.GetJsonSerializerOptions());
                 await context.Response.CompleteAsync();
                 stream.Close();
             }
@@ -125,8 +125,8 @@ namespace Kadense.Malleable.API
             context.Response.StatusCode = 200;
             using(var stream = fileInfo.Create())
             {
-                await System.Text.Json.JsonSerializer.SerializeAsync<T>(stream, content);
-                await context.Response.WriteAsJsonAsync<T>(content);
+                await System.Text.Json.JsonSerializer.SerializeAsync<T>(stream, content, this.GetJsonSerializerOptions());
+                await context.Response.WriteAsJsonAsync<T>(content, this.GetJsonSerializerOptions());
                 await context.Response.CompleteAsync();
                 stream.Close();
             }

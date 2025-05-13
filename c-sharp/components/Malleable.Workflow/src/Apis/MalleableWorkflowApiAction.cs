@@ -16,7 +16,7 @@ namespace Kadense.Malleable.Workflow.Apis
                     prefix = "/api/namespaces";
 
                 var apiPrefix = $"{prefix}/{workflow.Metadata.NamespaceProperty}/{workflow.Metadata.Name}";
-                var ingressApi = new MalleableWorkflowIngressApi(context, apiName, prefix);
+                var ingressApi = new MalleableWorkflowIngressApi(context.Assemblies.Values.ToList(), context, apiName, prefix);
                 var underlyingTypeRef = api.UnderlyingType;
                 var type = context.Assemblies[underlyingTypeRef!.GetQualifiedModuleName()].Types[underlyingTypeRef.ClassName!];
                 return endpoints.MapMalleableApi(ingressApi, type, apiPrefix, apiName);

@@ -1,6 +1,8 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Reflection.Metadata;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using Kadense.Models.Kubernetes;
 using Kadense.Models.Malleable;
 
@@ -168,7 +170,9 @@ namespace Kadense.Malleable.Reflection
         protected virtual void DefineTypeBuilder(ModuleBuilder moduleBuilder, string name, MalleableClass typeDefinition,  IDictionary<string, TypeBuilder> reflectedTypes )
         {   
             var parentType = !string.IsNullOrEmpty(typeDefinition.BaseClass) ? reflectedTypes[typeDefinition.BaseClass!] : typeof(MalleableBase);
+
             var typeBuilder = moduleBuilder.DefineType(name!, System.Reflection.TypeAttributes.Public, parentType);            
+            
             reflectedTypes.Add(name, typeBuilder);
         }
 
@@ -370,6 +374,27 @@ namespace Kadense.Malleable.Reflection
                 var typeBuilder = reflectedTypes[typeDefinition.Key];
                 var type = typeBuilder.CreateType();
                 assembly.AddType(typeDefinition.Key, type);     
+                
+                if(!string.IsNullOrEmpty(typeDefinition.Value.DiscriminatorProperty))
+                {
+                    var options = new MalleableJsonPolymorphicOptions()
+                    {
+                        TypeDiscriminatorPropertyName = typeDefinition.Value.DiscriminatorProperty,
+                    };
+                    assembly.JsonPolymorphicOptions.Add(type, options);
+                }
+
+                if(!string.IsNullOrEmpty(typeDefinition.Value.BaseClass) && !string.IsNullOrEmpty(typeDefinition.Value.TypeDiscriminator))
+                {
+                    var baseType = assembly.Types[typeDefinition.Value.BaseClass];
+                    MalleableJsonPolymorphicOptions? options = null;
+                    if(!assembly.JsonPolymorphicOptions.TryGetValue(baseType, out options))
+                    {
+                        options = new MalleableJsonPolymorphicOptions();
+                        assembly.JsonPolymorphicOptions.Add(baseType, options);
+                    }
+                    options.DerivedTypes.Add(new JsonDerivedType(type, typeDefinition.Value.TypeDiscriminator));
+                }
             }
             return assembly;
         }

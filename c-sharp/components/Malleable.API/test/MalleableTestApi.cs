@@ -8,6 +8,10 @@ using Xunit.Abstractions;
 namespace Kadense.Malleable.API.Tests {
     public class MalleableTestApi : MalleableApiBase
     {
+        public MalleableTestApi(IList<MalleableAssembly> assemblies, string prefix = "/api/namespaces") : base(assemblies, prefix)
+        {
+
+        }
         protected override async Task ProcessPostAsync<T>(HttpContext context, T content)
         {
             Assert.NotNull(content);
@@ -16,7 +20,7 @@ namespace Kadense.Malleable.API.Tests {
             context.Response.StatusCode = 200;
             context.Response.ContentType = "application/json";
             
-            await context.Response.WriteAsJsonAsync<T>(content);
+            await context.Response.WriteAsJsonAsync<T>(content, this.GetJsonSerializerOptions());
             await context.Response.CompleteAsync();
         }
     }

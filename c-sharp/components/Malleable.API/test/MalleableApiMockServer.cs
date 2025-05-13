@@ -9,6 +9,7 @@ using Microsoft.AspNetCore;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using Kadense.Malleable.Reflection;
 
 namespace Kadense.Malleable.API.Tests
 {
@@ -17,7 +18,7 @@ namespace Kadense.Malleable.API.Tests
         public IWebHost? Host { get; set; }
 
 
-        public void Start(ITestOutputHelper? testOutput, IEnumerable<Type> malleableTypes)
+        public void Start(IList<MalleableAssembly> assemblies, ITestOutputHelper? testOutput, IEnumerable<Type> malleableTypes)
         {
             Host = WebHost.CreateDefaultBuilder()
             .ConfigureServices(services =>
@@ -31,7 +32,7 @@ namespace Kadense.Malleable.API.Tests
                 .UseRouting()
                 .UseEndpoints(cfg =>
                 {
-                    var malleableApi = new MalleableTestApi();
+                    var malleableApi = new MalleableTestApi(assemblies);
                     malleableApi.Process(cfg, malleableTypes);
                 });
             })

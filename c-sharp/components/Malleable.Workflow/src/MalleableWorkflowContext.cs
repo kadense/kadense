@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Kadense.Malleable.Reflection;
 using Kadense.Malleable.Workflow.Connections;
 
@@ -38,5 +39,28 @@ namespace Kadense.Malleable.Workflow
                 throw new InvalidOperationException($"Destination {destination} not found.");
             }
         }
+
+        protected MalleablePolymorphicTypeResolver? TypeResolver { get; set; }
+
+        public JsonSerializerOptions GetJsonSerializerOptions()
+        {
+            if(TypeResolver == null)
+            {
+                TypeResolver = new MalleablePolymorphicTypeResolver();
+                foreach (var assembly in Assemblies)
+                {
+                    TypeResolver.MalleableAssembly.Add(assembly.Value);
+                }
+            }
+            var options = new JsonSerializerOptions
+            {
+                TypeInfoResolver = TypeResolver,
+                WriteIndented = true
+            };
+
+            return options;
+        }
+        
+        
     }
 }

@@ -15,18 +15,20 @@ namespace Kadense.Malleable.API.Tests
             var module = mocker.MockModule();
             var assemblyBuilder = new MalleableAssemblyFactory();
             var assembly = assemblyBuilder.CreateAssembly(module);
+            var assemblies = new List<MalleableAssembly> { assembly };
             InheritingType = assembly.Types["TestInheritedClass"];
-            server.Start(Output, [ InheritingType ]);
+            server.Start(assemblies, Output, [ InheritingType ]);
 
             Url = server.GetUrl();
             Client.BaseAddress = new Uri(Url);
+            FileServer = new MalleableRestApiFileServer(assemblies);
         }
 
         public HttpClient Client { get; set; } = new HttpClient();
 
         public string Url { get; set; } 
 
-        public MalleableRestApiFileServer FileServer { get; set; } = new MalleableRestApiFileServer();
+        public MalleableRestApiFileServer FileServer { get; set; }
 
         public Type InheritingType { get; set; }
 

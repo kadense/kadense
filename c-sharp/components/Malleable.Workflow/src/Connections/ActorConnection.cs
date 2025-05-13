@@ -4,7 +4,7 @@ namespace Kadense.Malleable.Workflow.Connections
 {
     public class ActorConnection : MalleableWorkflowConnection<IActorRef>
     {
-        public ActorConnection(IActorRef context) : base(context)
+        public ActorConnection(IList<MalleableAssembly> assemblies, IActorRef context) : base(assemblies, context)
         {
 
         }

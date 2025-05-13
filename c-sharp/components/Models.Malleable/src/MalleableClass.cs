@@ -26,6 +26,12 @@ namespace Kadense.Models.Malleable
         public string? DiscriminatorProperty { get; set; }
 
         /// <summary>
+        /// The discriminator value for this class
+        /// </summary>
+        [JsonPropertyName("typeDiscriminator")]
+        public string? TypeDiscriminator { get; set; }
+
+        /// <summary>
         /// An expression that can be used to uniquely identify this class
         /// </summary>
         [JsonPropertyName("identifierExpression")]

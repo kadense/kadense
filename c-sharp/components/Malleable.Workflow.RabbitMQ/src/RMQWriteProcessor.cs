@@ -70,7 +70,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ
         {
             using(var stream = new MemoryStream())
             {
-                await JsonSerializer.SerializeAsync(stream, message);
+                await JsonSerializer.SerializeAsync(stream, message, this.Context.GetJsonSerializerOptions());
                 stream.Position = 0;
                 var byteArray = new byte[stream.Length];
                 await stream.ReadAsync(byteArray, 0, (int)stream.Length);

@@ -26,5 +26,10 @@
     <ProjectReference Include="..\..\..\components\Testing\src\Kadense.Testing.csproj" />
     <ProjectReference Include="..\..\Models.Malleable\test\Kadense.Models.Malleable.Tests.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Content Remove="Resources/*.json" />
+    <EmbeddedResource Include="Resources/*.json" />
+  </ItemGroup>
 
 </Project>

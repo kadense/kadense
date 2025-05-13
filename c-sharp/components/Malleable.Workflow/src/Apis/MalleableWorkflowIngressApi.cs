@@ -9,7 +9,7 @@ namespace Kadense.Malleable.Workflow.Apis
 {
     public class MalleableWorkflowIngressApi : MalleableApiBase
     {
-        public MalleableWorkflowIngressApi(MalleableWorkflowContext workflowContext, string apiName, string prefix = "/api/namespaces") : base(prefix)
+        public MalleableWorkflowIngressApi(IList<MalleableAssembly> assemblies, MalleableWorkflowContext workflowContext, string apiName, string prefix = "/api/namespaces") : base(assemblies, prefix)
         {
             ApiName = apiName;
             WorkflowContext = workflowContext;
@@ -47,7 +47,7 @@ namespace Kadense.Malleable.Workflow.Apis
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = 200;
             context.Response.Headers.Append("X-Identifier", identifier);
-            await context.Response.WriteAsJsonAsync<T>(content);
+            await context.Response.WriteAsJsonAsync<T>(content, this.GetJsonSerializerOptions());
             await context.Response.CompleteAsync();
         }
     }

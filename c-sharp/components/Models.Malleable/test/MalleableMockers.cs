@@ -249,6 +249,92 @@ namespace Kadense.Models.Malleable.Tests
                                     },
                                 },
                             }
+                        },
+                        {
+                            "PolymorphicBaseClass",
+                            new MalleableClass
+                            {
+                                Description = "Test of Polymorphic base class",
+                                DiscriminatorProperty = "id",
+                                Properties = new Dictionary<string, MalleableProperty>
+                                {
+                                    {
+                                        "BaseStringProperty",
+                                        new MalleableProperty
+                                        {
+                                            Description = "string property",
+                                            PropertyType = "string",
+                                        }
+                                    },
+                                },
+                            }
+                        },
+                        {
+                            "PolymorphicDerivedClass1",
+                            new MalleableClass
+                            {
+                                BaseClass = "PolymorphicBaseClass",
+                                Description = "Test of Polymorphic derived class",
+                                TypeDiscriminator = "DerivedString",
+                                Properties = new Dictionary<string, MalleableProperty>
+                                {
+                                    {
+                                        "DerivedStringProperty",
+                                        new MalleableProperty
+                                        {
+                                            Description = "string property",
+                                            PropertyType = "string",
+                                        }
+                                    },
+                                },
+                            }
+                        },
+                        {
+                            "PolymorphicDerivedClass2",
+                            new MalleableClass
+                            {
+                                BaseClass = "PolymorphicBaseClass",
+                                Description = "Test of Polymorphic derived class",
+                                TypeDiscriminator = "DerivedInt",
+                                Properties = new Dictionary<string, MalleableProperty>
+                                {
+                                    {
+                                        "DerivedIntProperty",
+                                        new MalleableProperty
+                                        {
+                                            Description = "integer property",
+                                            PropertyType = "int",
+                                        }
+                                    },
+                                },
+                            }
+                        },
+                        {
+                            "ContainerOfPolymorphicClasses",
+                            new MalleableClass
+                            {
+                                Description = "Test of Converted class",
+                                Properties = new Dictionary<string, MalleableProperty>
+                                {
+                                    {
+                                        "TestStringV2",
+                                        new MalleableProperty
+                                        {
+                                            Description = "string property",
+                                            PropertyType = "string",
+                                        }
+                                    },
+                                    {
+                                        "PolymorphicList",
+                                        new MalleableProperty
+                                        {
+                                            Description = "list of PolymorphicBaseClass",
+                                            PropertyType = "list",
+                                            SubType = "PolymorphicBaseClass"
+                                        }
+                                    },
+                                },
+                            }
                         }
                    }
                 }

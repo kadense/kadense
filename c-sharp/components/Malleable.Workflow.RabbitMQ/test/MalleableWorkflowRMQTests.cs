@@ -11,6 +11,7 @@ using Xunit.Abstractions;
 using RabbitMQ.Client;
 using Kadense.Malleable.Workflow.RabbitMQ.Extensions;
 using Kadense.Models.Malleable;
+using System.Text.Json;
 
 namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
     public class MalleableWorkflowRMQTests : KadenseTest
@@ -34,6 +35,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
             var malleableAssemblyList = new Dictionary<string, MalleableAssembly>(){
                 { malleableAssembly.Name, malleableAssembly }
             };
+            Assemblies = malleableAssemblyList.Values.ToList();
             var converterAssembly = malleableAssemblyFactory.CreateAssembly(converterDefinition, malleableAssemblyList);
             malleableAssemblyList.Add(converterAssembly.Name, converterAssembly);
             var workflow = mocker.MockWorkflow();
@@ -66,7 +68,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
                 results.Add((MalleableBase)result!);
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 200;
-                await ctx.Response.WriteAsJsonAsync(result);
+                await ctx.Response.WriteAsJsonAsync(result, this.GetJsonSerializerOptions());
                 await ctx.Response.CompleteAsync();
             });
             var url = server.GetUrl();
@@ -98,6 +100,27 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
             //var convertedInstance = await actor.Ask(instance);
             //Assert.NotNull(convertedInstance);
             //Assert.IsType(malleableAssembly.Types["ConvertedClass"]!, convertedInstance);
+        }
+        
+        protected MalleablePolymorphicTypeResolver? TypeResolver { get; set; }
+        protected IList<MalleableAssembly>? Assemblies { get; set; }
+        protected JsonSerializerOptions GetJsonSerializerOptions()
+        {
+            if(TypeResolver == null)
+            {
+                TypeResolver = new MalleablePolymorphicTypeResolver();
+                foreach (var assembly in Assemblies!)
+                {
+                    TypeResolver.MalleableAssembly.Add(assembly);
+                }
+            }
+            var options = new JsonSerializerOptions
+            {
+                TypeInfoResolver = TypeResolver,
+                WriteIndented = true
+            };
+
+            return options;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Extensions
                 var queueName = $"{@namespace}.{name}.{stepName}";
                 var channel = connection.CreateChannelAsync().Result;
                 var rmqContext = new RMQContext(channel, queueName, queueName, queueName);
-                var rmqConnection = new MalleableWorkflowRMQConnection(rmqContext);
+                var rmqConnection = new MalleableWorkflowRMQConnection(factory.WorkflowContext.Assemblies.Values.ToList(), rmqContext);
                 var inputType = context.StepInputTypes[stepName];
                 var outputType = context.StepOutputTypes[stepName];
                 var processorType = factory.GetActions().Create(context, stepName)!;

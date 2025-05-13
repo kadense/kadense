@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Text.Json;
 using Akka.Actor;
 using Kadense.Malleable.Reflection;
 using Kadense.Malleable.Reflection.Tests;
@@ -31,6 +32,7 @@ namespace Kadense.Malleable.Workflow.Tests {
             };
             var converterAssembly = malleableAssemblyFactory.CreateAssembly(converterDefinition, malleableAssemblyList);
             malleableAssemblyList.Add(converterAssembly.Name, converterAssembly);
+            Assemblies = malleableAssemblyList.Values.ToList();
             var workflow = mocker.MockWorkflow();
             
             var results = new List<MalleableBase>();
@@ -45,7 +47,7 @@ namespace Kadense.Malleable.Workflow.Tests {
                 results.Add((MalleableBase)result!);
                 ctx.Response.ContentType = "application/json";
                 ctx.Response.StatusCode = 200;
-                await ctx.Response.WriteAsJsonAsync(result);
+                await ctx.Response.WriteAsJsonAsync(result, this.GetJsonSerializerOptions());
                 await ctx.Response.CompleteAsync();
             });
             var url = server.GetUrl();
@@ -75,5 +77,28 @@ namespace Kadense.Malleable.Workflow.Tests {
             //Assert.NotNull(convertedInstance);
             //Assert.IsType(malleableAssembly.Types["ConvertedClass"]!, convertedInstance);
         }
+
+        protected MalleablePolymorphicTypeResolver? TypeResolver { get; set; }
+        protected IList<MalleableAssembly>? Assemblies { get; set; }
+        protected JsonSerializerOptions GetJsonSerializerOptions()
+        {
+            if(TypeResolver == null)
+            {
+                TypeResolver = new MalleablePolymorphicTypeResolver();
+                foreach (var assembly in Assemblies!)
+                {
+                    TypeResolver.MalleableAssembly.Add(assembly);
+                }
+            }
+            var options = new JsonSerializerOptions
+            {
+                TypeInfoResolver = TypeResolver,
+                WriteIndented = true
+            };
+
+            return options;
+        }
     }
+
+    
 }

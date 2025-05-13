@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization.Metadata;
+
 namespace Kadense.Malleable.Reflection
 {
     public class MalleableAssembly
@@ -9,7 +11,7 @@ namespace Kadense.Malleable.Reflection
             Name = name;
         }
 
-        public Dictionary<string, Type> Types { get; private set; } = new Dictionary<string, Type>();
+        public IDictionary<string, Type> Types { get; private set; } = new Dictionary<string, Type>();
 
         public void AddType(string name, Type type)
         {
@@ -21,5 +23,7 @@ namespace Kadense.Malleable.Reflection
             if (!Types.ContainsKey(name))
                 Types.Add(name, type);
         }
+
+        public IDictionary<Type, MalleableJsonPolymorphicOptions> JsonPolymorphicOptions { get; } = new Dictionary<Type, MalleableJsonPolymorphicOptions>();
     }
 }

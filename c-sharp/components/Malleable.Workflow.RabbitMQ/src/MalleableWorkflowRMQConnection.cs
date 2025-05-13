@@ -9,7 +9,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ
 {
     public class MalleableWorkflowRMQConnection : MalleableWorkflowConnection<RMQContext>, IListeningWorkflowConnection
     {
-        public MalleableWorkflowRMQConnection(RMQContext context) : base(context)
+        public MalleableWorkflowRMQConnection(IList<MalleableAssembly> assemblies, RMQContext context) : base(assemblies, context)
         {
             Context.Channel.ExchangeDeclareAsync(exchange: context.ExchangeKey, type: ExchangeType.Fanout).Wait();
             Context.Channel.QueueDeclareAsync(queue: Context.QueueName, durable: false, exclusive: false, autoDelete: false, arguments: null).Wait();
@@ -25,7 +25,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ
             {
                 var body = ea.Body.ToArray();
                 using var stream = new MemoryStream(body);
-                var envelope = await JsonSerializer.DeserializeAsync<MalleableEnvelope<TMessage>>(stream);
+                var envelope = await JsonSerializer.DeserializeAsync<MalleableEnvelope<TMessage>>(stream, this.GetJsonSerializerOptions());
                 if (envelope != null)
                 {
                     var task = (Task)OnReceive.DynamicInvoke(envelope)!;
@@ -51,7 +51,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ
         {
             using(var stream = new MemoryStream())
             {
-                await JsonSerializer.SerializeAsync(stream, message);
+                await JsonSerializer.SerializeAsync(stream, message, this.GetJsonSerializerOptions());
                 stream.Position = 0;
                 var byteArray = new byte[stream.Length];
                 await stream.ReadAsync(byteArray, 0, (int)stream.Length);

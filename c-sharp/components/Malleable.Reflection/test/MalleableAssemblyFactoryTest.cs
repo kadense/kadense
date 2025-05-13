@@ -2,6 +2,8 @@ using YamlDotNet.RepresentationModel;
 using Xunit.Abstractions;
 using Kadense.Client.Kubernetes;
 using Kadense.Models.Malleable;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace Kadense.Malleable.Reflection.Tests 
 {
@@ -173,6 +175,46 @@ namespace Kadense.Malleable.Reflection.Tests
                 Console.WriteLine("InvalidProgramException occurred: " + ex.Message);
                 throw;
             }
+        }
+
+        
+        [Fact]
+        public void TestPolymorphism()
+        {
+            var mocker = new MalleableMockers();
+            var malleableModule = mocker.MockModule();
+            var malleableAssemblyFactory = new MalleableAssemblyFactory();
+            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(malleableModule);
+            var instanceType = malleableAssembly.Types["ContainerOfPolymorphicClasses"];
+            var instance = Activator.CreateInstance(instanceType);
+            var type1 = malleableAssembly.Types["PolymorphicDerivedClass1"];
+            var type2 = malleableAssembly.Types["PolymorphicDerivedClass2"];
+            var polyBaseClass = malleableAssembly.Types["PolymorphicBaseClass"];
+
+            Assert.NotNull(instance);
+
+            instanceType.GetProperty("TestStringV2")!.SetValue(instance, "test123");
+            var listType = typeof(List<>).MakeGenericType(polyBaseClass);
+            var listInstance = Activator.CreateInstance(listType)!;
+            instanceType.GetProperty("PolymorphicList")!.SetValue(instance, listInstance);
+            var addMethod = listType.GetMethod("Add")!;
+
+            var polymorphicInstance1 = Activator.CreateInstance(type1)!;
+            var polymorphicInstance2 = Activator.CreateInstance(type2)!;
+            type1.GetProperty("DerivedStringProperty")!.SetValue(polymorphicInstance1, "testString");
+            type2.GetProperty("DerivedIntProperty")!.SetValue(polymorphicInstance2, 123);
+            addMethod.Invoke(listInstance, new object[] { polymorphicInstance1 });
+            addMethod.Invoke(listInstance, new object[] { polymorphicInstance2 });
+
+            var expectedValue = KadenseTestUtils.GetEmbeddedResourceAsString("Kadense.Malleable.Reflection.Tests.Resources.Polymorphic.json");
+            var typeInfoResolver = new MalleablePolymorphicTypeResolver();
+            typeInfoResolver.MalleableAssembly.Add(malleableAssembly);
+            var json = JsonSerializer.Serialize(instance, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                TypeInfoResolver = typeInfoResolver,
+            });
+            Assert.Equal(expectedValue, json);
         }
     }
 }

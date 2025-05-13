@@ -63,7 +63,7 @@ namespace Kadense.Malleable.Workflow.Tests {
             {
                 RequestUri = new Uri($"{url}/api/namespaces/test-namespace/test-workflow/TestApi"),
                 Method = HttpMethod.Post,
-                Content = JsonContent.Create(instance, instance.GetType())
+                Content = JsonContent.Create(instance, instance.GetType(), options: GetJsonSerializerOptions()) 
             });
 
             response.EnsureSuccessStatusCode();

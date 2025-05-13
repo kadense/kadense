@@ -62,7 +62,7 @@ namespace Kadense.Malleable.Workflow.Processing
             client.BaseAddress = new Uri(baseUrl);
             var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/{path}")
             {
-                Content = JsonContent.Create(message, message.GetType())
+                Content = JsonContent.Create(message, message.GetType(), options: this.Context.GetJsonSerializerOptions())
             });
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<TOut>();

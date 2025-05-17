@@ -128,7 +128,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Head in the Cloud Solutions Limited. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date(). Kadense Limited. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

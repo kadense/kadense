@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Kadense by Head in the Cloud Solutions',
+  title: 'Kadense',
   tagline: 'Kubernetes Advanced Data Ecosystem for Nourishing Secure Environments.',
   favicon: 'img/favicon.ico',
   markdown: {
@@ -128,7 +128,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Head in the Cloud Solutions Limited. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date()}. Kadense Limited. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

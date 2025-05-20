@@ -1,0 +1,594 @@
+{
+    "apiVersion": "kadense.io/v1",
+    "kind": "MalleableModule",
+    "metadata": {
+        "name": "fhir-test",
+        "namespace": "default"
+    },
+    "spec" : {
+        "classes" : {
+            "Element" : {
+                "properties" : {
+                    "id" : {
+                        "type" : "string",
+                        "description" : "The unique identifier for the element."
+                    }
+                }
+            },
+            "Reference" : {
+                "baseClass:" : "Element",
+                "properties" : {
+                    "reference" : {
+                        "type" : "string",
+                        "description" : "A reference to another resource."
+                    },
+                    "type" : {
+                        "type" : "string",
+                        "description" : "The type of the referenced resource."
+                    },
+                    "identifier" : {
+                        "type" : "Identifier",
+                        "description" : "An identifier for the referenced resource."
+                    },
+                    "display" : {
+                        "type" : "string",
+                        "description" : "Text alternative to the resource reference."
+                    }
+                }
+            },
+            "Coding" : {
+                "properties" : {
+                    "system" : {
+                        "type" : "string",
+                        "description" : "The system that defines the code."
+                    },
+                    "version" : {
+                        "type" : "string",
+                        "description" : "The version of the system."
+                    },
+                    "code" : {
+                        "type" : "string",
+                        "description" : "The code from the system."
+                    },
+                    "display" : {
+                        "type" : "string",
+                        "description" : "A human-readable name for the code."
+                    },
+                    "userSelected" : {
+                        "type" : "bool",
+                        "description" : "Indicates if this code was selected by the user."
+                    }
+                }
+            },
+            "CodeableConcept" : {
+                "properties" : {
+                    "coding" : {
+                        "description" : "Code defined by a terminology system",
+                        "type" : "array",
+                        "subType" : "Coding"
+                    },
+                    "text" : {
+                        "type" : "string",
+                        "description" : "Plain text representation of the concept."
+                    }
+                }
+            },
+            "Metadata" : {
+                "properties" : {
+                    "versionId" : {
+                        "type" : "string",
+                        "description" : "The version of the resource."
+                    },
+                    "lastUpdated" : {
+                        "type" : "string",
+                        "format" : "dateTime",
+                        "description" : "The last time the resource was updated."
+                    },
+                    "source" : {
+                        "type" : "string",
+                        "description" : "The source of the resource."
+                    },
+                    "profile" : {
+                        "type" : "array",
+                        "description" : "A list of profiles that the resource conforms to.",
+                        "subType" : "string"
+                    },
+                    "security" : {
+                        "type" : "array",
+                        "description" : "Security labels applied to the resource.",
+                        "subType" : "Coding"
+                    },
+                    "tag" : {
+                        "type" : "array",
+                        "description" : "Tags applied to the resource.",
+                        "subType" : "Coding"
+                    }
+                }
+            },
+            "Period" : {
+                "baseClass" : "Element",
+                "properties" : {
+                    "start" : {
+                        "type" : "string",
+                        "format" : "dateTime",
+                        "description" : "The start of the period."
+                    },
+                    "end" : {
+                        "type" : "string",
+                        "format" : "dateTime",
+                        "description" : "The end of the period."
+                    }
+                }
+            },
+            "Identifier" : {
+                "baseClass" : "Element",
+                "properties" : {
+                    "use" : {
+                        "type" : "string",
+                        "description" : "The purpose of the identifier."
+                    },
+                    "type" : {
+                        "type" : "CodeableConcept",
+                        "description" : "The type of the identifier."
+                    },
+                    "system" : {
+                        "type" : "string",
+                        "description" : "The namespace for the identifier."
+                    },
+                    "value" : {
+                        "type" : "string",
+                        "description" : "The value of the identifier."
+                    },
+                    "period" : {
+                        "type" : "Period",
+                        "description" : "Time period when the identifier is valid."
+                    },
+                    "assigner" : {
+                        "type" : "Reference",
+                        "description" : "Organization that issued the identifier."
+                    }
+                }
+            },
+            "Resource" : {
+                "baseClass" : "Element",
+                "discriminatorProperty" : "resourceType",
+                "properties" : {                    
+                    "meta" : {
+                        "type" : "Metadata",
+                        "description" : "Metadata about the resource."
+                    },
+                    "implicitRules" : {
+                        "type" : "string",
+                        "description" : "A set of rules under which the resource was created."
+                    },
+                    "language" : {
+                        "type" : "string",
+                        "description" : "The base language in which the resource is written."
+                    }
+                }
+            },
+            "Bundle" : {
+                "baseClass" : "Resource",
+                "typeDiscriminator" : "Bundle",
+                "properties" : {
+                    "type" : {
+                        "type" : "string",
+                        "description" : "The type of the bundle."
+                    },
+                    "entry" : {
+                        "type" : "array",
+                        "description" : "Entries in the bundle.",
+                        "subType" : "Entry"
+                    }
+                }
+            },
+            "Entry" : {
+                "properties" : {
+                    "fullUrl" : {
+                        "type" : "string",
+                        "description" : "The full URL of the entry."
+                    },
+                    "resource" : {
+                        "type" : "Resource",
+                        "description" : "The resource in the entry."
+                    }
+                }
+            },
+            "BackboneElement" : {
+                "baseClass" : "Element",
+                "properties" : {
+                    "modifierExtension" : {
+                        "type" : "array",
+                        "description" : "Extensions that cannot be ignored even if unrecognized.",
+                        "subType" : "Extension"
+                    }
+                }
+            },
+            "StatusHistory" : {
+                "baseClass" : "BackboneElement",
+                "properties" : {
+                    "status" : {
+                        "type" : "string",
+                        "description" : "The status of the resource."
+                    },
+                    "period" : {
+                        "type" : "Period",
+                        "description" : "The period during which the status was applicable."
+                    }
+                }
+            },
+            "ClassHistory" : {
+                "baseClass" : "BackboneElement",
+                "properties" : {
+                    "class" : {
+                        "type" : "Coding",
+                        "description" : "The class of the resource."
+                    },
+                    "period" : {
+                        "type" : "Period",
+                        "description" : "The period during which the class was applicable."
+                    }
+                }
+            },
+            "Participant" : {
+                "baseClass" : "BackboneElement",
+                "properties" : {
+                    "type" : {
+                        "type" : "array",
+                        "description" : "The type of participant.",
+                        "subType" : "CodeableConcept"
+                    },
+                    "period" : {
+                        "type" : "Period",
+                        "description" : "The period during which the participant was involved."
+                    },
+                    "individual" : {
+                        "type" : "Reference",
+                        "description" : "The individual involved in the encounter."
+                    }
+                }
+            },
+            "Diagnosis" : {
+                "baseClass" : "BackboneElement",
+                "properties" : {
+                    "condition" : {
+                        "type" : "Reference",
+                        "description" : "The condition being diagnosed."
+                    },
+                    "use" : {
+                        "type" : "CodeableConcept",
+                        "description" : "The use of the diagnosis."
+                    },
+                    "rank" : {
+                        "type" : "int",
+                        "description" : "The rank of the diagnosis."
+                    }
+                }
+            },
+            "Hospitalization" : {
+                "baseClass" : "BackboneElement",
+                "properties" : {
+                    "preAdmissionIdentifier" : {
+                        "type" : "Identifier",
+                        "description" : "Pre-admission identifier."
+                    },
+                    "origin" : {
+                        "type" : "CodeableConcept",
+                        "description" : "The origin of the hospitalization."
+                    },
+                    "admitSource" : {
+                        "type" : "CodeableConcept",
+                        "description" : "The source of the admission."
+                    },
+                    "reAdmission" : {
+                        "type" : "CodeableConcept",
+                        "description" : "Indicates if this is a readmission."
+                    },
+                    "dietPreference" : {
+                        "type" : "array",
+                        "description" : "Diet preferences for the patient.",
+                        "subType" : "CodeableConcept"
+                    },
+                    "specialCourtesy" : {
+                        "type" : "array",
+                        "description" : "Special courtesies for the patient.",
+                        "subType" : "CodeableConcept"
+                    },
+                    "specialArrangement" : {
+                        "type" : "array",
+                        "description" : "Special arrangements for the patient.",
+                        "subType" : "CodeableConcept"
+                    },
+                    "destination" : {
+                        "type" : "Reference",
+                        "description" : "The destination of the hospitalization."
+                    },
+                    "dischargeDisposition" : {
+                        "type" : "CodeableConcept",
+                        "description" : ""
+                    }
+                }
+            },
+            "Location" : {
+                "baseClass" : "BackboneElement",
+                "properties" : {
+                    "location" : {
+                        "type" : "Reference",
+                        "description" : "The location of the encounter."
+                    },
+                    "status" : {
+                        "type" : "string",
+                        "description" : "The status of the location."
+                    },
+                    "physicalType" : {
+                        "type" : "CodeableConcept",
+                        "description" : "The physical type of the location."
+                    },
+                    "period" : {
+                        "type" : "Period",
+                        "description" : "The period during which the location was applicable."
+                    }
+                }
+            },
+            "Encounter" : {
+                "baseClass" : "Resource",
+                "typeDiscriminator" : "Encounter",
+                "properties" : {
+                    "identifier" : {
+                        "type" : "array",
+                        "subType" : "Identifier",
+                        "description" : "The unique identifier for the encounter."
+                    },
+                    "status" : {
+                        "type" : "string",
+                        "description" : "The status of the encounter."
+                    },
+                    "statusHistory" : {
+                        "type" : "array",
+                        "description" : "History of the encounter status.",
+                        "subType" : "StatusHistory"
+                    },
+                    "classHistory" : {
+                        "type" : "array",
+                        "description" : "History of the encounter class.",
+                        "subType" : "ClassHistory"
+                    },
+                    "type" : {
+                        "type" : "array",
+                        "description" : "The type of the encounter.",
+                        "subType" : "CodeableConcept"
+                    },
+                    "serviceType" : {
+                        "type" : "array",
+                        "subType" : "CodeableConcept",
+                        "description" : "The type of service for the encounter."
+                    },
+                    "priority" : {
+                        "type" : "array",
+                        "subType" : "CodeableConcept",
+                        "description" : "The priority of the encounter."
+                    },
+                    "subject" : {
+                        "type" : "Reference",
+                        "description" : ""
+                    },
+                    "episodeOfCare" : {
+                        "type" : "array",
+                        "description" : "Episode(s) of care that this encounter should be recorded against",
+                        "subType" : "Reference"
+                    },
+                    "basedOn" : {
+                        "type" : "array",
+                        "description" : "Plans or proposals that this encounter is based on.",
+                        "subType" : "Reference"
+                    },
+                    "participant" : {
+                        "type" : "array",
+                        "description" : "The participants involved in the encounter.",
+                        "subType" : "Participant"
+                    },
+                    "appointment" : {
+                        "type" : "array",
+                        "description" : "The appointment(s) that scheduled this encounter.",
+                        "subType" : "Reference"
+                    },
+                    "period" : {
+                        "type" : "Period",
+                        "description" : "The period during which the encounter occurred."
+                    },
+                    "length" : {
+                        "description" : "The length of the encounter."
+                    },
+                    "reasonCode" : {
+                        "type" : "array",
+                        "description" : "The reason for the encounter.",
+                        "subType" : "CodeableConcept"
+                    },
+                    "reasonReference" : {
+                        "type" : "array",
+                        "description" : "The reason for the encounter.",
+                        "subType" : "Reference"
+                    },
+                    "diagnosis" : {
+                        "type" : "array",
+                        "description" : "The diagnosis for the encounter.",
+                        "subType" : "Diagnosis"
+                    },
+                    "account" : {
+                        "type" : "array",
+                        "description" : "The account(s) associated with the encounter.",
+                        "subType" : "Reference"
+                    },
+                    "hospitalization" : {
+                        "type" : "Hospitalization",
+                        "description" : "Details about the hospitalization."
+                    },
+                    "location" : {
+                        "type" : "array",
+                        "description" : "The location(s) of the encounter.",
+                        "subType" : "Location"
+                    },
+                    "serviceProvider" : {
+                        "type" : "Reference",
+                        "description" : "The service provider for the encounter."
+                    },
+                    "partOf" : {
+                        "type" : "Reference",
+                        "description" : "The encounter that this encounter is part of."
+                    }
+                }
+            },
+            "Patient" : {
+                "baseClass" : "DomainResource",
+                "typeDiscriminator" : "Patient",
+                "discriminatorClass" : "Resource",
+                "properties" : {
+                    "identifier" : {
+                        "type" : "array",
+                        "description" : "The unique identifier for the patient.",
+                        "subType" : "Identifier"
+                    }
+                }
+            },
+            "EpisodeOfCare" : {
+                "baseClass" : "DomainResource",
+                "typeDiscriminator" : "EpisodeOfCare",
+                "discriminatorClass" : "Resource",
+                "properties" : {
+                    "identifier" : {
+                        "type" : "array",
+                        "description" : "The unique identifier for the episode of care.",
+                        "subType" : "Identifier"
+                    },
+                    "status" : {
+                        "type" : "string",
+                        "description" : "The status of the episode of care."
+                    },
+                    "statusHistory" : {
+                        "type" : "array",
+                        "description" : "History of the episode of care status.",
+                        "subType" : "StatusHistory"
+                    },
+                    "type" : {
+                        "type" : "array",
+                        "description" : "The type of the episode of care.",
+                        "subType" : "CodeableConcept"
+                    },
+                    "diagnosis" : {
+                        "type" : "array",
+                        "description" : "The list of diagnosis relevant to this episode of care",
+                        "subType" : "Diagnosis"
+                    },
+                    "patient" : {
+                        "type" : "Reference",
+                        "description" : "The patient who this episode of care is for."
+                    },
+                    "managingOrganization" : {
+                        "type" : "Reference",
+                        "description" : "The organization that manages this episode of care."
+                    },
+                    "period" : {
+                        "type" : "Period",
+                        "description" : "The period during which the episode of care is active."
+                    },
+                    "referralRequest" : {
+                        "type" : "array",
+                        "description" : "The referral request(s) that this episode of care is based on.",
+                        "subType" : "Reference"
+                    },
+                    "careManager" : {
+                        "type" : "Reference",
+                        "description" : "The care manager for the episode of care."
+                    },
+                    "team" : {
+                        "type" : "array",
+                        "description" : "The team members involved in the episode of care.",
+                        "subType" : "Reference"
+                    },
+                    "account" : {
+                        "type" : "array",
+                        "description" : "The account(s) associated with the episode of care.",
+                        "subType" : "Reference"
+                    }
+                }
+            },
+            "Extension" : {
+                "baseClass" : "Element",
+                "properties" : {
+                    "url" : {
+                        "type" : "string",
+                        "description" : "The URL that identifies the extension."
+                    },
+                    "value" : {
+                        "type" : "string",
+                        "description" : "The value of the extension as a string."
+                    }
+                }
+            },
+            "DomainResource" : {
+                "baseClass" : "Resource",
+                "discriminator" : "DomainResource",
+                "properties" : {
+                    "text" : {
+                        "type" : "Narrative",
+                        "description" : "Text summary of the resource."
+                    },
+                    "contained" : {
+                        "type" : "array",
+                        "description" : "Resources contained in this resource.",
+                        "subType" : "Resource"
+                    },
+                    "extension" : {
+                        "type" : "array",
+                        "description" : "Additional content defined by implementations.",
+                        "subType" : "Extension"
+                    },
+                    "modifierExtension" : {
+                        "type" : "array",
+                        "description" : "Extensions that cannot be ignored even if unrecognized.",
+                        "subType" : "Extension"
+                    }
+                }
+            },
+            "Narrative" : {
+                "baseClass" : "Element",
+                "properties" : {
+                    "status" : {
+                        "type" : "string",
+                        "description" : "The status of the narrative."
+                    },
+                    "div" : {
+                        "type" : "string",
+                        "description" : "The actual narrative content."
+                    }
+                }
+            },
+            "UniversitySearchResult" : {
+                "properties" : {
+                    "domains" : {
+                        "type" : "array",
+                        "description" : "The domains of the university.",
+                        "subType" : "string"
+                    },
+                    "country" : {
+                        "type" : "string",
+                        "description" : "The country of the university."
+                    },
+                    "name" : {
+                        "type" : "string",
+                        "description" : "The name of the university."
+                    },
+                    "webpages" : {
+                        "type" : "array",
+                        "subType" : "string",
+                        "description" : "The webpage of the university."
+                    },
+                    "state-province" : {
+                        "type" : "string",
+                        "description" : "The state or province of the university."
+                    }
+                }
+            }
+        }
+    }
+}

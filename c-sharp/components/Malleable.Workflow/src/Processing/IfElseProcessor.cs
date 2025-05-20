@@ -24,27 +24,13 @@ namespace Kadense.Malleable.Workflow.Processing
                 if (string.IsNullOrWhiteSpace(expression))
                     throw new InvalidOperationException($"Expression cannot be null or empty. Expression: {expression}");
 
-                var compiledExpression = CompileStringExpression(expression);
+                var compiledExpression = CompileExpression<bool>(expression);
                 ifElseExpressions.Add(compiledExpression);
             }
         }
 
         List<Func<T, bool>> ifElseExpressions { get; } 
 
-        public Func<T, bool> CompileStringExpression(string expression)
-        {
-            var type = typeof(T);
-
-            ParameterExpression[] parameterExpressions = new ParameterExpression[] {
-                Expression.Parameter(type, "Input")
-            };
-            var parameterValues = new object[] {
-                Activator.CreateInstance(type)!
-            };
-            var parsedExpression = DynamicExpressionParser.ParseLambda(parameterExpressions, typeof(bool), expression, parameterValues);
-            var compiledExpression = parsedExpression.Compile();
-            return (Func<T, bool>)compiledExpression;
-        }
 
 
         public override (string?, MalleableBase) Process(MalleableBase message)

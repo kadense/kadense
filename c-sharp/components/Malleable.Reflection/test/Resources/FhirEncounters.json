@@ -1,0 +1,836 @@
+{
+  "resourceType": "Bundle",
+  "id": "127599f2-2650-45eb-bbd8-864f44fd6da2",
+  "meta": {
+    "lastUpdated": "2022-09-14T22:35:00.173+00:00"
+  },
+  "type": "searchset",
+  "link": [
+    {
+      "relation": "self",
+      "url": "https://hapi.fhir.org/baseR4/Encounter?_format=json&_pretty=true"
+    },
+    {
+      "relation": "next",
+      "url": "https://hapi.fhir.org/baseR4?_getpages=127599f2-2650-45eb-bbd8-864f44fd6da2&_getpagesoffset=20&_count=20&_format=json&_pretty=true&_bundletype=searchset"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077481",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077481",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:16.529+00:00",
+          "source": "#jN1agg0INVKNAawb"
+        },
+        "subject": {
+          "reference": "Patient/2077476"
+        },
+        "period": {
+          "start": "2021-05-02T05:10:16+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077480",
+              "display": "Ward 1, Room 2b19e5de-37e3-4e32-83a1-035bd6a52d5c, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:10:16+00:00",
+              "end": "2021-05-02T05:15:16+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077482",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077482",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:16.987+00:00",
+          "source": "#qMODcrWpHwRYlBXL"
+        },
+        "subject": {
+          "reference": "Patient/2077477"
+        },
+        "period": {
+          "start": "2021-05-02T05:20:16+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077479",
+              "display": "ER, 8657f56d-5d3f-444d-b862-c5a289507426"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:20:16+00:00",
+              "end": "2021-05-02T05:25:16+00:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/2077480",
+              "display": "Ward 1, Room 2b19e5de-37e3-4e32-83a1-035bd6a52d5c, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:25:16+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077493",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077493",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:19.300+00:00",
+          "source": "#Y69DgaFkvb2q2Dad"
+        },
+        "subject": {
+          "reference": "Patient/2077488"
+        },
+        "period": {
+          "start": "2021-05-02T05:10:19+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077492",
+              "display": "Ward 1, Room ffb786c4-15db-484c-ab74-5c7fa54b4407, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:10:19+00:00",
+              "end": "2021-05-02T05:15:19+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077494",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077494",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:19.443+00:00",
+          "source": "#hLR3HDG8N84jstOh"
+        },
+        "subject": {
+          "reference": "Patient/2077489"
+        },
+        "period": {
+          "start": "2021-05-02T05:20:19+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077491",
+              "display": "ER, 3c832824-ce59-43bf-9344-aa409952c89b"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:20:19+00:00",
+              "end": "2021-05-02T05:25:19+00:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/2077492",
+              "display": "Ward 1, Room ffb786c4-15db-484c-ab74-5c7fa54b4407, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:25:19+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077501",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077501",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:24.601+00:00",
+          "source": "#p6vkSPgK51bg5LT2"
+        },
+        "subject": {
+          "reference": "Patient/2077496"
+        },
+        "period": {
+          "start": "2021-05-02T05:10:24+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077500",
+              "display": "Ward 1, Room c3a5f0e3-1657-471d-be92-bd88ec3738ce, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:10:24+00:00",
+              "end": "2021-05-02T05:15:24+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077509",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077509",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:28.565+00:00",
+          "source": "#MJlIfpZZaZRaEd2b"
+        },
+        "subject": {
+          "reference": "Patient/2077504"
+        },
+        "period": {
+          "start": "2021-05-02T05:10:28+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077508",
+              "display": "Ward 1, Room 41c87a25-6f70-4ce8-ba32-32856875c660, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:10:28+00:00",
+              "end": "2021-05-02T05:15:28+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077502",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077502",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:24.721+00:00",
+          "source": "#yZJPX76BDMMSMniM"
+        },
+        "subject": {
+          "reference": "Patient/2077497"
+        },
+        "period": {
+          "start": "2021-05-02T05:20:24+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077499",
+              "display": "ER, 9515c34d-06d5-4965-9461-1f210e522c28"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:20:24+00:00",
+              "end": "2021-05-02T05:25:24+00:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/2077500",
+              "display": "Ward 1, Room c3a5f0e3-1657-471d-be92-bd88ec3738ce, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:25:24+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077510",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077510",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:28.700+00:00",
+          "source": "#JfpKufS7dRY7JDNo"
+        },
+        "subject": {
+          "reference": "Patient/2077505"
+        },
+        "period": {
+          "start": "2021-05-02T05:20:28+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077507",
+              "display": "ER, e6e8306c-5782-48a9-95ea-4b51b57bb516"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:20:28+00:00",
+              "end": "2021-05-02T05:25:28+00:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/2077508",
+              "display": "Ward 1, Room 41c87a25-6f70-4ce8-ba32-32856875c660, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:25:28+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077517",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077517",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:30.221+00:00",
+          "source": "#C5wmkQDd0abkwdPK"
+        },
+        "subject": {
+          "reference": "Patient/2077512"
+        },
+        "period": {
+          "start": "2021-05-02T05:10:30+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077516",
+              "display": "Ward 1, Room d9dfddf6-475b-4805-9b28-1ed69b6ac7cd, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:10:30+00:00",
+              "end": "2021-05-02T05:15:30+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077518",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077518",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:30.368+00:00",
+          "source": "#gwjSGB8slPWzEgwS"
+        },
+        "subject": {
+          "reference": "Patient/2077513"
+        },
+        "period": {
+          "start": "2021-05-02T05:20:30+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077515",
+              "display": "ER, f0d9fca2-9e97-433c-8f6a-3a453048af5c"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:20:30+00:00",
+              "end": "2021-05-02T05:25:30+00:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/2077516",
+              "display": "Ward 1, Room d9dfddf6-475b-4805-9b28-1ed69b6ac7cd, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:25:30+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077525",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077525",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:31.876+00:00",
+          "source": "#70LZnZFYDdno9aLr"
+        },
+        "subject": {
+          "reference": "Patient/2077520"
+        },
+        "period": {
+          "start": "2021-05-02T05:10:31+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077524",
+              "display": "Ward 1, Room a1d013c6-c200-4dbc-9dda-27bdd96d682e, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:10:31+00:00",
+              "end": "2021-05-02T05:15:31+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077526",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077526",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:32.037+00:00",
+          "source": "#8g0Vs68By3EXnRQ1"
+        },
+        "subject": {
+          "reference": "Patient/2077521"
+        },
+        "period": {
+          "start": "2021-05-02T05:20:32+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077523",
+              "display": "ER, 48e22f74-633d-483b-bed4-b9e95d45e6c7"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:20:32+00:00",
+              "end": "2021-05-02T05:25:32+00:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/2077524",
+              "display": "Ward 1, Room a1d013c6-c200-4dbc-9dda-27bdd96d682e, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:25:32+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077533",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077533",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:33.441+00:00",
+          "source": "#Qaye8jAyrnS6raJB"
+        },
+        "subject": {
+          "reference": "Patient/2077528"
+        },
+        "period": {
+          "start": "2021-05-02T05:10:33+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077532",
+              "display": "Ward 1, Room c1877646-3182-4b79-9d9a-67b3a4378c89, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:10:33+00:00",
+              "end": "2021-05-02T05:15:33+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077534",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077534",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T05:30:33.646+00:00",
+          "source": "#R7HmJbZJIGcFSBhf"
+        },
+        "subject": {
+          "reference": "Patient/2077529"
+        },
+        "period": {
+          "start": "2021-05-02T05:20:33+00:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/2077531",
+              "display": "ER, c11f4d84-3fcf-4be3-8611-5d57304381ec"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:20:33+00:00",
+              "end": "2021-05-02T05:25:33+00:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/2077532",
+              "display": "Ward 1, Room c1877646-3182-4b79-9d9a-67b3a4378c89, Bed 1"
+            },
+            "status": "active",
+            "period": {
+              "start": "2021-05-02T05:25:33+00:00"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077540",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077540",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T09:23:10.479+00:00",
+          "source": "#hKFPhxxHKk9JemN7"
+        },
+        "status": "planned",
+        "subject": {
+          "reference": "Patient/2077539",
+          "display": "Mr. Emil691 Hettinger594"
+        }
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077816",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077816",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T19:44:38.386+00:00",
+          "source": "#YjuP5TV7heKzJrec"
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Mar 4th 2021 for sore throat</div>"
+        },
+        "status": "finished",
+        "type": [
+          {
+            "text": "GP"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/2077803"
+        },
+        "participant": [
+          {
+            "individual": {
+              "reference": "Practitioner/30166",
+              "display": "Dr Annette Jones"
+            }
+          }
+        ],
+        "period": {
+          "start": "2021-03-04T20:44:37.152Z"
+        },
+        "diagnosis": [
+          {
+            "condition": {
+              "reference": "Condition/2077805"
+            }
+          },
+          {
+            "condition": {
+              "reference": "Condition/2077812"
+            }
+          },
+          {
+            "condition": {
+              "reference": "Condition/2077805"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077579",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077579",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T13:19:38.457+00:00",
+          "source": "#6UrO1mFbOdwW1c0q"
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Apr 17th 2021 for headache</div>"
+        },
+        "status": "finished",
+        "type": [
+          {
+            "text": "OutPatient"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/2077562"
+        },
+        "participant": [
+          {
+            "individual": {
+              "reference": "Practitioner/30166",
+              "display": "Dr Annette Jones"
+            }
+          }
+        ],
+        "period": {
+          "start": "2021-04-17T13:19:39.401Z"
+        },
+        "diagnosis": [
+          {
+            "condition": {
+              "reference": "Condition/2077564"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077580",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077580",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T13:19:38.457+00:00",
+          "source": "#6UrO1mFbOdwW1c0q"
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Mar 29th 2021 for sore throat</div>"
+        },
+        "status": "finished",
+        "type": [
+          {
+            "text": "GP"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/2077562"
+        },
+        "participant": [
+          {
+            "individual": {
+              "reference": "Practitioner/30166",
+              "display": "Dr Annette Jones"
+            }
+          }
+        ],
+        "period": {
+          "start": "2021-03-29T13:19:39.401Z"
+        },
+        "diagnosis": [
+          {
+            "condition": {
+              "reference": "Condition/2077568"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077577",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077577",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T13:19:38.457+00:00",
+          "source": "#6UrO1mFbOdwW1c0q"
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Mar 21st 2021 for sore throat</div>"
+        },
+        "status": "finished",
+        "type": [
+          {
+            "text": "GP"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/2077562"
+        },
+        "participant": [
+          {
+            "individual": {
+              "reference": "Practitioner/30166",
+              "display": "Dr Annette Jones"
+            }
+          }
+        ],
+        "period": {
+          "start": "2021-03-21T13:19:39.400Z"
+        },
+        "diagnosis": [
+          {
+            "condition": {
+              "reference": "Condition/2077574"
+            }
+          },
+          {
+            "condition": {
+              "reference": "Condition/2077571"
+            }
+          },
+          {
+            "condition": {
+              "reference": "Condition/2077566"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    },
+    {
+      "fullUrl": "https://hapi.fhir.org/baseR4/Encounter/2077576",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "2077576",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2021-05-02T13:19:38.457+00:00",
+          "source": "#6UrO1mFbOdwW1c0q"
+        },
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Apr 27th 2021 for sore throat</div>"
+        },
+        "status": "finished",
+        "type": [
+          {
+            "text": "GP"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/2077562"
+        },
+        "participant": [
+          {
+            "individual": {
+              "reference": "Practitioner/30166",
+              "display": "Dr Annette Jones"
+            }
+          }
+        ],
+        "period": {
+          "start": "2021-04-27T13:19:39.399Z"
+        },
+        "diagnosis": [
+          {
+            "condition": {
+              "reference": "Condition/2077565"
+            }
+          }
+        ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }
+  ]
+}

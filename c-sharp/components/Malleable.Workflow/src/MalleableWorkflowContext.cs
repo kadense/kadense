@@ -26,6 +26,8 @@ namespace Kadense.Malleable.Workflow
         public Dictionary<string, Type> StepInputTypes { get; } = new Dictionary<string, Type>();
         public Dictionary<string, Type> StepOutputTypes { get; } = new Dictionary<string, Type>();
 
+        public Dictionary<string, Type> Utils { get; } = new Dictionary<string, Type>();
+
         public Dictionary<string, MalleableWorkflowStepWithExternalQueue> ExternalSteps { get; } = new Dictionary<string, MalleableWorkflowStepWithExternalQueue>();
 
         public void Send<TMessage>(string destination, TMessage message)

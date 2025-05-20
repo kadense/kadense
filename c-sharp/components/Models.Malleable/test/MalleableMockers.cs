@@ -1,3 +1,4 @@
+using System.Text.Json;
 using k8s.Models;
 
 namespace Kadense.Models.Malleable.Tests
@@ -141,6 +142,13 @@ namespace Kadense.Models.Malleable.Tests
             };
         }
 
+        public MalleableModule MockFhirModule()
+        {
+            var json = KadenseTestUtils.GetEmbeddedResourceAsString("Kadense.Models.Malleable.Tests.Resources.FhirResourceExample.json");
+            var module = JsonSerializer.Deserialize<MalleableModule>(json)!;
+            return module;
+        }
+
         public MalleableModule MockModule()
         {
             return new MalleableModule
@@ -169,7 +177,7 @@ namespace Kadense.Models.Malleable.Tests
                                         "TestList",
                                         new MalleableProperty
                                         {
-                                            PropertyType = "list",
+                                            Type = "list",
                                             SubType = "string"
                                         }
                                     }
@@ -190,7 +198,7 @@ namespace Kadense.Models.Malleable.Tests
                                         new MalleableProperty
                                         {
                                             Description = "string property",
-                                            PropertyType = "string",
+                                            Type = "string",
                                         }
                                     }
                                 },
@@ -209,7 +217,7 @@ namespace Kadense.Models.Malleable.Tests
                                         new MalleableProperty
                                         {
                                             Description = "Test Reference",
-                                            PropertyType = "TestInheritedClass",
+                                            Type = "TestInheritedClass",
                                         }
                                     },
                                     {
@@ -217,7 +225,7 @@ namespace Kadense.Models.Malleable.Tests
                                         new MalleableProperty
                                         {
                                             Description = "Test Reference",
-                                            PropertyType = "dictionary",
+                                            Type = "dictionary",
                                             SubType = "TestInheritedClass",
                                         }
                                     },
@@ -236,7 +244,7 @@ namespace Kadense.Models.Malleable.Tests
                                         new MalleableProperty
                                         {
                                             Description = "string property",
-                                            PropertyType = "string",
+                                            Type = "string",
                                         }
                                     },
                                     {
@@ -244,7 +252,7 @@ namespace Kadense.Models.Malleable.Tests
                                         new MalleableProperty
                                         {
                                             Description = "string property",
-                                            PropertyType = "string",
+                                            Type = "string",
                                         }
                                     },
                                 },
@@ -263,7 +271,7 @@ namespace Kadense.Models.Malleable.Tests
                                         new MalleableProperty
                                         {
                                             Description = "string property",
-                                            PropertyType = "string",
+                                            Type = "string",
                                         }
                                     },
                                 },
@@ -283,7 +291,7 @@ namespace Kadense.Models.Malleable.Tests
                                         new MalleableProperty
                                         {
                                             Description = "string property",
-                                            PropertyType = "string",
+                                            Type = "string",
                                         }
                                     },
                                 },
@@ -303,7 +311,7 @@ namespace Kadense.Models.Malleable.Tests
                                         new MalleableProperty
                                         {
                                             Description = "integer property",
-                                            PropertyType = "int",
+                                            Type = "int",
                                         }
                                     },
                                 },
@@ -321,7 +329,7 @@ namespace Kadense.Models.Malleable.Tests
                                         new MalleableProperty
                                         {
                                             Description = "string property",
-                                            PropertyType = "string",
+                                            Type = "string",
                                         }
                                     },
                                     {
@@ -329,7 +337,7 @@ namespace Kadense.Models.Malleable.Tests
                                         new MalleableProperty
                                         {
                                             Description = "list of PolymorphicBaseClass",
-                                            PropertyType = "list",
+                                            Type = "list",
                                             SubType = "PolymorphicBaseClass"
                                         }
                                     },
@@ -337,6 +345,342 @@ namespace Kadense.Models.Malleable.Tests
                             }
                         }
                    }
+                }
+            };
+        }
+
+        public List<MalleableModule> MockModules()
+        {            
+            return new List<MalleableModule>()
+            { 
+                new MalleableModule
+                {
+                    Metadata = new V1ObjectMeta
+                    {
+                        Name = "composite-tc",
+                        NamespaceProperty = "test-namespace",
+                        Labels = new Dictionary<string, string>
+                        {
+                            { "app", "test-app" }
+                        }
+                    },
+                    Spec = new MalleableModuleSpec
+                    {
+                        Description = "Test module description",
+                        Classes = new Dictionary<string, MalleableClass>
+                        {
+                            {
+                                "TestClass",
+                                new MalleableClass {
+                                    Description = "Test class description",
+                                    Properties = new Dictionary<string, MalleableProperty>
+                                    {
+                                        {
+                                            "TestList",
+                                            new MalleableProperty
+                                            {
+                                                Type = "list",
+                                                SubType = "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                new MalleableModule
+                {
+                    Metadata = new V1ObjectMeta
+                    {
+                        Name = "composite-tic",
+                        NamespaceProperty = "test-namespace",
+                        Labels = new Dictionary<string, string>
+                        {
+                            { "app", "test-app" }
+                        }
+                    },
+                    Spec = new MalleableModuleSpec
+                    {
+                        Description = "Test module description",
+                        Classes = new Dictionary<string, MalleableClass>
+                        {
+                            {
+                                "TestInheritedClass",
+                                new MalleableClass
+                                {
+                                    BaseClass = "test-namespace:composite-tc:TestClass",
+                                    IdentifierExpression = "Input.TestString",
+                                    Description = "Test of Inherited class",
+                                    Properties = new Dictionary<string, MalleableProperty>
+                                    {
+                                        {
+                                            "TestString",
+                                            new MalleableProperty
+                                            {
+                                                Description = "string property",
+                                                Type = "string",
+                                            }
+                                        }
+                                    },
+                                }
+                            }
+                        }
+                    }
+                },
+                new MalleableModule
+                {
+                    Metadata = new V1ObjectMeta
+                    {
+                        Name = "composite-trc",
+                        NamespaceProperty = "test-namespace",
+                        Labels = new Dictionary<string, string>
+                        {
+                            { "app", "test-app" }
+                        }
+                    },
+                    Spec = new MalleableModuleSpec
+                    {
+                        Description = "Test module description",
+                        Classes = new Dictionary<string, MalleableClass>
+                        {
+                            {
+                                "TestReferenceClass",
+                                new MalleableClass
+                                {
+                                    BaseClass = "test-namespace:composite-tc:TestClass",
+                                    Description = "Test of Inherited class 2",
+                                    Properties = new Dictionary<string, MalleableProperty>
+                                    {
+                                        {
+                                            "TestReference",
+                                            new MalleableProperty
+                                            {
+                                                Description = "Test Reference",
+                                                Type = "test-namespace:composite-tic:TestInheritedClass",
+                                            }
+                                        },
+                                        {
+                                            "DictionaryReference",
+                                            new MalleableProperty
+                                            {
+                                                Description = "Test Reference",
+                                                Type = "dictionary",
+                                                SubType = "test-namespace:composite-tic:TestInheritedClass",
+                                            }
+                                        },
+                                    },
+                                }
+                            }
+                        }
+                    }
+                },
+                new MalleableModule
+                {
+                    Metadata = new V1ObjectMeta
+                    {
+                        Name = "composite-cc",
+                        NamespaceProperty = "test-namespace",
+                        Labels = new Dictionary<string, string>
+                        {
+                            { "app", "test-app" }
+                        }
+                    },
+                    Spec = new MalleableModuleSpec
+                    {
+                        Description = "Test module description",
+                        Classes = new Dictionary<string, MalleableClass>
+                        {
+                            {
+                                "ConvertedClass",
+                                new MalleableClass
+                                {
+                                    Description = "Test of Converted class",
+                                    Properties = new Dictionary<string, MalleableProperty>
+                                    {
+                                        {
+                                            "TestStringV1",
+                                            new MalleableProperty
+                                            {
+                                                Description = "string property",
+                                                Type = "string",
+                                            }
+                                        },
+                                        {
+                                            "TestStringPrefix",
+                                            new MalleableProperty
+                                            {
+                                                Description = "string property",
+                                                Type = "string",
+                                            }
+                                        },
+                                    },
+                                }
+                            }
+                        }
+                    }
+                },
+                new MalleableModule
+                {
+                    Metadata = new V1ObjectMeta
+                    {
+                        Name = "composite-pbc",
+                        NamespaceProperty = "test-namespace",
+                        Labels = new Dictionary<string, string>
+                        {
+                            { "app", "test-app" }
+                        }
+                    },
+                    Spec = new MalleableModuleSpec
+                    {
+                        Description = "Test module description",
+                        Classes = new Dictionary<string, MalleableClass>
+                        {
+                            {
+                                "PolymorphicBaseClass",
+                                new MalleableClass
+                                {
+                                    Description = "Test of Polymorphic base class",
+                                    DiscriminatorProperty = "id",
+                                    Properties = new Dictionary<string, MalleableProperty>
+                                    {
+                                        {
+                                            "BaseStringProperty",
+                                            new MalleableProperty
+                                            {
+                                                Description = "string property",
+                                                Type = "string",
+                                            }
+                                        },
+                                    },
+                                }
+                            }
+                        }
+                    }
+                },
+                new MalleableModule
+                {
+                    Metadata = new V1ObjectMeta
+                    {
+                        Name = "composite-pdc1",
+                        NamespaceProperty = "test-namespace",
+                        Labels = new Dictionary<string, string>
+                        {
+                            { "app", "test-app" }
+                        }
+                    },
+                    Spec = new MalleableModuleSpec
+                    {
+                        Description = "Test module description",
+                        Classes = new Dictionary<string, MalleableClass>
+                        {
+                            {
+                                "PolymorphicDerivedClass1",
+                                new MalleableClass
+                                {
+                                    BaseClass = "test-namespace:composite-pbc:PolymorphicBaseClass",
+                                    Description = "Test of Polymorphic derived class",
+                                    TypeDiscriminator = "DerivedString",
+                                    Properties = new Dictionary<string, MalleableProperty>
+                                    {
+                                        {
+                                            "DerivedStringProperty",
+                                            new MalleableProperty
+                                            {
+                                                Description = "string property",
+                                                Type = "string",
+                                            }
+                                        },
+                                    },
+                                }
+                            },
+                        }
+                    }
+                },
+                new MalleableModule
+                {
+                    Metadata = new V1ObjectMeta
+                    {
+                        Name = "composite-pdc2",
+                        NamespaceProperty = "test-namespace",
+                        Labels = new Dictionary<string, string>
+                        {
+                            { "app", "test-app" }
+                        }
+                    },
+                    Spec = new MalleableModuleSpec
+                    {
+                        Description = "Test module description",
+                        Classes = new Dictionary<string, MalleableClass>
+                        {
+                            {
+                                "PolymorphicDerivedClass2",
+                                new MalleableClass
+                                {
+                                    BaseClass = "test-namespace:composite-pbc:PolymorphicBaseClass",
+                                    Description = "Test of Polymorphic derived class",
+                                    TypeDiscriminator = "DerivedInt",
+                                    Properties = new Dictionary<string, MalleableProperty>
+                                    {
+                                        {
+                                            "DerivedIntProperty",
+                                            new MalleableProperty
+                                            {
+                                                Description = "integer property",
+                                                Type = "int",
+                                            }
+                                        },
+                                    },
+                                }
+                            },
+                        }
+                    }
+                },
+                new MalleableModule
+                {
+                    Metadata = new V1ObjectMeta
+                    {
+                        Name = "composite-copc",
+                        NamespaceProperty = "test-namespace",
+                        Labels = new Dictionary<string, string>
+                        {
+                            { "app", "test-app" }
+                        }
+                    },
+                    Spec = new MalleableModuleSpec
+                    {
+                        Description = "Test module description",
+                        Classes = new Dictionary<string, MalleableClass>
+                        {
+                            {
+                                "ContainerOfPolymorphicClasses",
+                                new MalleableClass
+                                {
+                                    Description = "Test of Converted class",
+                                    Properties = new Dictionary<string, MalleableProperty>
+                                    {
+                                        {
+                                            "TestStringV2",
+                                            new MalleableProperty
+                                            {
+                                                Description = "string property",
+                                                Type = "string",
+                                            }
+                                        },
+                                        {
+                                            "PolymorphicList",
+                                            new MalleableProperty
+                                            {
+                                                Description = "list of PolymorphicBaseClass",
+                                                Type = "list",
+                                                SubType = "test-namespace:composite-pbc:PolymorphicBaseClass"
+                                            }
+                                        },
+                                    },
+                                }
+                            }
+                        }
+                    }
                 }
             };
         }

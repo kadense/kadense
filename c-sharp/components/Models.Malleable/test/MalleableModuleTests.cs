@@ -33,6 +33,20 @@ namespace Kadense.Models.Malleable.Tests {
         }
 
         [Fact]
+        public void TestFhirExample()
+        {
+            var module = Mockers.MockFhirModule();
+            Assert.NotNull(module);
+            Assert.Equal("fhir-test", module.Metadata.Name);
+            Assert.Equal("default", module.Metadata.NamespaceProperty);
+            Assert.Contains("Reference", module.Spec!.Classes!.Keys);
+            var @class = module.Spec.Classes!["Reference"];
+            Assert.Contains("reference", @class.Properties!.Keys);
+            var property = @class.Properties!["reference"];
+            Assert.Equal("string", property.Type);
+        }
+
+        [Fact]
         public async Task TestReadWriteDelete()
         {
             var server = new MalleableMockApi();
@@ -51,7 +65,7 @@ namespace Kadense.Models.Malleable.Tests {
             var @class = item.Spec.Classes!["TestClass"];
             Assert.Contains("TestProperty", @class.Properties!);
             var property = @class.Properties!["TestProperty"];
-            Assert.Equal("string", property.PropertyType);
+            Assert.Equal("string", property.Type);
 
             var createdItem = await customResourceClient.CreateNamespacedAsync(item);
             var readItem = await customResourceClient.ReadNamespacedAsync(item.Metadata.NamespaceProperty, item.Metadata.Name);
@@ -60,6 +74,18 @@ namespace Kadense.Models.Malleable.Tests {
 
             Assert.Contains("TestClass2", createdItem.Spec!.Classes!);
             Assert.Contains("TestClass3", readItem.Spec!.Classes!);
+        }
+
+        [Fact]
+        public void TestModuleSortAndCreate()
+        {
+            var mocker = new MalleableMockers();
+            var modules = mocker.MockModules();
+            Assert.NotNull(modules);
+            modules.Sort();
+            Assert.Equal(8, modules.Count);
+            var last = modules.Last();
+            Assert.Equal("composite-copc", last.Metadata.Name);
         }
     }
 }

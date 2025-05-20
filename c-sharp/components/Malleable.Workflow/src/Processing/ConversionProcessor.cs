@@ -12,8 +12,14 @@ namespace Kadense.Malleable.Workflow.Processing
         {
             var assemblyName = StepDefinition.ConverterOptions!.Converter!.GetQualifiedModuleName();
             var converterName = StepDefinition.ConverterOptions!.Converter!.ConverterName;
-            var converterType = Context.Assemblies[assemblyName].Types[converterName!];
-            Converter = (MalleableConverterBase<TIn, TOut>)Activator.CreateInstance(converterType)!;
+            var assembly = Context.Assemblies[assemblyName];
+            var converterType = assembly.Types[converterName!];
+            var expressionParameters = new Dictionary<string, object>();
+            foreach(var parameter in assembly.ExpressionParameters)
+            {
+                expressionParameters.Add(parameter.Key, Activator.CreateInstance(parameter.Value)!);
+            }
+            Converter = (MalleableConverterBase<TIn, TOut>)Activator.CreateInstance(converterType, new object[] { expressionParameters })!;
         }
 
         public MalleableConverterBase<TIn, TOut> Converter { get; set; }

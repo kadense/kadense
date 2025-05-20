@@ -26,18 +26,14 @@ namespace Kadense.Malleable.Workflow.Tests {
             var moduleDefinition = mocker.MockModule();
             var converterDefinition = mocker.MockConverterModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(moduleDefinition);
-            var malleableAssemblyList = new Dictionary<string, MalleableAssembly>(){
-                { malleableAssembly.Name, malleableAssembly }
-            };
-            var converterAssembly = malleableAssemblyFactory.CreateAssembly(converterDefinition, malleableAssemblyList);
-            malleableAssemblyList.Add(converterAssembly.Name, converterAssembly);
-            Assemblies = malleableAssemblyList.Values.ToList();
+            var malleableAssembly = malleableAssemblyFactory.WithNewAssembly(moduleDefinition);
+            var converterAssembly = malleableAssemblyFactory.WithNewAssembly(converterDefinition);
+            Assemblies = malleableAssemblyFactory.GetAssemblies().Values.ToList();
             var workflow = mocker.MockWorkflow();
             
             var results = new List<MalleableBase>();
             var builder = System
-            .AddWorkflow(workflow, malleableAssemblyList)
+            .AddWorkflow(workflow, malleableAssemblyFactory)
             .WithDebugMode()
             .WithExternalStepActions();
             var server = new MalleableWorkflowApiMockServer();

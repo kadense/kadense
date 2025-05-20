@@ -12,6 +12,7 @@ namespace Kadense.Malleable.Reflection
         }
 
         public IDictionary<string, Type> Types { get; private set; } = new Dictionary<string, Type>();
+        public IDictionary<string, Type> ExpressionParameters { get; private set; } = new Dictionary<string, Type>();
 
         public void AddType(string name, Type type)
         {

@@ -5,6 +5,14 @@ namespace Kadense.Malleable.Reflection
 {
     public abstract class MalleableBase
     {
+        /// <summary>
+        /// The constructor for the malleable base class is included for the reflection solution
+        /// </summary>
+        public MalleableBase() 
+        {
+
+        }
+
         public static Func<T, string> CompileStringExpression<T>(string expression)
         {
             var type = typeof(T);

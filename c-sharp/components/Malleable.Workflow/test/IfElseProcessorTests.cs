@@ -13,15 +13,11 @@ namespace Kadense.Malleable.Workflow.Tests {
             var moduleDefinition = mocker.MockModule();
             var converterDefinition = mocker.MockConverterModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(moduleDefinition);
-            var malleableAssemblyList = new Dictionary<string, MalleableAssembly>(){
-                { malleableAssembly.Name, malleableAssembly }
-            };
-            var converterAssembly = malleableAssemblyFactory.CreateAssembly(converterDefinition, malleableAssemblyList);
-            malleableAssemblyList.Add(converterAssembly.Name, converterAssembly);
+            var malleableAssembly = malleableAssemblyFactory.WithNewAssembly(moduleDefinition);
+            var converterAssembly = malleableAssemblyFactory.WithNewAssembly(converterDefinition);
             var workflow = mocker.MockWorkflow();
             var type = typeof(IfElseProcessor<>).MakeGenericType(new Type[] { malleableAssembly.Types["TestInheritedClass"] });
-            MalleableWorkflowContext context = new MalleableWorkflowContext(workflow, malleableAssemblyList, true);
+            MalleableWorkflowContext context = new MalleableWorkflowContext(workflow, malleableAssemblyFactory.GetAssemblies(), true);
             var processor = (MalleableWorkflowProcessor)Activator.CreateInstance(type, new object[] { context, "TestConditional" })!;
             var instance = (MalleableBase)Activator.CreateInstance(malleableAssembly.Types["TestInheritedClass"])!;
             instance.GetType().GetProperty("TestString")!.SetValue(instance, "test1");

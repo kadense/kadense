@@ -3,6 +3,7 @@
 **/__pycache__/
 **/dist/
 **/.pytest_cache/
-c-sharp/cli/CustomResourceDefinition.Generator/src/*-CRD.yaml
+c-sharp/cli/**/*-CRD.yaml
+c-sharp/cli/**/*-Model.yaml
 **.tar
 **/node_modules/

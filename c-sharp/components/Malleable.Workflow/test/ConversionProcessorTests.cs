@@ -13,11 +13,11 @@ namespace Kadense.Malleable.Workflow.Tests {
             var moduleDefinition = mocker.MockModule();
             var converterDefinition = mocker.MockConverterModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(moduleDefinition);
+            var malleableAssembly = malleableAssemblyFactory.WithNewAssembly(moduleDefinition);
             var malleableAssemblyList = new Dictionary<string, MalleableAssembly>(){
                 { malleableAssembly.Name, malleableAssembly }
             };
-            var converterAssembly = malleableAssemblyFactory.CreateAssembly(converterDefinition, malleableAssemblyList);
+            var converterAssembly = malleableAssemblyFactory.WithNewAssembly(converterDefinition);
             malleableAssemblyList.Add(converterAssembly.Name, converterAssembly);
             var workflow = mocker.MockWorkflow();
             var type = typeof(ConversionProcessor<,>).MakeGenericType(new Type[] { malleableAssembly.Types["TestInheritedClass"], malleableAssembly.Types["ConvertedClass"] });

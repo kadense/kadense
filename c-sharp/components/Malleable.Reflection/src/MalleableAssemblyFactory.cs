@@ -10,11 +10,74 @@ namespace Kadense.Malleable.Reflection
 {
     public class MalleableAssemblyFactory
     {
-        public MalleableAssembly CreateAssembly(MalleableConverterModule module, IDictionary<string, MalleableAssembly> involvedAssemblies)
+        public MalleableAssemblyFactory()
+        {
+            ExpressionParameters = new Dictionary<string, Type>();
+            Assemblies = new MalleableAssemblyCollection();
+        }
+
+        protected MalleableAssemblyCollection Assemblies { get; } 
+
+        protected IDictionary<string, Type> ExpressionParameters { get; }
+
+        public MalleableAssemblyFactory WithExpressionParameter<T>(string name)
+        {
+            ExpressionParameters.Add(name, typeof(T));
+            return this;
+        }
+
+        public MalleableAssemblyCollection GetAssemblies()
+        {
+            return Assemblies;
+        }
+
+        public MalleableAssemblyFactory WithAssemblies(IList<MalleableModule> modules)
+        {
+            var list = modules.ToList();
+            list.Sort();
+            foreach(var module in modules)
+            {
+                WithAssembly(module);
+            }
+            return this;
+        }
+
+        public MalleableAssemblyFactory WithAssembly(MalleableModule module)
+        {
+            WithNewAssembly(module);
+            return this;
+        } 
+        public MalleableAssembly WithNewAssembly(MalleableModule module)
+        {
+            module.Spec!.GetReferencedModules().ToList().ForEach(x => {
+                if(!Assemblies.ContainsKey(x))
+                {
+                    throw new ArgumentException($"Referenced module {x} not found in assemblies");
+                } 
+            });
+            var assembly = CreateAssembly(module);
+            Assemblies.Add(assembly.Name, assembly);
+            return assembly;
+        } 
+
+        public MalleableAssemblyFactory WithAssembly(MalleableConverterModule module)
+        {
+            WithNewAssembly(module);
+            return this;
+        } 
+
+        public MalleableAssembly WithNewAssembly(MalleableConverterModule module)
+        {
+            var assembly = CreateAssembly(module, Assemblies);
+            Assemblies.Add(assembly.Name, assembly);
+            return assembly;
+        } 
+
+        protected MalleableAssembly CreateAssembly(MalleableConverterModule module, IDictionary<string, MalleableAssembly> involvedAssemblies)
         {
             return CreateAssembly(module.Metadata.NamespaceProperty, module.Metadata.Name, module.Spec!, involvedAssemblies);
         }
-        public MalleableAssembly CreateAssembly(string @namespace, string name, MalleableConverterModuleSpec moduleSpec, IDictionary<string, MalleableAssembly> involvedAssemblies)
+        protected MalleableAssembly CreateAssembly(string @namespace, string name, MalleableConverterModuleSpec moduleSpec, IDictionary<string, MalleableAssembly> involvedAssemblies)
         {
             var assemblyName = new AssemblyName(name);
             var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
@@ -25,7 +88,7 @@ namespace Kadense.Malleable.Reflection
             return assembly;            
         }
 
-        public IDictionary<string, TypeBuilder> DefineConverters(ModuleBuilder moduleBuilder, string moduleNamespace, string moduleName, MalleableConverterModuleSpec moduleSpec, IDictionary<string, MalleableAssembly> InvolvedAssemblies)
+        protected IDictionary<string, TypeBuilder> DefineConverters(ModuleBuilder moduleBuilder, string moduleNamespace, string moduleName, MalleableConverterModuleSpec moduleSpec, IDictionary<string, MalleableAssembly> InvolvedAssemblies)
         {
             var builders = new Dictionary<string, TypeBuilder>();
 
@@ -37,7 +100,7 @@ namespace Kadense.Malleable.Reflection
             return builders;
         }
 
-        public TypeBuilder DefineConverter(ModuleBuilder moduleBuilder, string moduleNamespace, string moduleName, string name, MalleableTypeConverter converterSpec, IDictionary<string, MalleableAssembly> InvolvedAssemblies)
+        protected TypeBuilder DefineConverter(ModuleBuilder moduleBuilder, string moduleNamespace, string moduleName, string name, MalleableTypeConverter converterSpec, IDictionary<string, MalleableAssembly> InvolvedAssemblies)
         {
             var fromQualifiedName = converterSpec.From!.GetQualifiedModuleName();
             var toQualifiedName = converterSpec.To!.GetQualifiedModuleName();
@@ -65,9 +128,14 @@ namespace Kadense.Malleable.Reflection
             );
             typeBuilder.SetCustomAttribute(customAttributeBuilder);
 
-            var constructor = typeBuilder.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName, CallingConventions.Standard, Type.EmptyTypes);
+            var baseConstructor = parentType.GetConstructor(new Type[] { typeof(IDictionary<string, object>) })!;
+            var constructor = typeBuilder.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName, CallingConventions.Standard, new Type[] { typeof(IDictionary<string, object>) });
             var constructorIL = constructor.GetILGenerator();
             
+            // Call the base constructor
+            constructorIL.Emit(OpCodes.Ldarg_0);
+            constructorIL.Emit(OpCodes.Ldarg_1);
+            constructorIL.Emit(OpCodes.Call, baseConstructor);
 
             // Get the dictionary of expressions
             var expressions = converterSpec.Expressions;
@@ -107,48 +175,20 @@ namespace Kadense.Malleable.Reflection
             constructorIL.Emit(OpCodes.Ret);
             return typeBuilder;
         }
-        public MalleableAssembly CreateAssembly(MalleableModule module)
+        protected MalleableAssembly CreateAssembly(MalleableModule module)
         {
             return CreateAssembly(module.Metadata.Name, module.Metadata.NamespaceProperty, module.Spec!);
         }
 
-        public MalleableAssembly CreateAssembly(string name, string @namespace, MalleableModuleSpec moduleSpec)
+        protected MalleableAssembly CreateAssembly(string name, string @namespace, MalleableModuleSpec moduleSpec)
         {
             var assemblyName = new AssemblyName(name!);
             var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
             var moduleBuilder = assemblyBuilder.DefineDynamicModule(name);
-            var buildOrder = CalculateBuildOrder(moduleSpec);
+            var buildOrder = moduleSpec.GetClassesForBuild();
             var reflectedTypes = DefineTypeBuilders(moduleBuilder, buildOrder);
             PrepareTypes(moduleBuilder, buildOrder, reflectedTypes, @namespace, name);
             return CompileTypes($"{@namespace}:{name}", buildOrder, reflectedTypes);
-        }
-
-        protected virtual IList<KeyValuePair<string,MalleableClass>> CalculateBuildOrder(MalleableModuleSpec moduleSpec)
-        {
-            var buildOrder = new List<KeyValuePair<string,MalleableClass>>();
-            if(moduleSpec.Classes == null)
-                throw new ArgumentNullException(nameof(moduleSpec.Classes));
-
-            var added = moduleSpec.Classes.Where(x => x.Value.BaseClass == null);
-            buildOrder.AddRange(added);
-            do 
-            {
-                added = moduleSpec.Classes.Where(
-                    x => x.Value.BaseClass != null
-                    && buildOrder.Select(y => y.Key).Contains(x.Value.BaseClass) 
-                    && !buildOrder.Select(y => y.Key).Contains(x.Key));
-                buildOrder.AddRange(added);
-            } 
-            while (added.Count() > 0);
-
-
-            if(buildOrder.Count != moduleSpec.Classes.Count)
-            {
-                var missing = moduleSpec.Classes.Where(x => !buildOrder.Select(y => y.Key).Contains(x.Key));
-                throw new ArgumentException($"Missing classes in build order: {string.Join(", ", missing.Select(x => x.Key))}");
-            }
-
-            return buildOrder;
         }
             
         /// <summary>
@@ -164,13 +204,29 @@ namespace Kadense.Malleable.Reflection
             return reflectedTypes;
         }
 
+        protected virtual (bool, Type) GetParentType(MalleableClass typeDefinition,  IDictionary<string, TypeBuilder> reflectedTypes)
+        {
+            if(!string.IsNullOrEmpty(typeDefinition.BaseClass))
+            {
+                var (isRefType, typeRef) = typeDefinition.TryGetBaseClassReference();
+                if(isRefType)
+                {
+                    return (true, this.Assemblies[typeRef!.GetQualifiedModuleName()].Types[typeRef.ClassName!]);
+                }
+                else
+                {
+                    return (false, reflectedTypes[typeDefinition.BaseClass!]);
+                }
+            }
+            return (true, typeof(MalleableBase));
+        }
+
         /// <summary>
         /// Create the type builder for a class in the module spec, but do not build them yet as they may reference each other.
         /// </summary>
         protected virtual void DefineTypeBuilder(ModuleBuilder moduleBuilder, string name, MalleableClass typeDefinition,  IDictionary<string, TypeBuilder> reflectedTypes )
         {   
-            var parentType = !string.IsNullOrEmpty(typeDefinition.BaseClass) ? reflectedTypes[typeDefinition.BaseClass!] : typeof(MalleableBase);
-
+            var (parentTypeIsRef, parentType) = GetParentType(typeDefinition, reflectedTypes);
             var typeBuilder = moduleBuilder.DefineType(name!, System.Reflection.TypeAttributes.Public, parentType);            
             
             reflectedTypes.Add(name, typeBuilder);
@@ -194,7 +250,8 @@ namespace Kadense.Malleable.Reflection
         protected virtual void PrepareType(ModuleBuilder moduleBuilder, string name, MalleableClass typeDefinition, IDictionary<string, TypeBuilder> reflectedTypes, IDictionary<string, ConstructorBuilder> reflectedConstructors, string moduleNamespace, string moduleName)
         {
             var typeBuilder = reflectedTypes[name];
-            var parentConstructor = !string.IsNullOrEmpty(typeDefinition.BaseClass) ? reflectedConstructors[typeDefinition.BaseClass] : typeof(object).GetConstructor(new Type[0]);
+            var (parentTypeIsRef, parentType) = GetParentType(typeDefinition, reflectedTypes);
+            var parentConstructor = parentTypeIsRef ? parentType.GetConstructor(new Type[0]) : reflectedConstructors[typeDefinition.BaseClass!];
             var constructorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, null);
             reflectedConstructors.Add(name, constructorBuilder);
             var constructorIL = constructorBuilder.GetILGenerator();
@@ -215,7 +272,7 @@ namespace Kadense.Malleable.Reflection
             }
         }
 
-        private void ImplementIdentifierExpression(TypeBuilder typeBuilder, string expression)
+        protected void ImplementIdentifierExpression(TypeBuilder typeBuilder, string expression)
         {
             var compileStringExpressionMethod = typeof(MalleableBase).GetMethod("CompileStringExpression", BindingFlags.Public | BindingFlags.Static, new [] { typeof(string) })!
                 .MakeGenericMethod(new Type[] { typeBuilder });
@@ -269,7 +326,7 @@ namespace Kadense.Malleable.Reflection
             return propertyBuilder;
         }
 
-        private static void AddBasicGetMethod(TypeBuilder typeBuilder, PropertyBuilder propertyBuilder, FieldBuilder fieldBuilder)
+        protected static void AddBasicGetMethod(TypeBuilder typeBuilder, PropertyBuilder propertyBuilder, FieldBuilder fieldBuilder)
         {
             var methodBuilder = typeBuilder.DefineMethod($"get_{propertyBuilder.Name}", MethodAttributes.Public, propertyBuilder.PropertyType, Type.EmptyTypes);
             var il = methodBuilder.GetILGenerator();
@@ -280,7 +337,7 @@ namespace Kadense.Malleable.Reflection
             propertyBuilder.SetGetMethod(methodBuilder);
         }
 
-        private static void AddBasicSetMethod(TypeBuilder typeBuilder, PropertyBuilder propertyBuilder, FieldBuilder fieldBuilder)
+        protected static void AddBasicSetMethod(TypeBuilder typeBuilder, PropertyBuilder propertyBuilder, FieldBuilder fieldBuilder)
         {
             var methodBuilder = typeBuilder.DefineMethod($"set_{propertyBuilder.Name}", MethodAttributes.Public, null, new Type[] { propertyBuilder.PropertyType });
             var il = methodBuilder.GetILGenerator();
@@ -334,7 +391,7 @@ namespace Kadense.Malleable.Reflection
         {
             if (propertyDefinition.IsPrimitiveType())
             {
-                return GetPrimitiveType(propertyDefinition.PropertyType);
+                return GetPrimitiveType(propertyDefinition.Type);
             }
             else if (propertyDefinition.IsDictionaryType())
             {
@@ -344,7 +401,12 @@ namespace Kadense.Malleable.Reflection
                 }
                 else
                 {
-                    return typeof(Dictionary<,>).MakeGenericType(typeof(string), reflectedTypes[propertyDefinition.SubType!]);
+                    (var isRefType, var typeRef) = propertyDefinition.TryGetSubTypeReference();
+                    if(!isRefType)
+                        return typeof(Dictionary<,>).MakeGenericType(typeof(string), reflectedTypes[propertyDefinition.SubType!]);
+
+                    var subType = this.Assemblies[typeRef!.GetQualifiedModuleName()].Types[typeRef.ClassName!];
+                    return typeof(Dictionary<,>).MakeGenericType(typeof(string), subType);
                 }
             }
             else if (propertyDefinition.IsCollectionType())
@@ -356,12 +418,23 @@ namespace Kadense.Malleable.Reflection
                 }
                 else
                 {
-                    return typeof(List<>).MakeGenericType(reflectedTypes[propertyDefinition.SubType!]);
+                    (var isRefType, var typeRef) = propertyDefinition.TryGetSubTypeReference();
+                    
+                    if(!isRefType)
+                        return typeof(List<>).MakeGenericType(reflectedTypes[propertyDefinition.SubType!]);
+                    var subType = this.Assemblies[typeRef!.GetQualifiedModuleName()].Types[typeRef.ClassName!];
+                    return typeof(List<>).MakeGenericType(subType);
                 }
             }
             else
             {
-                return reflectedTypes[propertyDefinition.PropertyType];
+                (var isRefType, var typeRef) = propertyDefinition.TryGetTypeReference();
+                
+                if(!isRefType)
+                    return reflectedTypes[propertyDefinition.Type!];
+
+                var type = this.Assemblies[typeRef!.GetQualifiedModuleName()].Types[typeRef.ClassName!];
+                return type;
             }
         }
 
@@ -386,7 +459,16 @@ namespace Kadense.Malleable.Reflection
 
                 if(!string.IsNullOrEmpty(typeDefinition.Value.BaseClass) && !string.IsNullOrEmpty(typeDefinition.Value.TypeDiscriminator))
                 {
-                    var baseType = assembly.Types[typeDefinition.Value.BaseClass];
+                    var (isRefType, typeRef) = typeDefinition.Value.TryGetBaseClassReference();
+                    var baseType = isRefType ? Assemblies[typeRef!.GetQualifiedModuleName()].Types[typeRef.ClassName!]  : assembly.Types[typeDefinition.Value.BaseClass];
+                    
+                    
+                    if(!string.IsNullOrEmpty(typeDefinition.Value.DiscriminatorClass))
+                    {
+                        var (isDiscriminatorRefType, discriminatorTypeRef) = typeDefinition.Value.TryGetDiscriminatorClassReference();
+                        baseType = isDiscriminatorRefType ? Assemblies[discriminatorTypeRef!.GetQualifiedModuleName()].Types[discriminatorTypeRef.ClassName!] : assembly.Types[typeDefinition.Value.DiscriminatorClass];
+                    }
+
                     MalleableJsonPolymorphicOptions? options = null;
                     if(!assembly.JsonPolymorphicOptions.TryGetValue(baseType, out options))
                     {
@@ -410,6 +492,12 @@ namespace Kadense.Malleable.Reflection
                 var type = typeBuilder.CreateType();
                 assembly.AddType(typeDefinition.Key, type);     
             }
+
+            foreach(var expressionParameter in ExpressionParameters)
+            {
+                assembly.ExpressionParameters.Add(expressionParameter.Key, expressionParameter.Value);
+            }
+
             return assembly;
         }
     }

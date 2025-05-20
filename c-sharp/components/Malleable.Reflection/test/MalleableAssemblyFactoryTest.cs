@@ -20,9 +20,21 @@ namespace Kadense.Malleable.Reflection.Tests
             var mocker = new MalleableMockers();
             var malleableModule = mocker.MockModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(malleableModule);
+            var malleableAssemblies = malleableAssemblyFactory.WithAssembly(malleableModule).GetAssemblies();
+            var malleableAssembly = malleableAssemblies.FirstOrDefault().Value;
             Assert.NotNull(malleableAssembly);
             Assert.NotEmpty(malleableAssembly.Types);
+        }
+
+        [Fact]
+        public void TestBuildComposite()
+        {
+            var mocker = new MalleableMockers();
+            var malleableModules = mocker.MockModules();
+            var malleableAssemblyFactory = new MalleableAssemblyFactory();
+            malleableAssemblyFactory.WithAssemblies(malleableModules);
+            var malleableAssemblies = malleableAssemblyFactory.GetAssemblies();
+            Assert.NotNull(malleableAssemblies);
         }
 
         [Fact]
@@ -31,7 +43,7 @@ namespace Kadense.Malleable.Reflection.Tests
             var mocker = new MalleableMockers();
             var malleableModule = mocker.MockModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(malleableModule);
+            var malleableAssembly = malleableAssemblyFactory.WithAssembly(malleableModule).GetAssemblies().FirstOrDefault().Value;
             var type = malleableAssembly.Types["TestClass"];
             var instance = Activator.CreateInstance(type);
             Assert.NotNull(instance);
@@ -43,7 +55,7 @@ namespace Kadense.Malleable.Reflection.Tests
             var mocker = new MalleableMockers();
             var malleableModule = mocker.MockModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(malleableModule);
+            var malleableAssembly = malleableAssemblyFactory.WithAssembly(malleableModule).GetAssemblies().FirstOrDefault().Value;
             var type = malleableAssembly.Types["TestInheritedClass"];
             var instance = Activator.CreateInstance(type);
             Assert.NotNull(instance);
@@ -55,24 +67,19 @@ namespace Kadense.Malleable.Reflection.Tests
             var mocker = new MalleableMockers();
             var malleableModule = mocker.MockModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(malleableModule);
+            var malleableAssembly = malleableAssemblyFactory.WithAssembly(malleableModule).GetAssemblies().FirstOrDefault().Value;
             var type = malleableAssembly.Types["TestInheritedClass"];
             var instance = Activator.CreateInstance(type);
             Assert.NotNull(instance);
             instance.GetType().GetProperty("TestString")!.SetValue(instance, "test1");
             var converter = mocker.MockConverterModule();
-            var converterAssembly = malleableAssemblyFactory.CreateAssembly(
-                converter,
-                new Dictionary<string, MalleableAssembly>
-                {
-                    { $"{malleableModule.Metadata.NamespaceProperty}:{malleableModule.Metadata.Name}", malleableAssembly }
-                });
+            var converterAssembly = malleableAssemblyFactory.WithAssembly(converter).GetAssemblies()[$"{converter.Metadata.NamespaceProperty}:{converter.Metadata.Name}"];
             Assert.Contains("FromTestInheritedClassToTestClass", converterAssembly.Types);
 
             var converterType = converterAssembly.Types["FromTestInheritedClassToTestClass"];
             var convertedClassType = malleableAssembly.Types["ConvertedClass"];
 
-            var converterInstance = Activator.CreateInstance(converterType);
+            var converterInstance = Activator.CreateInstance(converterType, new object[] { new Dictionary<string, object>() });
             var method = converterType.GetMethod("Convert")!;
             
             var convertedInstance = method.Invoke(converterInstance, new object[] { instance });
@@ -95,7 +102,7 @@ namespace Kadense.Malleable.Reflection.Tests
             var mocker = new MalleableMockers();
             var malleableModule = mocker.MockModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(malleableModule);
+            var malleableAssembly = malleableAssemblyFactory.WithAssembly(malleableModule).GetAssemblies().First().Value;
             var inheritingType = malleableAssembly.Types["TestInheritedClass"];
             var referencingType = malleableAssembly.Types["TestReferenceClass"];
             var inheritedInstance = Activator.CreateInstance(inheritingType);
@@ -138,7 +145,7 @@ namespace Kadense.Malleable.Reflection.Tests
             var customResourceClient = crFactory.Create<MalleableModule>(client);
             var item = await customResourceClient.ReadNamespacedAsync("default", "test-module");
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(item);
+            var malleableAssembly = malleableAssemblyFactory.WithAssembly(item).GetAssemblies().First().Value;
             Assert.Contains("TestClass3", malleableAssembly.Types);
             var type = malleableAssembly.Types["TestClass3"];
             var instance = Activator.CreateInstance(type);
@@ -154,7 +161,7 @@ namespace Kadense.Malleable.Reflection.Tests
             var mocker = new MalleableMockers();
             var malleableModule = mocker.MockModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(malleableModule);
+            var malleableAssembly = malleableAssemblyFactory.WithAssembly(malleableModule).GetAssemblies().First().Value;
             var type = malleableAssembly.Types["TestInheritedClass"];
             var instance = Activator.CreateInstance(type);
             type.GetProperty("TestString")!.SetValue(instance, "test1");
@@ -177,6 +184,102 @@ namespace Kadense.Malleable.Reflection.Tests
             }
         }
 
+        [Fact]
+        public void TestFhirEncountersExampleModule()
+        {
+            var mocker = new MalleableMockers();
+            var malleableModule = mocker.MockFhirModule();
+            var malleableAssemblyFactory = new MalleableAssemblyFactory();
+            var malleableAssembly = malleableAssemblyFactory.WithAssembly(malleableModule).GetAssemblies().First().Value;
+            Assert.NotNull(malleableAssembly);
+            Assert.NotEmpty(malleableAssembly.Types);
+
+            Assert.True(malleableAssembly.Types.TryGetValue("Bundle", out var bundleType));
+            Assert.True(malleableAssembly.Types.TryGetValue("Encounter", out var encounterType));
+            Assert.NotNull(bundleType);
+
+            var typeInfoResolver = new MalleablePolymorphicTypeResolver();
+            typeInfoResolver.MalleableAssembly.Add(malleableAssembly);
+            var json = KadenseTestUtils.GetEmbeddedResourceAsString("Kadense.Malleable.Reflection.Tests.Resources.FhirEncounters.json");
+            var instance = JsonSerializer.Deserialize(json, bundleType, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                TypeInfoResolver = typeInfoResolver,
+            });
+            Assert.NotNull(instance);
+            var entries = instance.GetType().GetProperty("entry")!.GetValue(instance);
+            Assert.NotNull(entries);
+            var firstItem = entries.GetType().GetMethod("get_Item")!.Invoke(entries, new object?[] { 0 });
+            Assert.NotNull(firstItem);
+            Assert.Equal("https://hapi.fhir.org/baseR4/Encounter/2077481", firstItem.GetType().GetProperty("fullUrl")!.GetValue(firstItem));
+            var resource = firstItem.GetType().GetProperty("resource")!.GetValue(firstItem);
+            Assert.NotNull(resource);
+            Assert.IsType(encounterType, resource);
+            var encounterId = resource.GetType().GetProperty("id")!.GetValue(resource);
+            Assert.Equal("2077481", encounterId);
+            var subject = resource.GetType().GetProperty("subject")!.GetValue(resource);
+            Assert.NotNull(subject);
+            var subjectReference = subject.GetType().GetProperty("reference")!.GetValue(subject);
+            Assert.Equal("Patient/2077476", subjectReference);
+
+            var location = resource.GetType().GetProperty("location")!.GetValue(resource);
+            Assert.NotNull(location);
+            var firstLocation = location.GetType().GetMethod("get_Item")!.Invoke(location, new object?[] { 0 });
+            Assert.NotNull(firstLocation);
+            var locationReference = firstLocation.GetType().GetProperty("location")!.GetValue(firstLocation);
+            Assert.NotNull(locationReference);
+            var locationReferenceValue = locationReference.GetType().GetProperty("reference")!.GetValue(locationReference);
+            Assert.Equal("Location/2077480", locationReferenceValue);
+            var display = locationReference.GetType().GetProperty("display")!.GetValue(locationReference);
+            Assert.Equal("Ward 1, Room 2b19e5de-37e3-4e32-83a1-035bd6a52d5c, Bed 1", display);
+        }
+
+        [Fact]
+        public void TestFhirEpisodeOfCareExampleModule()
+        {
+            var mocker = new MalleableMockers();
+            var malleableModule = mocker.MockFhirModule();
+            var malleableAssemblyFactory = new MalleableAssemblyFactory();
+            var malleableAssembly = malleableAssemblyFactory.WithAssembly(malleableModule).GetAssemblies().First().Value;
+            Assert.NotNull(malleableAssembly);
+            Assert.NotEmpty(malleableAssembly.Types);
+
+            Assert.True(malleableAssembly.Types.TryGetValue("Bundle", out var bundleType));
+            Assert.True(malleableAssembly.Types.TryGetValue("EpisodeOfCare", out var episodeOfCareType));
+            Assert.NotNull(bundleType);
+
+            var typeInfoResolver = new MalleablePolymorphicTypeResolver();
+            typeInfoResolver.MalleableAssembly.Add(malleableAssembly);
+            var json = KadenseTestUtils.GetEmbeddedResourceAsString("Kadense.Malleable.Reflection.Tests.Resources.FhirEpisodeOfCare.json");
+            var instance = JsonSerializer.Deserialize(json, bundleType, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                TypeInfoResolver = typeInfoResolver,
+            });
+            Assert.NotNull(instance);
+            var entries = instance.GetType().GetProperty("entry")!.GetValue(instance);
+            Assert.NotNull(entries);
+            var firstItem = entries.GetType().GetMethod("get_Item")!.Invoke(entries, new object?[] { 0 });
+            Assert.NotNull(firstItem);
+            Assert.Equal("https://hapi.fhir.org/baseR4/EpisodeOfCare/7002248", firstItem.GetType().GetProperty("fullUrl")!.GetValue(firstItem));
+            var resource = firstItem.GetType().GetProperty("resource")!.GetValue(firstItem);
+            Assert.NotNull(resource);
+            Assert.IsType(episodeOfCareType, resource);
+            var episodeOfCareId = resource.GetType().GetProperty("id")!.GetValue(resource);
+            Assert.Equal("7002248", episodeOfCareId);
+            var meta = resource.GetType().GetProperty("meta")!.GetValue(resource);
+            Assert.NotNull(meta);
+            var metaVersionId = meta.GetType().GetProperty("versionId")!.GetValue(meta);
+            Assert.Equal("1", metaVersionId);
+            var metaLastUpdated = meta.GetType().GetProperty("lastUpdated")!.GetValue(meta);
+            Assert.Equal("2022-09-13T13:45:06.713+00:00", metaLastUpdated);
+            var source = meta.GetType().GetProperty("source")!.GetValue(meta);
+            Assert.Equal("#dIWZ70WfNoZgdhXJ", source);
+            var status = resource.GetType().GetProperty("status")!.GetValue(resource);
+            Assert.Equal("active", status);
+            var identifier = resource.GetType().GetProperty("identifier")!.GetValue(resource);
+            Assert.NotNull(identifier);
+        }
         
         [Fact]
         public void TestPolymorphism()
@@ -184,7 +287,7 @@ namespace Kadense.Malleable.Reflection.Tests
             var mocker = new MalleableMockers();
             var malleableModule = mocker.MockModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(malleableModule);
+            var malleableAssembly = malleableAssemblyFactory.WithAssembly(malleableModule).GetAssemblies().First().Value;
             var instanceType = malleableAssembly.Types["ContainerOfPolymorphicClasses"];
             var instance = Activator.CreateInstance(instanceType);
             var type1 = malleableAssembly.Types["PolymorphicDerivedClass1"];

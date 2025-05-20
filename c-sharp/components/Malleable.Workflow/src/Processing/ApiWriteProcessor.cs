@@ -20,25 +20,12 @@ namespace Kadense.Malleable.Workflow.Processing
                 throw new InvalidOperationException($"Invalid action for WriteApiProcessor. Expected 'WriteApi', but got '{step.Action}'.");
 
             var path = step.Options!.Parameters["Path"];
-            PathExpression = CompileStringExpression(path);
+            PathExpression = CompileExpression<string>(path);
         }
 
         Func<TIn, string> PathExpression { get; } 
 
-        public Func<TIn, string> CompileStringExpression(string expression)
-        {
-            var type = typeof(TIn);
-
-            ParameterExpression[] parameterExpressions = new ParameterExpression[] {
-                Expression.Parameter(type, "Input")
-            };
-            var parameterValues = new object[] {
-                Activator.CreateInstance(type)!
-            };
-            var parsedExpression = DynamicExpressionParser.ParseLambda(parameterExpressions, typeof(string), expression, parameterValues);
-            var compiledExpression = parsedExpression.Compile();
-            return (Func<TIn, string>)compiledExpression;
-        }
+        
 
 
         public override (string?, MalleableBase) Process(MalleableBase message)

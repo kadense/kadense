@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <PackageId>Kadense.Malleable.Workflow.NHS</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Shaun Turner</Authors>
+    <Company>Head in the Cloud Solutions Ltd</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <None Include="../README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Malleable.Workflow\src\Kadense.Malleable.Workflow.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Resources/Fhir/STU3/*.json" />
+    <EmbeddedResource Include="Resources/Fhir/STU3/*.json" />
+  </ItemGroup>
+</Project>

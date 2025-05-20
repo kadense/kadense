@@ -23,6 +23,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
 
         ActorSystem System { get; set; }
 
+        //[Fact]
         [Fact(Skip = "Requires RabbitMQ to be running")]
         [Trait("Category", "Integration")]
         public async Task TestAkkaWorkflowAsync()
@@ -31,13 +32,8 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
             var moduleDefinition = mocker.MockModule();
             var converterDefinition = mocker.MockConverterModule();
             var malleableAssemblyFactory = new MalleableAssemblyFactory();
-            var malleableAssembly = malleableAssemblyFactory.CreateAssembly(moduleDefinition);
-            var malleableAssemblyList = new Dictionary<string, MalleableAssembly>(){
-                { malleableAssembly.Name, malleableAssembly }
-            };
-            Assemblies = malleableAssemblyList.Values.ToList();
-            var converterAssembly = malleableAssemblyFactory.CreateAssembly(converterDefinition, malleableAssemblyList);
-            malleableAssemblyList.Add(converterAssembly.Name, converterAssembly);
+            var malleableAssembly = malleableAssemblyFactory.WithNewAssembly(moduleDefinition);
+            var converterAssembly = malleableAssemblyFactory.WithNewAssembly(converterDefinition);
             var workflow = mocker.MockWorkflow();
             workflow.Spec!.Steps!["TestStep"].ExecutorType = "RabbitMQ";
             workflow.Spec.Steps["WriteApi"].Options!.NextStep = "RMQWrite";
@@ -55,7 +51,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
             var rabbitMqConnection = await rabbitMqFactory.CreateConnectionAsync(); 
             var results = new List<MalleableBase>();
             var builder = System
-            .AddWorkflow(workflow, malleableAssemblyList)
+            .AddWorkflow(workflow, malleableAssemblyFactory.GetAssemblies())
             .AddRabbitMQWriter()
             .WithDebugMode()
             .Validate()

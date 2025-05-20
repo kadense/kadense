@@ -14,7 +14,7 @@ namespace Kadense.Malleable.API.Tests
             var mocker = new MalleableMockers();
             var module = mocker.MockModule();
             var assemblyBuilder = new MalleableAssemblyFactory();
-            var assembly = assemblyBuilder.CreateAssembly(module);
+            var assembly = assemblyBuilder.WithAssembly(module).GetAssemblies().First().Value;
             var assemblies = new List<MalleableAssembly> { assembly };
             InheritingType = assembly.Types["TestInheritedClass"];
             server.Start(assemblies, Output, [ InheritingType ]);

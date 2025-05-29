@@ -113,5 +113,5 @@ Next steps for this will be:
 * Introduction of blockchain capabilities to enable tamper evident audit and traceability.
 
 
-[Full details of Malleable Workflows's are available in the documentation](https://headinthecloudsolutions.github.io/kadense/docs/The-Framework/Malleable-Workflow/Workflow-Engine)
+[Full details of Malleable Workflows's are available in the documentation](https://kadense.github.io/kadense/docs/The-Framework/Malleable-Workflow/Workflow-Engine)
 

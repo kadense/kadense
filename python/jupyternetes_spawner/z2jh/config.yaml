@@ -1,6 +1,6 @@
 hub:
   image:
-    name: ghcr.io/headinthecloudsolutions/kadense/jupyternetes-hub
+    name: ghcr.io/kadense/kadense/jupyternetes-hub
     tag: 0.1.134
     pullPolicy: Always
 

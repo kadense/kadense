@@ -16,14 +16,14 @@ const config: Config = {
   ],
 
   // Set the production url of your site here
-  url: 'https://headinthecloudsolutions.github.io/',
+  url: 'https://kadense.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/kadense/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'headinthecloudsolutions', // Usually your GitHub org/user name.
+  organizationName: 'kadense', // Usually your GitHub org/user name.
   projectName: 'kadense', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -79,7 +79,7 @@ const config: Config = {
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/headinthecloudsolutions/kadense',
+          href: 'https://github.com/kadense/kadense',
           label: 'GitHub',
           position: 'right',
         },
@@ -106,11 +106,11 @@ const config: Config = {
           items: [
             {
               label: 'GitHub Issues',
-              href: 'https://github.com/headinthecloudsolutions/kadense/issues',
+              href: 'https://github.com/kadense/kadense/issues',
             },
             {
               label: 'Ideas',
-              href: 'https://github.com/orgs/headinthecloudsolutions/discussions/categories/ideas',
+              href: 'https://github.com/orgs/kadense/discussions/categories/ideas',
             }
           ],
         },
@@ -123,7 +123,7 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/headinthecloudsolutions/kadense/',
+              href: 'https://github.com/kadense/kadense/',
             },
           ],
         },

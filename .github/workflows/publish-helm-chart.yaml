@@ -64,7 +64,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        repository: headinthecloudsolutions/helm-charts
+        repository: kadense/helm-charts
         token: ${{ secrets.HELM_REPO_TOKEN }}
          
     - name: Install Helm
@@ -95,8 +95,8 @@ jobs:
       run: |
         UPDATE_MESSAGE="Added Package version ${{ inputs.GitVersion_SemVer }}"
         echo "${UPDATE_MESSAGE}"
-        git config --global user.name 'headinthecloudsolutions.co.uk'
-        git config --global user.email 'enquiries@headinthecloudsolutions.co.uk'
+        git config --global user.name 'kadense.io'
+        git config --global user.email 'enquiries@kadense.io'
 
         git add *.tgz
         git add index.yaml

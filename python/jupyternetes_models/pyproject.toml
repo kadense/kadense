@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "jupyternetes_models"
 dynamic = ["version"]
 authors = [
-  { name="Shaun Turner", email="shaun.turner@headinthecloudsolutions.co.uk" },
+  { name="Shaun Turner", email="shaun.turner@kadense.co.uk" },
 ]
 description = "Kadense Jupyternetes Models" 
 readme = "README.md"
@@ -25,8 +25,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/headinthecloudsolutions/kadense"
-Issues = "https://github.com/headinthecloudsolutions/kadense/issues"
+Homepage = "https://github.com/kadense/kadense"
+Issues = "https://github.com/kadense/kadense/issues"
 
 [tool.coverage.run]
 source = ["jupyternetes_models"]

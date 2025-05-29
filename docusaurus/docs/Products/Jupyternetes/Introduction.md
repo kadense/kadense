@@ -5,7 +5,7 @@ title: Introduction to Jupyternetes
 
 Jupyternetes is an alternative to [Jupyterhub's Kubespawner](https://github.com/jupyterhub/kubespawner) built on the operator model and designed to simplify configuration.
 
-This was [proposed as an amendment to the existing Kubespawner](https://github.com/jupyterhub/kubespawner/issues/839#issuecomment-2102164475). However, due to concerns regarding upgrade paths, it was decided that this would be a separate project managed by [Head in the Cloud Solutions Limited](https://www.headinthecloudsolutions.co.uk/) at least until the initial version is completed. The aim is to eventually integrate it into the wider Project Jupyter once it meets expectations.
+This was [proposed as an amendment to the existing Kubespawner](https://github.com/jupyterhub/kubespawner/issues/839#issuecomment-2102164475). However, due to concerns regarding upgrade paths, it was decided that this would be a separate project managed by [Kadense Limited](https://kadense.io/) at least until the initial version is completed. The aim is to eventually integrate it into the wider Project Jupyter once it meets expectations.
 
 Jupyternetes effectively breaks down the current hub in Kubernetes into multiple services, utilizing the Kubernetes operator design pattern and implementing a more refined security policy for these services.
 

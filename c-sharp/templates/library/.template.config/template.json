@@ -1,6 +1,6 @@
 {
     "$schema": "http://json.schemastore.org/template",
-    "author": "Head in the Cloud Solutions Ltd",
+    "author": "Kadense Ltd",
     "classifications": [ "HITCS", "Library", "KADENSE" ],
     "identity": "Templates.Library",
     "name": "KADENSE Class Library",

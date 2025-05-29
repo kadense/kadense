@@ -47,4 +47,4 @@ spec:
 
 The ***MalleableAssemblyBuilder*** will populate the ***MalleableAssembly*** that it generates with the configuration for the JsonSerializer. This can then be passed into the ***MalleablePolymorphicTypeResolver*** and in turn into the ***JsonSerializerOptions*** 
 
-[Full information on polymorphism in Malleable Models can be found in the documentation.](https://headinthecloudsolutions.github.io/kadense/docs/The-Framework/Malleable-Modules/Polymorphism)
+[Full information on polymorphism in Malleable Models can be found in the documentation.](https://kadense.github.io/kadense/docs/The-Framework/Malleable-Modules/Polymorphism)

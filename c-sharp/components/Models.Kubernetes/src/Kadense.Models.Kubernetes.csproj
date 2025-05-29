@@ -8,7 +8,7 @@
     <PackageId>Kadense.Models.Kubernetes</PackageId>
     <Version>1.0.0</Version>
     <Authors>Shaun Turner</Authors>
-    <Company>Head in the Cloud Solutions Ltd</Company>
+    <Company>Kadense Ltd</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>

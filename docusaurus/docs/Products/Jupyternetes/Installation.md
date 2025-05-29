@@ -11,7 +11,7 @@ https://helm.sh/docs/intro/install/
 After installation, add the Helm charts for both Kadense and JupyterHub by running the following commands in your terminal:
 
 ```bash
-helm repo add hitcs https://headinthecloudsolutions.github.io/helm-charts/
+helm repo add hitcs https://kadense.github.io/helm-charts/
 helm repo add jupyterhub https://hub.jupyter.org/helm-chart/                   
 helm repo update
 ```
@@ -30,7 +30,7 @@ First, create a basic configuration file named `config.yaml` with the following 
 ```yaml
 hub:
   image:
-    name: ghcr.io/headinthecloudsolutions/kadense/jupyternetes-hub
+    name: ghcr.io/kadense/kadense/jupyternetes-hub
     tag: 0.1.134
 
   config:

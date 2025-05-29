@@ -81,5 +81,5 @@ spec:
             Surname: Source.Author.Split(' ')[1]
 ```
 
-[Full details of Malleable Modules is available in the documentation](https://headinthecloudsolutions.github.io/kadense/docs/The-Framework/Malleable-Modules/Introduction)
+[Full details of Malleable Modules is available in the documentation](https://kadense.github.io/kadense/docs/The-Framework/Malleable-Modules/Introduction)
 

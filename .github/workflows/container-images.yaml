@@ -171,7 +171,7 @@ jobs:
         labels: |
           org.opencontainers.image.title=${{ matrix.image }}
           org.opencontainers.image.description=${{ matrix.image }} container image
-          org.opencontainers.image.vendor=Head in the Cloud Solutions Ltd
+          org.opencontainers.image.vendor=Kadense Ltd
         
     - if: ${{ steps.parse_build_args.outputs.PUSH_IMAGE == 'true' }}
       name: Create manifest list and push

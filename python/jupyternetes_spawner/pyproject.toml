@@ -46,9 +46,9 @@ test = [
 ]
 
 [project.urls]
-Documentation = "https://headinthecloudsolutions.github.io/kadense"
-Source = "https://github.com/headinthecloudsolutions/kadense"
-Issues = "https://github.com/headinthecloudsolutions/kadense/issues"
+Documentation = "https://kadense.github.io/kadense"
+Source = "https://github.com/kadense/kadense"
+Issues = "https://github.com/kadense/kadense/issues"
 
 # Explicitly include our profile_list templates, as hatch doesn't
 # respect MANIFEST.in.

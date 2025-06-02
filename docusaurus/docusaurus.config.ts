@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Kadense',
-  tagline: 'Kubernetes Advanced Data Ecosystem for Nourishing Secure Environments.',
+  tagline: 'Building robust, scalable and secure business applications without compromising on performance.',
   favicon: 'img/favicon.ico',
   markdown: {
     mermaid: true,
@@ -78,6 +78,8 @@ const config: Config = {
           label: 'Docs',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/consultancy-services', label: 'Consultancy', position: 'left'},
+        {to: '/about-us', label: 'About us', position: 'left'},
         {
           href: 'https://github.com/kadense/kadense',
           label: 'GitHub',

@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# What is the KADENSE?
+# What is the Kadense Framework?
 
 **K**ubernetes **A**dvanced **D**ata **E**cosystem, **N**ourishing **S**ecure **E**nvironments.
 
@@ -10,5 +10,5 @@ KADENSE is an ecosystem for all your data needs in a secure environment. Whether
 
 The core components of KADENSE are offered as open-source under the Apache 2.0 License, making them free to use, distribute, and modify as needed.
 
-KADENSE Enterprise enhances the capabilities of the core components, simplifying management in enterprise environments. Additionally, we offer consultancy services and managed service solutions to further support our customers.
+<!-- KADENSE Enterprise enhances the capabilities of the core components, simplifying management in enterprise environments. Additionally, we offer consultancy services and managed service solutions to further support our customers. -->
 

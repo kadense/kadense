@@ -77,9 +77,9 @@ const config: Config = {
           position: 'left',
           label: 'Docs',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {to: '/consultancy-services', label: 'Consultancy', position: 'left'},
         {to: '/about-us', label: 'About us', position: 'left'},
+        {to: '/blog', label: 'Blog', position: 'right'},
         {
           href: 'https://github.com/kadense/kadense',
           label: 'GitHub',

@@ -65,7 +65,7 @@ const config: Config = {
   themeConfig: {
     image: 'img/kadense-social-card.png',
     colorMode: {
-      defaultMode: 'dark',
+      defaultMode: 'light',
       disableSwitch: false,
       respectPrefersColorScheme: true,
     },

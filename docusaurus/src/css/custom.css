@@ -13,8 +13,17 @@
   --ifm-color-primary-light: #33925d;
   --ifm-color-primary-lighter: #359962;
   --ifm-color-primary-lightest: #3cad6e;
+  --ifm-navbar-link-color: #ffffff;
+  --ifm-navbar-link-hover-color: #aaaaaa;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --home-hero-background: url('/static/img/home-banner.png');
+  --home-hero-background-small: none;
+  --ifm-navbar-shadow: none;
+  --kadense-logo: url('/static/img/kadense-no-border.png');
+  --jupyternetes-logo: url('/static/img/jupyternetes.png');
+  --consulting-logo: url('/static/img/consultancy.png');
+  --infrastructure-review-logo: url('/static/img/infrastructure-review.png');
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -27,4 +36,162 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --home-hero-background: url('/static/img/home-banner-dark.png');
+  --home-hero-background-small: none;
+  --ifm-navbar-link-color: #000000;
+  --ifm-navbar-shadow: none;
+  --ifm-navbar-link-hover-color: #666666;
+  --kadense-logo: url('/static/img/kadense-no-border-inverted.png');
+  --jupyternetes-logo: url('/static/img/jupyternetes-inverted.png');
+  --consulting-logo: url('/static/img/consultancy-inverted.png');
+  --infrastructure-review-logo: url('/static/img/infrastructure-review-inverted.png');
+}
+
+
+.navbar--fixed-top 
+{
+  background-color: var(--ifm-color-primary);
+  color: var(--ifm-font-color-base-inverse);
+}
+
+.navbar--fixed-top .navbar-sidebar
+{
+  background-color: var(--ifm-color-primary);
+  color: var(--ifm-font-color-base-inverse);
+}
+
+.navbar--fixed-top .menu__link
+{
+  color: var(--ifm-font-color-base-inverse);
+}
+
+header .row {
+  width: 100%;
+}
+
+.kadense_icon { 
+  background-image: var(--kadense-logo);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  min-width: 200px;
+  min-height: 200px;
+  margin: 0 auto;
+}
+
+.featureImage {
+  min-height: 200px;
+  min-width: 200px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+}
+
+.featureImageLeft
+{
+  background-position: left center;
+}
+
+.featureImageRight
+{
+  background-position: right center;
+}
+
+.featureLink {
+  width: 100%;
+}
+
+.jupyternetes_logo
+{
+  background-image: var(--jupyternetes-logo);
+}
+
+.consulting_logo
+{
+  background-image: var(--consulting-logo);
+}
+
+.kadense_logo
+{
+  background-image: var(--kadense-logo);
+}
+
+.infrastructure_review_logo
+{
+  background-image: var(--infrastructure-review-logo);
+}
+
+.rowLTR {
+  flex-direction: row;
+  border-top: 1px solid;
+  padding-top: 15px;
+  margin-top: 15px;
+}
+
+.rowRTL {
+  flex-direction: row-reverse;
+  border-top: 1px solid;
+  padding-top: 15px;
+  margin-top: 15px;
+}
+
+.rowLTR .featureImage 
+{
+  background-position: right center;
+}
+
+.rowRTL .featureImage 
+{
+  background-position: left center;
+}
+
+.rowLTR .featureContent
+{
+  text-align: left;
+}
+
+.rowRTL .featureContent
+{
+  text-align: right;
+}
+
+@media screen and (max-width: 996px) {
+  :root {
+    --kadense-logo: url('/static/img/kadense-icon.png');
+  }
+  
+  .featureImageLeft
+  {
+    background-position: center center;
+  }
+
+  .featureImageRight
+  {
+    background-position: center center;
+  }
+  
+  .rowRTL {
+    flex-direction: row;
+  }
+
+
+  .rowRTL .featureContent
+  {
+    text-align: center;
+  }
+
+  .rowLTR .featureContent
+  {
+    text-align: center;
+  }
+
+  .rowRTL .featureImage 
+  {
+    background-position: center center;
+  }
+
+  .rowLTR .featureImage 
+  {
+    background-position: center center;
+  }
 }

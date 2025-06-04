@@ -6,25 +6,37 @@ import Link from '@docusaurus/Link';
 
 type FeatureItem = {
   title: string;
-  MyImage: string;
+  Logo: string;
   href: string;
   description: ReactNode;
+  alignment?: string;
+  key?: number;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Kadense Framework',
-    MyImage: 'img/kadense-icon.png',
-    href: '/docs/intro', 
+    title: 'Consultancy',
+    Logo: 'consulting_logo',
+    href: '/consultancy-services', 
     description: (
       <>
-        Kadense simplifies harnessing the power of Kubernetes, enabling the creation of robust and highly scalable applications and services.
+        Build new software, accelerate your digital transformation and optimize your IT infrastructure with our IT consultancy.
+      </>
+    ),
+  },
+  {
+    title: 'Infrastructure Review',
+    Logo: 'infrastructure_review_logo',
+    href: '/infrastructure-review', 
+    description: (
+      <>
+        Modern IT infrastructure is the backbone of any successful business. At Kadense Limited, our infrastructure review service is designed to help organizations optimize their technology environments for cost, resilience, scalability, and manageability.
       </>
     ),
   },
   {
     title: 'Jupyternetes',
-    MyImage: 'img/jupyternetes.png',
+    Logo: 'jupyternetes_logo',
     href: '/docs/Products/Jupyternetes/Introduction', 
     description: (
       <>
@@ -33,28 +45,49 @@ const FeatureList: FeatureItem[] = [
     ),
   },
   {
-    title: 'Consultancy',
-    MyImage: 'img/consultancy.png',
-    href: '/consultancy-services', 
+    title: 'The Kadense Framework',
+    Logo: 'kadense_logo',
+    href: '/docs/intro', 
     description: (
       <>
-        Build new software, accelerate your digital transformation and optimize your IT infrastructure with our IT consultancy.
+        The Kadense Framework is an ecosystem for all your data needs in a secure environment. Whether you're a healthcare organization managing secure patient data or a bank processing account transactions, The Kadense Framework can help you build a secure, scalable, and cost-effective solution that runs on any infrastructure using an open-source foundation.
       </>
     ),
   }
 ];
 
-function Feature({title, MyImage, href, description}: FeatureItem) {
+function Feature(item: FeatureItem) {
+  return (
+    <div className={clsx('row', item.alignment)}>
+      <FeatureImage alignClass="featureImageRight" {...item} />
+      <FeatureContent alignClass="text--left" {...item} />
+    </div>
+  );
+}
+
+function FeatureImage({Logo} : FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className={styles.feature}> 
-        <div className="text--center">
-          <img src={MyImage} className={styles.featureImage} role="img" alt={title} />
+        <div className={clsx('featureImage', Logo)}>
+          &nbsp;
         </div>
-        <div className="text--center padding-horiz--md">
+      </div>
+    </div>
+  );
+}
+
+
+
+function FeatureContent({title, href, description} : FeatureItem) {
+  return (
+    <div className={clsx('col col--6 featureContent')}>
+      <div className={styles.feature}> 
+        <div className={clsx('padding-horiz--md')}>
+          <Heading as="h3">{title}</Heading>
           <p>{description}</p>
         </div>
-        <div className="text--center padding-horiz--md">
+        <div className={clsx('padding-horiz--md featureLink')}>
           <Link className="button button--secondary button--lg" to={href}>
             Learn more
           </Link>
@@ -68,11 +101,9 @@ export default function HomepageFeatures(): ReactNode {
   return (
     <section className={styles.features}>
       <div className="container">
-        <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
-          ))}
-        </div>
+          {FeatureList.map((props, idx) =>
+            <Feature alignment={idx % 2 === 0 ? "rowLTR" : "rowRTL"} key={idx} {...props} />
+          )}
       </div>
     </section>
   );

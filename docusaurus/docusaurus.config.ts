@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Kadense',
-  tagline: 'Building robust, scalable and secure business applications without compromising on performance.',
+  title: 'Kadense Limited',
+  tagline: 'Specialist IT Consultancy and Software Development',
   favicon: 'img/favicon.ico',
   markdown: {
     mermaid: true,
@@ -64,6 +64,11 @@ const config: Config = {
 
   themeConfig: {
     image: 'img/kadense-social-card.png',
+    colorMode: {
+      defaultMode: 'dark',
+      disableSwitch: false,
+      respectPrefersColorScheme: true,
+    },
     navbar: {
       title: 'Kadense',
       logo: {
@@ -71,14 +76,14 @@ const config: Config = {
         src: 'img/kadense-icon.png',
       },
       items: [
+        {to: '/consultancy-services', label: 'Consultancy', position: 'left'},
+        {to: '/about-us', label: 'About us', position: 'left'},
         {
           type: 'docSidebar',
           sidebarId: 'docsSidebar',
-          position: 'left',
-          label: 'Docs',
+          position: 'right',
+          label: 'Product Docs',
         },
-        {to: '/consultancy-services', label: 'Consultancy', position: 'left'},
-        {to: '/about-us', label: 'About us', position: 'left'},
         {to: '/blog', label: 'Blog', position: 'right'},
         {
           href: 'https://github.com/kadense/kadense',
@@ -90,6 +95,19 @@ const config: Config = {
     footer: {
       style: 'dark',
       links: [
+        {
+          title: 'Services',
+          items: [
+            {
+              label: 'Consultancy Services',
+              to: '/consultancy-services',
+            },
+            {
+              label: 'Infrastructure Review',
+              to: '/infrastructure-review',
+            },
+          ],
+        },
         {
           title: 'Products',
           items: [
@@ -113,12 +131,7 @@ const config: Config = {
             {
               label: 'Ideas',
               href: 'https://github.com/orgs/kadense/discussions/categories/ideas',
-            }
-          ],
-        },
-        {
-          title: 'More',
-          items: [
+            },
             {
               label: 'Blog',
               to: '/blog',
@@ -128,7 +141,7 @@ const config: Config = {
               href: 'https://github.com/kadense/kadense/',
             },
           ],
-        },
+        }
       ],
       copyright: `Copyright © ${new Date()}. Kadense Limited. Built with Docusaurus.`,
     },

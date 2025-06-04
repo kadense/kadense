@@ -67,7 +67,7 @@ const config: Config = {
     colorMode: {
       defaultMode: 'light',
       disableSwitch: false,
-      respectPrefersColorScheme: true,
+      respectPrefersColorScheme: false,
     },
     navbar: {
       title: 'Kadense',
@@ -76,15 +76,54 @@ const config: Config = {
         src: 'img/kadense-icon.png',
       },
       items: [
-        {to: '/consultancy-services', label: 'Consultancy', position: 'left'},
-        {to: '/about-us', label: 'About us', position: 'left'},
         {
-          type: 'docSidebar',
-          sidebarId: 'docsSidebar',
-          position: 'right',
-          label: 'Product Docs',
+          type: 'dropdown',
+          label: 'Products', 
+          position: 'left',
+          items: [
+            {
+              label: 'The Kadense Framework',
+              href: '/docs/intro',
+            },
+            {
+              label: 'Jupyternetes',
+              href: '/docs/Products/Jupyternetes/Introduction',
+            },
+          ]
         },
-        {to: '/blog', label: 'Blog', position: 'right'},
+        {
+          type: 'dropdown',
+          label: 'Services', 
+          position: 'left',
+          items: [
+            {
+              label: 'Consultancy Services',
+              href: '/consultancy-services',
+            },
+            {
+              label: 'Infrastructure Review',
+              href: '/infrastructure-review',
+            },
+            {
+              label: 'Software Development',
+              href: '/software-development',
+            },
+            {
+              label: 'Open Source Software',
+              href: '/open-source',
+            },
+          ]
+        },
+        {
+          to: '/about-us', 
+          label: 'About us', 
+          position: 'left'
+        },
+        {
+          to: '/blog', 
+          label: 'Blog', 
+          position: 'right'
+        },
         {
           href: 'https://github.com/kadense/kadense',
           label: 'GitHub',
@@ -105,6 +144,14 @@ const config: Config = {
             {
               label: 'Infrastructure Review',
               to: '/infrastructure-review',
+            },
+            {
+              label: 'Software Development',
+              to: '/software-development',
+            },
+            {
+              label: 'Open Source Software',
+              to: '/open-source',
             },
           ],
         },

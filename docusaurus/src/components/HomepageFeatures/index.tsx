@@ -35,6 +35,26 @@ const FeatureList: FeatureItem[] = [
     ),
   },
   {
+    title: 'Open Source Software',
+    Logo: 'oss_logo',
+    href: '/open-source',
+    description: (
+      <>
+        We at Kadense Limited are committed to the open source community, contributing to and supporting projects that drive innovation and foster collaboration. Our expertise in open source software allows us to help organisations leverage these technologies to build secure, scalable, and cost-effective solutions.
+      </>
+    )
+  },
+  {
+    title: 'Software Development',
+    Logo: 'software_development_logo',
+    href: '/software-development',
+    description: (
+      <>
+        Kadense Limited offers expert software development consultancy services, helping organisations deliver robust, scalable, and maintainable solutions tailored to their unique needs. Our team brings years of experience across a wide range of industries and project types, from greenfield applications to complex integrations and legacy system modernisation.
+      </>
+    ),
+  },
+  {
     title: 'Jupyternetes',
     Logo: 'jupyternetes_logo',
     href: '/docs/Products/Jupyternetes/Introduction', 

@@ -1,8 +1,20 @@
 ---
 title: Infrastructure Review
 ---
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
 
-# The Benefits of an Infrastructure Review with Kadense Limited
+<ThemedImage
+  class="page_header_image"
+  alt="Infrastructure Review"
+  sources={{
+    light: useBaseUrl('/img/infrastructure-review.png'),
+    dark: useBaseUrl('/img/infrastructure-review-inverted.png'),
+  }}
+/>
+
+# Infrastructure Review
+
 
 Modern IT infrastructure is the backbone of any successful business. At Kadense Limited, our infrastructure review service is designed to help organizations optimize their technology environments for cost, resilience, scalability, and manageability.
 
@@ -49,5 +61,5 @@ This makes your environment easier to operate, reduces the risk of misconfigurat
 ---
 
 **Ready to optimize your infrastructure?**  
-Contact Kadense Limited today to schedule your infrastructure review and unlock the full potential of your IT investments.
+[Contact Kadense Limited](mailto:enquiries@kadense.io) today to schedule your infrastructure review and unlock the full potential of your IT investments.
 

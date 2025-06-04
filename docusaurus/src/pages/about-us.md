@@ -1,6 +1,17 @@
 ---
 title: About us
 ---
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
+<ThemedImage
+  class="page_header_image"
+  alt="Kadense Limited"
+  sources={{
+    light: useBaseUrl('/img/kadense-no-border.png'),
+    dark: useBaseUrl('/img/kadense-no-border-inverted.png'),
+  }}
+/>
 
 # About Kadense Ltd
 

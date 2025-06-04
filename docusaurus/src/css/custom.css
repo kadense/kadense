@@ -24,6 +24,8 @@
   --jupyternetes-logo: url('/static/img/jupyternetes.png');
   --consulting-logo: url('/static/img/consultancy.png');
   --infrastructure-review-logo: url('/static/img/infrastructure-review.png');
+  --oss-logo: url('/static/img/open-source.png');
+  --software-development-logo: url('/static/img/software-development.png');
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -45,6 +47,8 @@
   --jupyternetes-logo: url('/static/img/jupyternetes-inverted.png');
   --consulting-logo: url('/static/img/consultancy-inverted.png');
   --infrastructure-review-logo: url('/static/img/infrastructure-review-inverted.png');
+  --oss-logo: url('/static/img/open-source-inverted.png');
+  --software-development-logo: url('/static/img/software-development-inverted.png');
 }
 
 
@@ -105,6 +109,10 @@ header .row {
 {
   background-image: var(--jupyternetes-logo);
 }
+.oss_logo
+{
+  background-image: var(--oss-logo);
+}
 
 .consulting_logo
 {
@@ -119,6 +127,11 @@ header .row {
 .infrastructure_review_logo
 {
   background-image: var(--infrastructure-review-logo);
+}
+
+.software_development_logo
+{
+  background-image: var(--software-development-logo);
 }
 
 .rowLTR {
@@ -153,6 +166,20 @@ header .row {
 .rowRTL .featureContent
 {
   text-align: right;
+}
+
+.page_header_image 
+{
+  float: right;
+  max-width: 250px;  
+  margin-top: 25px;
+  margin-left: 25px;
+  margin-bottom: 25px;
+}
+
+.hero__title
+{
+  margin-top: 30px;  
 }
 
 @media screen and (max-width: 996px) {
@@ -193,5 +220,18 @@ header .row {
   .rowLTR .featureImage 
   {
     background-position: center center;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .page_header_image 
+  {
+    float: none;
+    max-width: 150px;
+    display: block;
+    margin-top: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0px;
   }
 }

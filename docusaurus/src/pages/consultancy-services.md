@@ -1,8 +1,20 @@
 ---
 title: Consultancy Services
 ---
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
+<ThemedImage
+  class="page_header_image"
+  alt="Consultancy Services"
+  sources={{
+    light: useBaseUrl('/img/consultancy.png'),
+    dark: useBaseUrl('/img/consultancy-inverted.png'),
+  }}
+/>
 
 # Consultancy Services
+
 
 Are you looking to accelerate your digital transformation, optimize your IT infrastructure, or seamlessly integrate cloud solutions? Our IT consultancy services are designed to help you achieve your business goals with confidence and agility.
 
@@ -39,6 +51,6 @@ Your business is dynamic, and your IT solutions should be too. We build scalable
 ---
 
 **Ready to unlock the full potential of your IT investments?**  
-Contact us today to discover how our consultancy services can empower your business to thrive in a multi-cloud world.
+[Contact us](mailto:enquiries@kadense.io) today to discover how our consultancy services can empower your business to thrive in a multi-cloud world.
 
 

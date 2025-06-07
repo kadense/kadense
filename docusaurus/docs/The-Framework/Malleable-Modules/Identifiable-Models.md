@@ -39,7 +39,7 @@ spec:
   classes:
     TestClass:
       identifierExpression: >-
-        $"{Input.TestNamespace}/{Input.TestProperty}"
+        string.Format("{0}/{1}", Input.TestNamespace, Input.TestProperty) 
       properties:
         TestProperty:
           type: string

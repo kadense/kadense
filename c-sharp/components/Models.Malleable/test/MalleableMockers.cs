@@ -5,7 +5,7 @@ namespace Kadense.Models.Malleable.Tests
 {
     public class MalleableMockers
     {
-        public MalleableWorkflow MockWorkflow()
+        public virtual MalleableWorkflow MockWorkflow()
         {
             return new MalleableWorkflow
             {
@@ -97,7 +97,7 @@ namespace Kadense.Models.Malleable.Tests
             };
         }
 
-        public MalleableConverterModule MockConverterModule()
+        public virtual MalleableConverterModule MockConverterModule()
         {
             return new MalleableConverterModule
             {
@@ -142,14 +142,14 @@ namespace Kadense.Models.Malleable.Tests
             };
         }
 
-        public MalleableModule MockFhirModule()
+        public virtual MalleableModule MockFhirModule()
         {
             var json = KadenseTestUtils.GetEmbeddedResourceAsString("Kadense.Models.Malleable.Tests.Resources.FhirResourceExample.json");
             var module = JsonSerializer.Deserialize<MalleableModule>(json)!;
             return module;
         }
 
-        public MalleableModule MockModule()
+        public virtual MalleableModule MockModule()
         {
             return new MalleableModule
             {
@@ -349,7 +349,7 @@ namespace Kadense.Models.Malleable.Tests
             };
         }
 
-        public List<MalleableModule> MockModules()
+        public virtual List<MalleableModule> MockModules()
         {            
             return new List<MalleableModule>()
             { 

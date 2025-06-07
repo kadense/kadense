@@ -87,6 +87,19 @@ namespace Kadense.Malleable.Workflow
             return this;
         }
 
+        public MalleableWorkflowCoordinatorFactory WithWorkflowProvider(string providerName, MalleableWorkflowProvider provider)
+        {
+            if (WorkflowContext.Providers.ContainsKey(providerName))
+            {
+                WorkflowContext.Providers[providerName] = provider;
+            }
+            else
+            {
+                WorkflowContext.Providers.Add(providerName, provider);
+            }
+            return this;
+        }
+
         public MalleableWorkflowContext WorkflowContext { get; protected set; }
 
         public MalleableWorkflowCoordinatorFactory WithExternalStepActions()

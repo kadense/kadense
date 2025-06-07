@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using Kadense.Malleable.Reflection;
+using Kadense.Logging;
 
 namespace Kadense.Malleable.Workflow.Processing
 {
@@ -15,8 +16,10 @@ namespace Kadense.Malleable.Workflow.Processing
         where TIn : MalleableBase
         where TOut : MalleableBase
     {
+        protected KadenseLogger Logger { get; }
         public MalleableWorkflowProcessor(MalleableWorkflowContext context, string stepName)
         {
+            Logger = KadenseLogger.CreateLogger(this.GetType());
             Context = context;
             StepName = stepName;
             StepDefinition = context.Workflow.Spec!.Steps![stepName];

@@ -13,7 +13,7 @@ namespace Kadense.Malleable.Workflow.Email.AzureECS
             : base(options)
         {
             logger = new KadenseLogger<AzureECSSendEmailProvider>();
-            Client = new EmailClient(options.AzureEcsConnectionString);
+            Client = new EmailClient(options.ConnectionString);
         }
         
         public EmailClient Client { get; }

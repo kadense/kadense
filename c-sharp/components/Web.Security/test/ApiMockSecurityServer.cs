@@ -4,11 +4,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
-using OpenIddict.Abstractions;
-using OpenIddict.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting.Server.Features;
-using Kadense.Web.Security.Extensions;
+using Kadense.Web.Security;
 
 
 namespace Kadense.Web.Security.Tests {
@@ -35,32 +33,7 @@ namespace Kadense.Web.Security.Tests {
             Host = WebHost.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                {
-                    options.UseInMemoryDatabase("TestDatabase");
-                    options.UseOpenIddict();
-                });
                 services.AddRouting();
-                services.AddOpenIddict()
-                .AddCore(options =>
-                {
-                    options.UseEntityFrameworkCore()
-                        .UseDbContext<ApplicationDbContext>();
-                })
-                .AddServer(options =>
-                {
-                    options.SetTokenEndpointUris("connect/token");
-
-                    options.AllowClientCredentialsFlow();
-
-                    options.AddDevelopmentEncryptionCertificate()
-                    .AddDevelopmentSigningCertificate();
-
-                    options.UseAspNetCore()
-                    .EnableTokenEndpointPassthrough();
-                });
-                services.AddMvc().AddOpenIddictAuthorizationController();
-
             })
             .Configure(app =>
             {
@@ -69,13 +42,9 @@ namespace Kadense.Web.Security.Tests {
                 .UseDeveloperExceptionPage()
                 .UseForwardedHeaders()
                 .UseRouting()
-                .UseCors()
-                .UseAuthentication()
-                .UseAuthorization()
                 .UseEndpoints(cfg =>
                 {
-                    cfg.MapControllers();
-                    cfg.MapDefaultControllerRoute();
+                    cfg.MapKadenseOAuthToDummyProvider();
                 });
             })
             .UseKestrel(options => { options.Listen(System.Net.IPAddress.Loopback, 0, (_) => { }); })

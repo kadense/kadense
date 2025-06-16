@@ -1,3 +1,4 @@
+using Kadense.Models.Malleable;
 using System.Text.Json;
 
 namespace Kadense.Malleable.API

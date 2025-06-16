@@ -2,16 +2,21 @@ using Kadense.Malleable.Reflection;
 
 namespace Kadense.Malleable.Workflow.Connections
 {
-    public class ActorConnection : MalleableWorkflowConnection<IActorRef>
+    public class ActorConnection : MalleableWorkflowConnection<ActorConnectionOptions>
     {
-        public ActorConnection(IList<MalleableAssembly> assemblies, IActorRef context) : base(assemblies, context)
+        public ActorConnection(MalleableWorkflowContext workflowContext, ActorConnectionOptions options) : base(workflowContext, options)
         {
+            // nothing to do
+        }
 
+        public override void Initialize(MalleableWorkflowContext workflowContext, string stepName)
+        {
+            // nothing to do
         }
 
         public override void Send<TMessage>(TMessage message)
         {
-            Context.Tell(message);
+            Options.Context.Tell(message);
         }
     }
 }

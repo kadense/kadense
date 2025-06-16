@@ -1,7 +1,7 @@
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 
-namespace Kadense.Malleable.Reflection
+namespace Kadense.Models.Malleable
 {
     public abstract class MalleableBase
     {

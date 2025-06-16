@@ -1,5 +1,6 @@
 using Kadense.Malleable.Reflection;
 using Kadense.Malleable.Workflow.Processing;
+using Kadense.Models.Malleable;
 
 namespace Kadense.Malleable.Workflow.Email.Tests {
     public class SendEmailProcessorTests

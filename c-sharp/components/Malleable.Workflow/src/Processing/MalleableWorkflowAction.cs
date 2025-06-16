@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 using Kadense.Malleable.Reflection;
 
 namespace Kadense.Malleable.Workflow.Processing
@@ -7,51 +8,31 @@ namespace Kadense.Malleable.Workflow.Processing
     {
         public static MalleableWorkflowAction CreateDefault(MalleableWorkflowCoordinatorFactory factory)
         {
-            return new MalleableWorkflowAction(factory, "Convert", (ctx, stepName) => {
-                var step = ctx.Workflow.Spec!.Steps![stepName];
-                var moduleName = step.ConverterOptions!.Converter!.GetQualifiedModuleName();
-                var converterName = step.ConverterOptions!.Converter!.ConverterName;
-                var converterType = ctx.Assemblies[moduleName].Types[converterName!];
-                var converterAttribute = MalleableConverterAttribute.FromType(converterType);
-                var convertFromType = ctx.Assemblies[converterAttribute.GetConvertFromModuleName()].Types[converterAttribute.ConvertFromClassName];
-                var convertToType = ctx.Assemblies[converterAttribute.GetConvertToModuleName()].Types[converterAttribute.ConvertToClassName]; 
-                var processorType = typeof(ConversionProcessor<,>).MakeGenericType(new Type[] { convertFromType, convertToType }); 
-                return processorType;
-            })
-            .AddNext("IfElse", (ctx, stepName) => {
-                var inputType = ctx.StepInputTypes[stepName];
-                
-                var processorType = typeof(IfElseProcessor<>).MakeGenericType(new Type[] { inputType }); 
-                
-                return processorType;
-            })
-            .AddNext("WriteApi", (ctx, stepName) => {
-                var step = ctx.Workflow.Spec!.Steps![stepName];
-                var inputType = ctx.StepInputTypes[stepName];
-                Type? outputType = null;
-                if(step.Options != null)
-                {
-                    if(step.Options.OutputType != null)
-                    {
-                        var outputTypeName = step.Options.OutputType.GetQualifiedModuleName();
-                        outputType = ctx.Assemblies[outputTypeName].Types[step.Options.OutputType.ClassName!];
-                    }
-                }
-                if (outputType == null)
-                    outputType = inputType;
-                
-                var processorType = typeof(ApiWriteProcessor<,>).MakeGenericType(new Type[] { inputType, outputType }); 
-                
-                return processorType;
-            });
+            return new MalleableWorkflowAction(factory, typeof(ConversionProcessor<,>))
+            .AddNext(typeof(IfElseProcessor<>))
+            .AddNext(typeof(ApiWriteProcessor<,>));
         }
-        public MalleableWorkflowAction(MalleableWorkflowCoordinatorFactory factory, string action, Func<MalleableWorkflowContext, string, Type> actionFunction)
+
+        public MalleableWorkflowAction(MalleableWorkflowCoordinatorFactory factory, Type baseType)
         {
-            Action = action;
-            ActionFunction = actionFunction;
             Factory = factory;
+            ProcessorAttribute = baseType.GetCustomAttribute<MalleableWorkflowProcessorAttribute>(true)!; 
+            Action = ProcessorAttribute.ActionName;
         }
-        public MalleableWorkflowAction(MalleableWorkflowCoordinatorFactory factory, string action, Func<MalleableWorkflowContext, string, Type> actionFunction, MalleableWorkflowAction previous) : this(factory, action, actionFunction)
+
+        public MalleableWorkflowAction(MalleableWorkflowCoordinatorFactory factory, string actionName, Type baseType)
+        {
+            Factory = factory;
+            ProcessorAttribute = baseType.GetCustomAttribute<MalleableWorkflowProcessorAttribute>(true)!; 
+            Action = actionName;
+        }
+        
+        public MalleableWorkflowAction(MalleableWorkflowCoordinatorFactory factory, Type baseType, MalleableWorkflowAction previous) : this(factory, baseType)
+        {
+            Previous = previous;
+        }
+        
+        public MalleableWorkflowAction(MalleableWorkflowCoordinatorFactory factory, string actionName, Type baseType, MalleableWorkflowAction previous) : this(factory, actionName, baseType)
         {
             Previous = previous;
         }
@@ -60,14 +41,21 @@ namespace Kadense.Malleable.Workflow.Processing
 
         private string Action { get; }
 
-        private Func<MalleableWorkflowContext, string, Type > ActionFunction { get; }
+        private MalleableWorkflowProcessorAttribute ProcessorAttribute { get; }
+
 
         private MalleableWorkflowAction? Previous { get; set; }
         private MalleableWorkflowAction? Next { get; set; }
 
-        public MalleableWorkflowAction AddNext(string action, Func<MalleableWorkflowContext, string, Type> actionFunction)
+        public MalleableWorkflowAction AddNext(Type baseType)
         {
-            var next = new MalleableWorkflowAction(Factory, action, actionFunction, this);
+            var next = new MalleableWorkflowAction(Factory, baseType, this);
+            Next = next;
+            return next;
+        }
+        public MalleableWorkflowAction AddNext(string actionName, Type baseType)
+        {
+            var next = new MalleableWorkflowAction(Factory, actionName, baseType, this);
             Next = next;
             return next;
         }
@@ -81,7 +69,7 @@ namespace Kadense.Malleable.Workflow.Processing
         {
             if(context.Workflow.Spec!.Steps![stepName].Action == Action)
             {
-                var type = ActionFunction(context, stepName);
+                var type = ProcessorAttribute.CreateType(context, stepName);
                 if (type != null)
                     return type;
 

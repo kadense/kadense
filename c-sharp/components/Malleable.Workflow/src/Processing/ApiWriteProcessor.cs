@@ -9,6 +9,7 @@ using Kadense.Malleable.Reflection;
 
 namespace Kadense.Malleable.Workflow.Processing
 {
+    [MalleableWorkflowProcessor("WriteApi", typeof(ApiWriteProcessor<,>))]
     public class ApiWriteProcessor<TIn, TOut> : MalleableWorkflowProcessor<TIn, TOut>
         where TIn : MalleableBase
         where TOut : MalleableBase
@@ -16,16 +17,14 @@ namespace Kadense.Malleable.Workflow.Processing
         public ApiWriteProcessor(MalleableWorkflowContext context, string stepName) : base(context, stepName)
         {
             var step = context.Workflow.Spec!.Steps![stepName];
-            if(step.Action != "WriteApi")
-                throw new InvalidOperationException($"Invalid action for WriteApiProcessor. Expected 'WriteApi', but got '{step.Action}'.");
 
             var path = step.Options!.Parameters["Path"];
             PathExpression = CompileExpression<string>(path);
         }
 
-        Func<TIn, string> PathExpression { get; } 
+        Func<TIn, string> PathExpression { get; }
 
-        
+
 
 
         public override (string?, MalleableBase) Process(MalleableBase message)

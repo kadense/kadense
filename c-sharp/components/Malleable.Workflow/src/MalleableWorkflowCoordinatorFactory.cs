@@ -47,9 +47,14 @@ namespace Kadense.Malleable.Workflow
             ValidatorMapper = ValidatorMapper.AddNext(name, actionFunction);
             return ValidatorMapper;
         }
-        public MalleableWorkflowAction AddAction(string name, Func<MalleableWorkflowContext, string, Type> actionFunction)
+        public MalleableWorkflowAction AddAction(string name, Type baseType)
         {
-            ActionMapper = ActionMapper.AddNext(name, actionFunction);
+            ActionMapper = ActionMapper.AddNext(name, baseType);
+            return ActionMapper;
+        }
+        public MalleableWorkflowAction AddAction(Type baseType)
+        {
+            ActionMapper = ActionMapper.AddNext(baseType);
             return ActionMapper;
         }
 
@@ -57,6 +62,25 @@ namespace Kadense.Malleable.Workflow
         {
             ApiActionMapper = ApiActionMapper.AddNext(name, actionFunction);
             return ApiActionMapper;
+        }
+
+        public MalleableWorkflowExternalStepAction AddExternalStepAction(string name, MalleableWorkflowConnection connection)
+        {
+            Func<MalleableWorkflowContext, string, MalleableWorkflowStepWithExternalQueue> actionFunction = (context, stepName) =>
+            {
+                var @namespace = context.Workflow.Metadata.NamespaceProperty;
+                var name = context.Workflow.Metadata.Name;
+                var step = context.Workflow.Spec!.Steps![stepName];
+                var inputType = context.StepInputTypes[stepName];
+                var outputType = context.StepOutputTypes[stepName];
+                var processorType = this.GetActions().Create(context, stepName)!;
+
+                var type = typeof(MalleableWorkflowStepWithExternalQueue<,,,>).MakeGenericType(new Type[] { inputType, outputType, processorType, connection.GetType() });
+                var stepWithExternalQueue = (MalleableWorkflowStepWithExternalQueue)Activator.CreateInstance(type, new object[] { context, stepName, connection })!;
+                return stepWithExternalQueue;
+            };
+            ExternalStepActionMapper = ExternalStepActionMapper.AddNext(name, actionFunction);
+            return ExternalStepActionMapper;
         }
 
         public MalleableWorkflowExternalStepAction AddExternalStepAction(string name, Func<MalleableWorkflowContext, string, MalleableWorkflowStepWithExternalQueue> actionFunction)

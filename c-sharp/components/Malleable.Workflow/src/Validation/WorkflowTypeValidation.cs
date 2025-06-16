@@ -15,16 +15,18 @@ public static class WorkflowTypeValidation
                 var converterName = step.ConverterOptions!.Converter!.ConverterName;
                 var converterType = ctx.Assemblies[moduleName].Types[converterName!];
                 var converterAttribute = MalleableConverterAttribute.FromType(converterType);
-                var convertFromModuleName = converterAttribute.GetConvertFromModuleName();
-                var convertFromClassName = converterAttribute.ConvertFromClassName;
+                var convertFromAttribute = MalleableConvertFromAttribute.FromType(converterType);
+                var convertToAttribute = MalleableConvertToAttribute.FromType(converterType);
+                var convertFromModuleName = convertFromAttribute.GetConvertFromModuleName();
+                var convertFromClassName = convertFromAttribute.ConvertFromClassName;
                 var fromType = ctx.Assemblies[convertFromModuleName].Types[convertFromClassName!];
                 if(fromType != lastType)
                 {
                     logger.LogError($"Type {lastType} is not valid for converter {converterName} which expects {fromType}");
                     return false;
                 }
-                var convertToModuleName = converterAttribute.GetConvertToModuleName();
-                var convertToClassName = converterAttribute.ConvertToClassName;
+                var convertToModuleName = convertToAttribute.GetConvertToModuleName();
+                var convertToClassName = convertToAttribute.ConvertToClassName;
                 var newType = ctx.Assemblies[convertToModuleName].Types[convertToClassName!];
                 ctx.StepInputTypes.Add(name, lastType);
                 ctx.StepOutputTypes.Add(name, newType);
@@ -35,6 +37,17 @@ public static class WorkflowTypeValidation
                         if(!ValidateStep(ctx, step.ConverterOptions.NextStep!, newType, logger))
                         {
                             logger.LogError($"Step {step.ConverterOptions.NextStep} is invalid");
+                            return false;
+                        }
+                    }
+                }
+                else if(step.Options != null && step.Options.NextStep != null)
+                {
+                    if (!ctx.StepInputTypes.ContainsKey(step.Options.NextStep!))
+                    {
+                        if(!ValidateStep(ctx, step.Options.NextStep!, newType, logger))
+                        {
+                            logger.LogError($"Step {step.Options.NextStep} is invalid");
                             return false;
                         }
                     }

@@ -8,6 +8,7 @@ using Kadense.Malleable.Workflow.Processing;
 using Kadense.Models.Malleable.Tests;
 using Microsoft.AspNetCore.Http;
 using Xunit.Abstractions;
+using Kadense.Models.Malleable;
 
 namespace Kadense.Malleable.Workflow.Tests {
     public class MalleableWorkflowTests : KadenseTest
@@ -72,6 +73,59 @@ namespace Kadense.Malleable.Workflow.Tests {
             //var convertedInstance = await actor.Ask(instance);
             //Assert.NotNull(convertedInstance);
             //Assert.IsType(malleableAssembly.Types["ConvertedClass"]!, convertedInstance);
+        }
+
+        [Fact]
+        public async Task TestAkkaInternalWorkflowAsync()
+        {
+            var mocker = new InternalMocker();
+            var factory = mocker.GetAssemblyFactory();
+            var workflow = mocker.GetWorkflow();
+            Assemblies = factory.GetAssemblies().Values.ToList();
+            var malleableAssembly = Assemblies.First();
+           
+            var results = new List<MalleableBase>();
+            var builder = System
+            .AddWorkflow(workflow, factory)
+            .WithDebugMode()
+            .WithExternalStepActions();
+
+            var server = new MalleableWorkflowApiMockServer();
+            var actorRef = builder.BuildCoordinatorActor();
+            server.Start(Output, builder.WorkflowContext, builder.GetApiActions(), async (HttpContext ctx) => {
+                var result = await ctx.Request.ReadFromJsonAsync(malleableAssembly.Types["MalleableTestClassConverted"]!);
+                results.Add((MalleableBase)result!);
+                ctx.Response.ContentType = "application/json";
+                ctx.Response.StatusCode = 200;
+                await ctx.Response.WriteAsJsonAsync(result, this.GetJsonSerializerOptions());
+                await ctx.Response.CompleteAsync();
+            });
+            var url = server.GetUrl();
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(url);
+            builder.WorkflowContext.Workflow.Spec!.Steps!["WriteApi"].Options!.Parameters["baseUrl"] = url;
+            
+            var instance = (MalleableBase)Activator.CreateInstance(malleableAssembly.Types["MalleableTestClass"])!;
+            instance.GetType().GetProperty("TestString")!.SetValue(instance, "test1");
+
+
+            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                RequestUri = new Uri($"{url}/api/namespaces/test-namespace/test-workflow/TestApi"),
+                Method = HttpMethod.Post,
+                Content = JsonContent.Create(instance, instance.GetType(), options: GetJsonSerializerOptions()) 
+            });
+
+            response.EnsureSuccessStatusCode();
+            await Task.Delay(1000);
+
+            Assert.NotEmpty(results);
+            Assert.Single(results);
+            var convertedInstance = results.First();
+            Assert.IsType(malleableAssembly.Types["MalleableTestClassConverted"]!, convertedInstance);
+            //var convertedInstance = await actor.Ask(instance);
+            //Assert.NotNull(convertedInstance);
+            //Assert.IsType(malleableAssembly.Types["MalleableTestClassConverted"]!, convertedInstance);
         }
 
         protected MalleablePolymorphicTypeResolver? TypeResolver { get; set; }

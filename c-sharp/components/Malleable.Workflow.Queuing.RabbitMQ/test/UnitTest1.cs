@@ -1,19 +1,16 @@
-using System.Net.Http.Json;
 using Akka.Actor;
-using Kadense.Malleable.Reflection;
-using Kadense.Malleable.Reflection.Tests;
-using Kadense.Malleable.Workflow.Extensions;
-using Kadense.Malleable.Workflow.Processing;
-using Kadense.Malleable.Workflow.Tests;
-using Kadense.Models.Malleable.Tests;
-using Microsoft.AspNetCore.Http;
 using Xunit.Abstractions;
-using RabbitMQ.Client;
-using Kadense.Malleable.Workflow.RabbitMQ.Extensions;
+using Kadense.Models.Malleable.Tests;
+using Kadense.Malleable.Reflection;
 using Kadense.Models.Malleable;
+using RabbitMQ.Client;
+using Kadense.Malleable.Workflow.Extensions;
+using Kadense.Malleable.Workflow.Tests;
+using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 
-namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
+namespace Kadense.Malleable.Workflow.Queuing.RabbitMQ.Tests {
     public class MalleableWorkflowRMQTests : KadenseTest
     {
         public MalleableWorkflowRMQTests(ITestOutputHelper output) : base(output)
@@ -52,10 +49,11 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
             var results = new List<MalleableBase>();
             var builder = System
             .AddWorkflow(workflow, malleableAssemblyFactory.GetAssemblies())
-            .AddRabbitMQWriter()
+            .AddEnqueueProvider(new RabbitMQEnqueueProviderOptions())
+            .AddEnqueueAction()
             .WithDebugMode()
             .Validate()
-            .AddRMQConnection(rabbitMqConnection)
+            .AddRabbitMQConnection(new RabbitMQConnectionOptions())
             .WithExternalStepActions();
             var server = new MalleableWorkflowApiMockServer();
             var actorRef = builder.BuildCoordinatorActor();
@@ -92,7 +90,7 @@ namespace Kadense.Malleable.Workflow.RabbitMQ.Tests {
             Assert.IsType(malleableAssembly.Types["ConvertedClass"]!, convertedInstance);
             Assert.Contains("TestStep", builder.WorkflowContext.ExternalSteps);
             Assert.Contains("TestStep", builder.WorkflowContext.Destinations);
-            Assert.IsAssignableFrom<MalleableWorkflowRMQConnection>(builder.WorkflowContext.Destinations["TestStep"]);
+            Assert.IsAssignableFrom<RabbitMQConnection>(builder.WorkflowContext.Destinations["TestStep"]);
             //var convertedInstance = await actor.Ask(instance);
             //Assert.NotNull(convertedInstance);
             //Assert.IsType(malleableAssembly.Types["ConvertedClass"]!, convertedInstance);

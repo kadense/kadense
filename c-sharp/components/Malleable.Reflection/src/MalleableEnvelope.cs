@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Kadense.Malleable.Reflection
 {
     [MalleableClass("Kadense.Malleable", "Reflection", "MalleableEnvelope")]
-    public class MalleableEnvelope<T> : MalleableClass
+    public class MalleableEnvelope<T> : MalleableBase
         where T : MalleableBase
     {
         public MalleableEnvelope()

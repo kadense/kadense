@@ -5,29 +5,31 @@ namespace Kadense.Malleable.Workflow.Connections
 {
     public abstract class MalleableWorkflowConnection
     {
+        public abstract void Initialize(MalleableWorkflowContext workflowContext, string stepName);
         public abstract void Send<TMessage>(TMessage message);
     }
 
     public abstract class MalleableWorkflowConnection<T> : MalleableWorkflowConnection
+        where T : MalleableWorkflowConnectionOptions
     {
-        public MalleableWorkflowConnection(IList<MalleableAssembly> assemblies, T context)
+        public MalleableWorkflowConnection(MalleableWorkflowContext workflowContext, T options)
         {
-            Assemblies = assemblies;
-            Context = context;
+            WorkflowContext = workflowContext;
+            Options = options;
         }
 
-        public T Context { get; }
+        public T Options { get; }
 
         protected MalleablePolymorphicTypeResolver? TypeResolver { get; set; }
-        public IList<MalleableAssembly> Assemblies { get; }
+        public MalleableWorkflowContext WorkflowContext { get; }
         public JsonSerializerOptions GetJsonSerializerOptions()
         {
-            if(TypeResolver == null)
+            if (TypeResolver == null)
             {
                 TypeResolver = new MalleablePolymorphicTypeResolver();
-                foreach (var assembly in Assemblies)
+                foreach (var assembly in WorkflowContext.Assemblies)
                 {
-                    TypeResolver.MalleableAssembly.Add(assembly);
+                    TypeResolver.MalleableAssembly.Add(assembly.Value);
                 }
             }
             var options = new JsonSerializerOptions

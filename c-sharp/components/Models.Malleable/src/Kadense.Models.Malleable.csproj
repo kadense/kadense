@@ -26,4 +26,9 @@
     <Using Include="Kadense.Models.Kubernetes" />
     <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.2" />
+  </ItemGroup>
+
 </Project>

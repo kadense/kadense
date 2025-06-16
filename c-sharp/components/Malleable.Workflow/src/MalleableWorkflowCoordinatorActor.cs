@@ -29,7 +29,7 @@ namespace Kadense.Malleable.Workflow
                         throw new InvalidOperationException($"Action function for step {step.Key} returned null.");
                     
                     var actor = Context.ActorOf(props, step.Key);
-                    this.WorkflowContext.Destinations.Add(step.Key, new ActorConnection(WorkflowContext.Assemblies.Values.ToList(), actor));
+                    this.WorkflowContext.Destinations.Add(step.Key, new ActorConnection(WorkflowContext, new ActorConnectionOptions(actor)));
                 }
             }
         }

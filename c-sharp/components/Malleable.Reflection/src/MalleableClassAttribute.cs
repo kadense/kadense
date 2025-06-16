@@ -28,5 +28,14 @@ namespace Kadense.Malleable.Reflection
             return FromType(type);
         }
 
+        public string GetQualifiedModuleName()
+        {
+            return $"{ModuleNamespace}:{ModuleName}";
+        }
+
+        public string GetQualifiedClassName()
+        {
+            return $"{GetQualifiedModuleName()}:{ClassName}";
+        }
     }
 }

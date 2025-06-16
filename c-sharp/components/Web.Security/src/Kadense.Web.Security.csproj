@@ -17,9 +17,4 @@
   <ItemGroup>
 	  <None Include="../README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="OpenIddict.AspNetCore" Version="6.3.0" />
-    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.3.0" />
-  </ItemGroup>
 </Project>

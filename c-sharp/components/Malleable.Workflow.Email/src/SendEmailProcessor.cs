@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Kadense.Malleable.Workflow.Email
 {
+    [MalleableWorkflowProcessor("SendEmail", typeof(SendEmailProcessor<,>))]
     public class SendEmailProcessor<TIn, TOut> : MalleableWorkflowProcessor<TIn, TOut>
         where TIn : MalleableBase
         where TOut : MalleableBase
@@ -14,8 +15,6 @@ namespace Kadense.Malleable.Workflow.Email
         public SendEmailProcessor(MalleableWorkflowContext context, string stepName) : base(context, stepName)
         {
             var step = context.Workflow.Spec!.Steps![stepName];
-            if (step.Action != "SendEmail")
-                throw new InvalidOperationException($"Invalid action for SendEmailProcessor. Expected 'SendEmail', but got '{step.Action}'.");
 
             if (!step.Options!.Parameters.TryGetValue("Provider", out string? provider))
                 provider = "DefaultSendEmailProvider";

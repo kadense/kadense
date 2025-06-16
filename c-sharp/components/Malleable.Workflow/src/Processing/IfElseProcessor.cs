@@ -8,17 +8,34 @@ using Kadense.Malleable.Reflection;
 
 namespace Kadense.Malleable.Workflow.Processing
 {
+    [AttributeUsage(AttributeTargets.Class)]
+    public class IfElseProcessorAttribute : MalleableWorkflowProcessorAttribute
+    {
+        public IfElseProcessorAttribute(string stepName) : base(stepName, typeof(IfElseProcessor<>))
+        {
+            // nothing to do
+        }
+
+        public override Type CreateType(MalleableWorkflowContext ctx, string stepName)
+        {
+            var inputType = ctx.StepInputTypes[stepName];
+                
+            var processorType = BaseType.MakeGenericType(new Type[] { inputType }); 
+            
+            return processorType;
+        }
+    }
+
+    [IfElseProcessor("IfElse")]
     public class IfElseProcessor<T> : MalleableWorkflowProcessor<T, T>
         where T : MalleableBase
     {
         public IfElseProcessor(MalleableWorkflowContext context, string stepName) : base(context, stepName)
         {
             var step = context.Workflow.Spec!.Steps![stepName];
-            if(step.Action != "IfElse")
-                throw new InvalidOperationException($"Invalid action for IfElseProcessor. Expected 'IfElse', but got '{step.Action}'.");
 
             ifElseExpressions = new List<Func<T, bool>>();
-            foreach(var condition in step.IfElseOptions!.Expressions)
+            foreach (var condition in step.IfElseOptions!.Expressions)
             {
                 var expression = condition.Expression;
                 if (string.IsNullOrWhiteSpace(expression))
@@ -29,7 +46,7 @@ namespace Kadense.Malleable.Workflow.Processing
             }
         }
 
-        List<Func<T, bool>> ifElseExpressions { get; } 
+        List<Func<T, bool>> ifElseExpressions { get; }
 
 
 

@@ -21,9 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Kadense.Malleable.Workflow.RabbitMQ.csproj" />
+    <ProjectReference Include="..\src\Kadense.Malleable.Workflow.Queuing.csproj" />
     <ProjectReference Include="..\..\..\components\Testing\src\Kadense.Testing.csproj" />
-    <ProjectReference Include="..\..\Malleable.Workflow\test\Kadense.Malleable.Workflow.Tests.csproj" />
   </ItemGroup>
 
 </Project>

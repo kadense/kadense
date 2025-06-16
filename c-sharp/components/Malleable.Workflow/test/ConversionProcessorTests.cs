@@ -1,6 +1,7 @@
 using Kadense.Malleable.Reflection;
 using Kadense.Malleable.Reflection.Tests;
 using Kadense.Malleable.Workflow.Processing;
+using Kadense.Models.Malleable;
 using Kadense.Models.Malleable.Tests;
 
 namespace Kadense.Malleable.Workflow.Tests {

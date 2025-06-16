@@ -26,8 +26,4 @@
     <Using Include="Kadense.Models.Malleable" />
     <Using Include="System.Reflection" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.2" />
-  </ItemGroup>
 </Project>

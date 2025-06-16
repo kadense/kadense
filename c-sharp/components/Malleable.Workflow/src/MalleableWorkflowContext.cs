@@ -33,10 +33,11 @@ namespace Kadense.Malleable.Workflow
         public Dictionary<string, MalleableWorkflowProvider> Providers { get; } = new Dictionary<string, MalleableWorkflowProvider>();
 
         public void Send<TMessage>(string destination, TMessage message)
+            where TMessage : MalleableBase
         {
             if (Destinations.TryGetValue(destination, out var connection))
             {
-                connection.Send(message);
+                connection.Send<TMessage>(message);
             }
             else
             {

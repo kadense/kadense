@@ -6,6 +6,41 @@ using Kadense.Logging;
 
 namespace Kadense.Malleable.Workflow.Processing
 {
+    [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+    public class MalleableWorkflowProcessorAttribute : Attribute
+    {
+        public MalleableWorkflowProcessorAttribute(string actionName, Type baseType)
+        {
+            ActionName = actionName;
+            BaseType = baseType;
+        }
+
+        public Type BaseType { get; }
+
+        public string ActionName { get; }
+
+        public virtual Type CreateType(MalleableWorkflowContext ctx, string stepName)
+        {
+            var step = ctx.Workflow.Spec!.Steps![stepName];
+            var inputType = ctx.StepInputTypes[stepName];
+            Type? outputType = null;
+            if(step.Options != null)
+            {
+                if(step.Options.OutputType != null)
+                {
+                    var outputTypeName = step.Options.OutputType.GetQualifiedModuleName();
+                    outputType = ctx.Assemblies[outputTypeName].Types[step.Options.OutputType.ClassName!];
+                }
+            }
+            if (outputType == null)
+                outputType = inputType;
+            
+            var processorType = BaseType.MakeGenericType(new Type[] { inputType, outputType }); 
+            
+            return processorType;
+        }
+    }
+    
     public abstract class MalleableWorkflowProcessor
     {
         public abstract (string?, MalleableBase) Process(MalleableBase message);

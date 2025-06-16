@@ -20,6 +20,47 @@ namespace Kadense.Malleable.Reflection
 
         protected IDictionary<string, Type> ExpressionParameters { get; }
 
+        public MalleableAssemblyFactory WithType<T>()
+            where T : MalleableBase
+        {
+            var attribute = MalleableClassAttribute.FromType<T>();
+            if (!Assemblies.ContainsKey(attribute.GetQualifiedModuleName()))
+            {
+                var module = new MalleableAssembly(attribute.GetQualifiedModuleName());
+                Assemblies.Add(attribute.GetQualifiedModuleName(), module);
+            }
+
+            var assembly = Assemblies[attribute.GetQualifiedModuleName()];
+            if (assembly.Types.ContainsKey(attribute.ClassName))
+                throw new ArgumentException($"Type {attribute.ClassName} already exists in assembly {assembly.Name}");
+
+            var type = typeof(T);
+            assembly.AddType(attribute.ClassName, type);
+
+            return this;
+        }
+
+        
+        public MalleableAssemblyFactory WithConverterType<T>()
+            where T : MalleableConverterBase
+        {
+            var attribute = MalleableConverterAttribute.FromType<T>();
+            if (!Assemblies.ContainsKey(attribute.GetModuleName()))
+            {
+                var module = new MalleableAssembly(attribute.GetModuleName());
+                Assemblies.Add(attribute.GetModuleName(), module);
+            }
+
+            var assembly = Assemblies[attribute.GetModuleName()];
+            if (assembly.Types.ContainsKey(attribute.ConverterName))
+                throw new ArgumentException($"Type {attribute.ConverterName} already exists in assembly {assembly.Name}");
+
+            var type = typeof(T);
+            assembly.AddType(attribute.ConverterName, type);
+
+            return this;
+        }
+
         public MalleableAssemblyFactory WithExpressionParameter<T>(string name)
         {
             ExpressionParameters.Add(name, typeof(T));
@@ -123,8 +164,20 @@ namespace Kadense.Malleable.Reflection
             var typeBuilder = moduleBuilder.DefineType(name, TypeAttributes.Public, parentType);
             
             var customAttributeBuilder = new CustomAttributeBuilder(
-                typeof(MalleableConverterAttribute).GetConstructor(new[] { typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string) })!,
-                new object[] { moduleNamespace, moduleName, name, convertFromModuleNamespace, convertFromModuleName, convertFromClassName, convertToModuleNamespace, convertToModuleName, convertToClassName }
+                typeof(MalleableConverterAttribute).GetConstructor(new[] { typeof(string), typeof(string), typeof(string) })!,
+                new object[] { moduleNamespace, moduleName, name }
+            );
+            typeBuilder.SetCustomAttribute(customAttributeBuilder);
+
+            customAttributeBuilder = new CustomAttributeBuilder(
+                typeof(MalleableConvertFromAttribute).GetConstructor(new[] { typeof(string), typeof(string), typeof(string) })!,
+                new object[] { convertFromModuleNamespace, convertFromModuleName, convertFromClassName }
+            );
+            typeBuilder.SetCustomAttribute(customAttributeBuilder);
+
+            customAttributeBuilder = new CustomAttributeBuilder(
+                typeof(MalleableConvertToAttribute).GetConstructor(new[] { typeof(string), typeof(string), typeof(string) })!,
+                new object[] {  convertToModuleNamespace, convertToModuleName, convertToClassName }
             );
             typeBuilder.SetCustomAttribute(customAttributeBuilder);
 

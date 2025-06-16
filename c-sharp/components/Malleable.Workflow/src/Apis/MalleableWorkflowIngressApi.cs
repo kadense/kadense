@@ -3,6 +3,8 @@ using Kadense.Malleable.API;
 using Kadense.Malleable.Reflection;
 using Kadense.Malleable.Workflow.Connections;
 using Microsoft.AspNetCore.Http;
+using Kadense.Models.Malleable;
+using Kadense.Models.Malleable;
 using Microsoft.AspNetCore.Routing;
 
 namespace Kadense.Malleable.Workflow.Apis

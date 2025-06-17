@@ -19,4 +19,6 @@ jobs:
         path: ${{ github.workspace }}
 
     - name: Push generated package to nuget.org
-      run: dotnet nuget push *.nupkg -s ${{ github.workspace }} --skip-duplicate --no-symbols true -k "${{secrets.NUGET_API}}"
+      run: 
+        chmod -R 0777 ${{ github.workspace }} && \
+        dotnet nuget push *.nupkg -s ${{ github.workspace }} --skip-duplicate --no-symbols true -k "${{secrets.NUGET_API}}"

@@ -11,10 +11,12 @@
     <Company>Kadense Ltd</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
 	  <None Include="../README.md" Pack="true" PackagePath="\" />
+	  <None Include="../../../../LICENSE.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>

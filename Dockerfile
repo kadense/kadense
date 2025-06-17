@@ -8,6 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_VERSION} AS builder
 ARG KADENSE_VERSION
 ARG KADENSE_VERSION_SUFFIX
 ARG DOTNET_SDK_VERSION
+COPY ./LICENSE.md /workspaces/kadense/LICENSE.md
 COPY ./c-sharp /workspaces/kadense/c-sharp
 WORKDIR /workspaces/kadense/c-sharp
 RUN dotnet build
@@ -17,9 +18,16 @@ RUN dotnet test
 RUN dotnet publish -c Release /p:Version=${KADENSE_VERSION}${KADENSE_VERSION_SUFFIX} /p:AssemblyVersion=${KADENSE_VERSION}
 RUN mkdir -p /outputs/crds && \
     dotnet /workspaces/kadense/c-sharp/cli/CustomResourceDefinition.Generator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/Kadense.CustomResourceDefinition.Generator.dll /outputs/crds
+RUN mkdir -p /outputs/nuget && \
+    dotnet pack -o /outputs/nuget --version-suffix ${KADENSE_VERSION}${KADENSE_VERSION_SUFFIX} --no-build --no-restore /p:Version=${KADENSE_VERSION}${KADENSE_VERSION_SUFFIX} /p:AssemblyVersion=${KADENSE_VERSION}
 
 FROM scratch AS crds-artifact
 COPY --from=builder "/outputs/crds" "/outputs"
+
+FROM scratch AS nuget-artifact
+COPY --from=builder "/outputs/nuget" "/outputs"
+
+
 
 FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_SDK_VERSION} AS jupyternetes-pods-operator
 ARG DOTNET_SDK_VERSION

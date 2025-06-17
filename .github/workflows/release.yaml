@@ -64,6 +64,14 @@ jobs:
     - get-version
     - setup
     - container-images
+  
+  publish-to-nuget:
+    uses: kadense/kadense/.github/workflows/publish-nuget.yaml@main
+    secrets: inherit
+    needs: 
+    - get-version
+    - setup
+    - container-images
 
   publish-ghp:
     uses: kadense/kadense/.github/workflows/publish-ghp.yaml@main

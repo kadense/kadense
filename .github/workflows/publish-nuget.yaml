@@ -1,0 +1,29 @@
+on:
+    workflow_call:
+      inputs: {}
+
+jobs:
+  publish-to-nuget:
+    name: >-
+      Publish Packages to nuget.org
+    runs-on: ubuntu-latest
+    environment:
+      name: nuget
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        name: nuget-artifact-linux-amd64 
+        path: ${GITHUB_WORKSPACE}
+
+    - name: Setup .NET Core @ Latest
+      uses: actions/setup-dotnet@v1
+      with:
+        source-url: https://nuget.pkg.github.com/kadense/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.NUGET_API}}  
+
+    - name: Push generated package to GitHub registry
+      run: dotnet nuget push ${GITHUB_WORKSPACE}/*.nupkg --skip-duplicate --no-symbols true

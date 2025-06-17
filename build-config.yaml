@@ -6,6 +6,7 @@ images:
   - jupyternetes-hub
   - jupyternetes-podstatus-operator
   - docs-artifact
+  - nuget-artifact
   
 platforms:
   - amd64

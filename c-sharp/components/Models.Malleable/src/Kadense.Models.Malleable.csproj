@@ -12,10 +12,12 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <RootNamespace>Kadense.Models.Malleable</RootNamespace>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
 	  <None Include="../README.md" Pack="true" PackagePath="\" />
+	  <None Include="../../../../LICENSE.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>

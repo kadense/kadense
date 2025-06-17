@@ -16,7 +16,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: nuget-artifact-linux-amd64 
-        path: ./
+        path: ${{ github.workspace }}
 
     - name: Push generated package to nuget.org
-      run: dotnet nuget push *.nupkg -s ./ --skip-duplicate --no-symbols true -k "${{secrets.NUGET_API}}"
+      run: dotnet nuget push *.nupkg -s ${{ github.workspace }} --skip-duplicate --no-symbols true -k "${{secrets.NUGET_API}}"

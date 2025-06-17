@@ -11,15 +11,14 @@ ARG DOTNET_SDK_VERSION
 COPY ./LICENSE.md /workspaces/kadense/LICENSE.md
 COPY ./c-sharp /workspaces/kadense/c-sharp
 WORKDIR /workspaces/kadense/c-sharp
-RUN dotnet build
+RUN mkdir -p /outputs/nuget && \
+    dotnet build -c Release /p:Version=${KADENSE_VERSION}${KADENSE_VERSION_SUFFIX} /p:AssemblyVersion=${KADENSE_VERSION} /p:PackageOutputPath=/outputs/nuget
 RUN mkdir -p /root/.kube && \
     touch /root/.kube/config
 RUN dotnet test 
 RUN dotnet publish -c Release /p:Version=${KADENSE_VERSION}${KADENSE_VERSION_SUFFIX} /p:AssemblyVersion=${KADENSE_VERSION}
 RUN mkdir -p /outputs/crds && \
     dotnet /workspaces/kadense/c-sharp/cli/CustomResourceDefinition.Generator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/Kadense.CustomResourceDefinition.Generator.dll /outputs/crds
-RUN mkdir -p /outputs/nuget && \
-    dotnet pack -o /outputs/nuget --version-suffix ${KADENSE_VERSION}${KADENSE_VERSION_SUFFIX} --no-build --no-restore /p:Version=${KADENSE_VERSION}${KADENSE_VERSION_SUFFIX} /p:AssemblyVersion=${KADENSE_VERSION}
 
 FROM scratch AS crds-artifact
 COPY --from=builder "/outputs/crds" "/outputs"

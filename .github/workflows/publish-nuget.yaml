@@ -18,12 +18,5 @@ jobs:
         name: nuget-artifact-linux-amd64 
         path: ./
 
-    - name: Setup .NET Core @ Latest
-      uses: actions/setup-dotnet@v1
-      with:
-        source-url: https://nuget.pkg.github.com/kadense/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.NUGET_API}}  
-
-    - name: Push generated package to GitHub registry
+    - name: Push generated package to nuget.org
       run: dotnet nuget push ./*.nupkg --skip-duplicate --no-symbols true -k "${{secrets.NUGET_API}}"

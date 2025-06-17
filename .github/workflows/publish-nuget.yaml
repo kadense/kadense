@@ -16,7 +16,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: nuget-artifact-linux-amd64 
-        path: ${GITHUB_WORKSPACE}
+        path: ./
 
     - name: Setup .NET Core @ Latest
       uses: actions/setup-dotnet@v1
@@ -26,4 +26,4 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.NUGET_API}}  
 
     - name: Push generated package to GitHub registry
-      run: dotnet nuget push ${GITHUB_WORKSPACE}/*.nupkg --skip-duplicate --no-symbols true
+      run: dotnet nuget push ./*.nupkg --skip-duplicate --no-symbols true

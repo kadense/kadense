@@ -1,10 +1,5 @@
 images:
   - crds-artifact
-  - jupyternetes-pods-operator
-  - jupyternetes-pvcs-operator
-  - python-libraries-artifact
-  - jupyternetes-hub
-  - jupyternetes-podstatus-operator
   - docs-artifact
   - nuget-artifact
   
@@ -12,6 +7,4 @@ platforms:
   - amd64
   #- arm64
 
-helm_charts:
-  - kadense
-  - kadense-crds
+helm_charts: []

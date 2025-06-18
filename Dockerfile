@@ -26,66 +26,6 @@ COPY --from=builder "/outputs/crds" "/outputs"
 FROM scratch AS nuget-artifact
 COPY --from=builder "/outputs/nuget" "/outputs"
 
-
-
-FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_SDK_VERSION} AS jupyternetes-pods-operator
-ARG DOTNET_SDK_VERSION
-COPY --from=builder "/workspaces/kadense/c-sharp/operators/Jupyternetes.Pods.Operator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/" "/app"
-WORKDIR /app
-ENTRYPOINT ["dotnet", "Kadense.Jupyternetes.Pods.Operator.dll"]
-USER 999
-
-FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_SDK_VERSION} AS jupyternetes-podstatus-operator
-ARG DOTNET_SDK_VERSION
-COPY --from=builder "/workspaces/kadense/c-sharp/operators/Jupyternetes.PodStatus.Operator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/" "/app"
-WORKDIR /app
-ENTRYPOINT ["dotnet", "Kadense.Jupyternetes.PodStatus.Operator.dll"]
-USER 999
-
-FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_SDK_VERSION} AS jupyternetes-pvcs-operator
-ARG DOTNET_SDK_VERSION
-COPY --from=builder "/workspaces/kadense/c-sharp/operators/Jupyternetes.Pvcs.Operator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/" "/app"
-WORKDIR /app
-ENTRYPOINT ["dotnet", "Kadense.Jupyternetes.Pvcs.Operator.dll"]
-USER 999
-
-FROM python:${PYTHON_VERSION} AS python-libraries
-ARG KADENSE_VERSION
-RUN pip install --no-cache-dir --upgrade \
-    pip \ 
-    setuptools \
-    wheel \
-    build \
-    twine \
-    pytest \
-    pydantic \
-    kubernetes-asyncio \
-    pytz \
-    jupyterhub \
-    pytest-asyncio 
-
-COPY ./python /workspaces/kadense/python
-RUN export KADENSE_PY_VERSION="__version__ = \"${KADENSE_VERSION}\""; \
-    echo "KADENSE_PY_VERSION=${KADENSE_PY_VERSION}"; \
-    echo "${KADENSE_PY_VERSION}" > /workspaces/kadense/python/jupyternetes_models/jupyternetes_models/_version.py; \
-    echo "${KADENSE_PY_VERSION}" > /workspaces/kadense/python/jupyternetes_clients/jupyternetes_clients/_version.py; \
-    echo "${KADENSE_PY_VERSION}" > /workspaces/kadense/python/jupyternetes_spawner/jupyternetes_spawner/_version.py; \
-    mkdir -p /tmp/dist;
-
-WORKDIR /workspaces/kadense/python/jupyternetes_spawner
-RUN python -m pytest; 
-RUN python -m build; \
-    mv dist/* /tmp/dist
-
-FROM scratch AS python-libraries-artifact
-COPY --from=python-libraries /tmp/dist/ /outputs
-
-FROM ${JUPYTERHUB_BASE_IMAGE} AS jupyternetes-hub
-USER root
-COPY --from=python-libraries /workspaces/kadense/python/jupyternetes_spawner/ /src/jupyternetes-spawner
-RUN python -mpip install /src/jupyternetes-spawner
-USER jovyan
-
 FROM node:lts AS docs
 ARG KADENSE_VERSION
 ENV FORCE_COLOR=0

@@ -12,13 +12,18 @@ jobs:
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
     steps:
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
     - name: Download all the dists
       uses: actions/download-artifact@v4
       with:
         name: nuget-artifact-linux-amd64 
         path: ${{ github.workspace }}
 
-    - name: Push generated package to nuget.org
-      run: 
-        chmod -R 0777 ${{ github.workspace }} && \
-        dotnet nuget push *.nupkg -s ${{ github.workspace }} --skip-duplicate --no-symbols true -k "${{secrets.NUGET_API}}"
+    - name: Publish the package to nuget.org
+      run: dotnet nuget push ${{ github.workspace }}/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API }}

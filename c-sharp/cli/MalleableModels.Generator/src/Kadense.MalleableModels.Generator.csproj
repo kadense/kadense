@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\components\Models.Jupyternetes\src\Kadense.Models.Jupyternetes.csproj" />
     <ProjectReference Include="..\..\..\components\Client.Kubernetes\src\Kadense.Client.Kubernetes.csproj" />
     <ProjectReference Include="..\..\..\components\Models.Malleable\src\Kadense.Models.Malleable.csproj" />
     <ProjectReference Include="..\..\..\components\Malleable.Workflow.NHS\src\Kadense.Malleable.Workflow.NHS.csproj" />
@@ -22,7 +21,6 @@
 
 
   <ItemGroup>
-    <Using Include="Kadense.Models.Jupyternetes" />
     <Using Include="Kadense.Models.Malleable" />
     <Using Include="Kadense.Client.Kubernetes" />
     <Using Include="YamlDotNet.Serialization" />

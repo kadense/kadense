@@ -17,11 +17,6 @@ RUN mkdir -p /root/.kube && \
     touch /root/.kube/config
 RUN dotnet test 
 RUN dotnet publish -c Release /p:Version=${KADENSE_VERSION}${KADENSE_VERSION_SUFFIX} /p:AssemblyVersion=${KADENSE_VERSION}
-RUN mkdir -p /outputs/crds && \
-    dotnet /workspaces/kadense/c-sharp/cli/CustomResourceDefinition.Generator/src/bin/Release/net${DOTNET_SDK_VERSION}/publish/Kadense.CustomResourceDefinition.Generator.dll /outputs/crds
-
-FROM scratch AS crds-artifact
-COPY --from=builder "/outputs/crds" "/outputs"
 
 FROM scratch AS nuget-artifact
 COPY --from=builder "/outputs/nuget" "/outputs"

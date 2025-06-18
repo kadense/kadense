@@ -4,9 +4,21 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
-    <IsPackable>false</IsPackable>
+    <PackageId>Kadense.Malleable.Reflection.Tests</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Shaun Turner</Authors>
+    <Company>Kadense Ltd</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+	  <None Include="../README.md" Pack="true" PackagePath="\" />
+	  <None Include="../../../../LICENSE.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />

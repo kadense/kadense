@@ -15,16 +15,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <None Include="../README.md" Pack="true" PackagePath="\" />
+	  <None Include="../../../../LICENSE.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.15" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-	  <None Include="../README.md" Pack="true" PackagePath="\" />
-	  <None Include="../../../../LICENSE.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>

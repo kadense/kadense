@@ -9,6 +9,9 @@ permissions:
 
 jobs:
     publish:
+        environment:
+            name: github-pages
+            
         name: Publish Github Pages
         runs-on: ubuntu-latest
         steps:  

@@ -44,6 +44,15 @@ public class MalleableWorkflowApiFactory
         return stepFactory;
     }
 
+    public MalleableWorkflowApiFactory AddStep(string name)
+    {
+        if (Api.ApiType == "Ingress")
+        {
+            Api.IngressOptions!.NextStep = name;
+        }
+        return this;
+    }
+
 
     public MalleableWorkflowFactory EndApi()
     {

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Kadense.Malleable.Workflow
 {
-    public class MalleableWorkflowCoordinatorFactory 
+    public class MalleableWorkflowCoordinatorFactory
     {
 
         public MalleableWorkflowCoordinatorFactory(ActorSystem system, MalleableWorkflow workflow, IDictionary<string, MalleableAssembly> assemblies)
@@ -30,13 +30,13 @@ namespace Kadense.Malleable.Workflow
             Logger = logger;
         }
 
-        public ILogger Logger { get; } 
+        public ILogger Logger { get; }
         public ActorSystem System { get; }
-        protected MalleableWorkflowValidator ValidatorMapper { get; set; } 
-        protected MalleableWorkflowAction ActionMapper { get; set;}
-        protected MalleableWorkflowApiAction ApiActionMapper { get; set; } 
+        protected MalleableWorkflowValidator ValidatorMapper { get; set; }
+        protected MalleableWorkflowAction ActionMapper { get; set; }
+        protected MalleableWorkflowApiAction ApiActionMapper { get; set; }
         protected MalleableWorkflowExternalStepAction ExternalStepActionMapper { get; set; }
-        public MalleableWorkflow Workflow { get; } 
+        public MalleableWorkflow Workflow { get; }
         public MalleableWorkflowExternalStepAction GetExternalStepActions() => ExternalStepActionMapper.GetFirst();
         public MalleableWorkflowValidator GetValidators() => ValidatorMapper.GetFirst();
         public MalleableWorkflowAction GetActions() => ActionMapper.GetFirst();
@@ -131,7 +131,7 @@ namespace Kadense.Malleable.Workflow
             foreach (var step in WorkflowContext.Workflow.Spec!.Steps!)
             {
                 var executorType = step.Value.ExecutorType ?? "Akka.Net";
-                if(executorType != "Akka.Net")
+                if (executorType != "Akka.Net")
                 {
                     var action = ExternalStepActionMapper.Create(WorkflowContext, step.Key);
                     if (action != null)
@@ -148,6 +148,12 @@ namespace Kadense.Malleable.Workflow
         {
             var actorProps = Props.Create<MalleableWorkflowCoordinatorActor>(new object[] { WorkflowContext, GetActions(), GetValidators() });
             return System.ActorOf(actorProps, Workflow.Metadata.Name);
+        }
+
+        public MalleableWorkflowCoordinatorFactory WithAssembly(MalleableAssembly assembly)
+        {
+            WorkflowContext.WithAssembly(assembly);
+            return this;
         }
     }
 }

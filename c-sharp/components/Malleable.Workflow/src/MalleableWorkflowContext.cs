@@ -6,8 +6,12 @@ namespace Kadense.Malleable.Workflow
 {
     public class MalleableWorkflowContext
     {
-        public MalleableWorkflowContext(MalleableWorkflow workflow, IDictionary<string, MalleableAssembly> assemblies, bool debugMode)
+        public MalleableWorkflowContext(MalleableWorkflow workflow, IDictionary<string, MalleableAssembly>? assemblies = null, bool debugMode = false)
         {
+            if(assemblies == null)
+            {
+                assemblies = new Dictionary<string, MalleableAssembly>();
+            }
             Assemblies = assemblies;
             Workflow = workflow;
             Destinations = new Dictionary<string, MalleableWorkflowConnection>();
@@ -18,7 +22,7 @@ namespace Kadense.Malleable.Workflow
 
         public bool EnableMessageSigning { get; set; } = true;
 
-        public MalleableWorkflow Workflow { get; } 
+        public MalleableWorkflow Workflow { get; }
         public IDictionary<string, MalleableWorkflowConnection> Destinations { get; }
 
         public IDictionary<string, MalleableAssembly> Assemblies { get; }
@@ -49,7 +53,7 @@ namespace Kadense.Malleable.Workflow
 
         public JsonSerializerOptions GetJsonSerializerOptions()
         {
-            if(TypeResolver == null)
+            if (TypeResolver == null)
             {
                 TypeResolver = new MalleablePolymorphicTypeResolver();
                 foreach (var assembly in Assemblies)
@@ -65,7 +69,11 @@ namespace Kadense.Malleable.Workflow
 
             return options;
         }
-        
-        
+
+        public MalleableWorkflowContext WithAssembly(MalleableAssembly assembly)
+        {
+            Assemblies[assembly.Name] = assembly;
+            return this;
+        }
     }
 }

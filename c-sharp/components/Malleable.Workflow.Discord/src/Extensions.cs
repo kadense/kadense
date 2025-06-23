@@ -6,29 +6,30 @@ namespace Kadense.Malleable.Workflow.Discord
 {
     public static class Extensions
     {
-        public static MalleableWorkflowCoordinatorFactory AddDiscord(this MalleableWorkflowCoordinatorFactory factory, string namePrefix = "Discord", string urlPrefix = "/api/discord")
+        public static MalleableWorkflowCoordinatorFactory AddDiscord(this MalleableWorkflowCoordinatorFactory factory, DiscordCommandProvider provider, string discordCommandName = "DiscordCommand", string discordCommandProviderName = "DiscordCommandProvider")
         {
+            factory.WithWorkflowProvider(discordCommandProviderName, provider);
             factory.WorkflowContext.AddDiscord();
+            factory.AddAction(discordCommandName, typeof(DiscordCommandProcessor<,>));
             return factory;
         }
 
 
         public static MalleableWorkflowContext AddDiscord(this MalleableWorkflowContext ctx)
         {
-            ctx.WithAssembly(GetDiscordAssembly());
-            return ctx;
+            return ctx.WithAssembly(GetDiscordAssembly());
         }
 
         public static MalleableAssemblyFactory AddDiscord(this MalleableAssemblyFactory factory)
         {
-            factory
+            return factory
                 .WithType<DiscordInteraction>()
-                .WithType<DiscordInteractionResponse>();
-            return factory;
+                .WithType<DiscordInteractionResponse>()
+                .WithType<DiscordRequestAndResponse>();
         }
         
 
-        public static MalleableWorkflowApiFactory AddDiscordApi(this MalleableWorkflowFactory factory, string name = "Discord", string urlPrefix = "/api/discord")
+        public static MalleableWorkflowApiFactory AddDiscordApi(this MalleableWorkflowFactory factory, string name = "Discord")
         {
             return factory.AddApi(name)
                 .SetUnderlyingType<DiscordInteraction>(); 

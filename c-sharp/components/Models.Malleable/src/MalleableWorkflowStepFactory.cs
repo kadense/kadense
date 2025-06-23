@@ -35,6 +35,30 @@ public class MalleableWorkflowStepFactory<TReturn>
         return nextStep;
     }
 
+    
+    public MalleableWorkflowStepFactory<TReturn> SetOutputType(string @namespace, string moduleName, string className)
+    {
+        if(this.Step.Options == null)
+            this.Step.Options = new MalleableWorkflowStandardActionOptions();
+
+        this.Step.Options.OutputType = new MalleableTypeReference()
+        {
+            ClassName = className,
+            ModuleName = moduleName,
+            ModuleNamespace = @namespace
+        };
+        return this;
+    }
+
+    public MalleableWorkflowStepFactory<TReturn> SetOutputType(MalleableTypeReference typeReference)
+    {
+        if(this.Step.Options == null)
+            this.Step.Options = new MalleableWorkflowStandardActionOptions();
+
+        this.Step.Options.OutputType = typeReference;
+        return this;
+    }
+
     public MalleableWorkflowStepFactory<MalleableWorkflowStepFactory<TReturn>>? AddErrorStep(string name, string? action = null, Dictionary<string, string>? parameters = null)
     {
         Step.Options!.ErrorStep = name;

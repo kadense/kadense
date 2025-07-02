@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Kadense.Malleable.Workflow.Discord;
-using Kadense.Malleable.Workflow.Discord.Models;
+using Kadense.Models.Discord;
 using Kadense.Malleable.Workflow.Tests;
 using Kadense.Malleable.Workflow.Extensions;
 using Akka.Actor;

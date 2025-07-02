@@ -12,6 +12,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Models.Malleable\src\Kadense.Models.Malleable.csproj" />
     <ProjectReference Include="..\..\Malleable.Workflow\src\Kadense.Malleable.Workflow.csproj" />
+    <ProjectReference Include="..\..\Models.Discord\src\Kadense.Models.Discord.csproj" />
   </ItemGroup>
 
   <ItemGroup>

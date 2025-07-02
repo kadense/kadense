@@ -1,4 +1,4 @@
-﻿using Kadense.Malleable.Workflow.Discord.Models;
+﻿using Kadense.Models.Discord;
 using Kadense.Models.Malleable;
 
 namespace Kadense.Malleable.Workflow.Discord.Tests;

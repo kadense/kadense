@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Kadense.Malleable.Workflow.Discord.Models;
+using Kadense.Models.Discord;
 
 namespace Kadense.Malleable.Workflow.Discord.Tests {
     public class ModelsSerializationTests

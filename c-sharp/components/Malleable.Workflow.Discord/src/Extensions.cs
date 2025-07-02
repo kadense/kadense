@@ -1,6 +1,6 @@
 using Akka.Actor;
 using Kadense.Malleable.Reflection;
-using Kadense.Malleable.Workflow.Discord.Models;
+using Kadense.Models.Discord;
 
 namespace Kadense.Malleable.Workflow.Discord
 {

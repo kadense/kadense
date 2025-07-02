@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <PackageId>Kadense.Templates.Library</PackageId>
+    <PackageId>Kadense.Models.Discord</PackageId>
     <Version>1.0.0</Version>
     <Authors>Shaun Turner</Authors>
     <Company>Kadense Ltd</Company>
@@ -16,7 +16,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <None Include="../README.md" Pack="true" PackagePath="\"/>
-	  <None Include="../../../../LICENSE.md" Pack="true" PackagePath="\"/>
+	  <None Include="../README.md" Pack="true" PackagePath="\" />
+	  <None Include="../../../../LICENSE.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Models.Malleable\src\Kadense.Models.Malleable.csproj" />
+    <ProjectReference Include="..\..\Malleable.Reflection\src\Kadense.Malleable.Reflection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Kadense.Models.Malleable" />
   </ItemGroup>
 </Project>

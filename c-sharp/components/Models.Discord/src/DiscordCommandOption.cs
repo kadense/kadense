@@ -19,4 +19,7 @@ public class DiscordCommandOption : MalleableBase
 
     [JsonPropertyName("required")]
     public bool? Required { get; set; } = false;
+
+    [JsonPropertyName("choices")]
+    public List<DiscordCommandOptionChoice>? Choices { get; set; } = new List<DiscordCommandOptionChoice>();
 }

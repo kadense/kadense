@@ -19,8 +19,10 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > mic
     && mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg \
     && sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/debian/$(lsb_release -rs 2>/dev/null | cut -d'.' -f 1)/prod $(lsb_release -cs 2>/dev/null) main" > /etc/apt/sources.list.d/dotnetdev.list' \
     && apt-get update \
-    && apt-get install azure-functions-core-tools-4 -y
+    && apt-get install azure-functions-core-tools-4 -y \
+    && apt-get install nodejs npm -y
 
+RUN npm install -g azurite
 
 COPY ./install-rabbit-mq.sh /tmp/install-rabbit-mq.sh
 RUN /tmp/install-rabbit-mq.sh

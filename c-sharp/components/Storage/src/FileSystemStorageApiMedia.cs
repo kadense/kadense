@@ -30,7 +30,7 @@ public class FileSystemStorageApiMedia : StorageApiMedia
     {
         var fullPath = Path.Combine(BasePath, path, "index.json");
         var fileInfo = new FileInfo(fullPath);
-        Directory.CreateDirectory(fileInfo.Directory?.FullName!;
+        Directory.CreateDirectory(fileInfo.Directory?.FullName!);
         Logger.LogInformation($"Writing index to {fullPath}");
         using (var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write))
         {

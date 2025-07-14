@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Kadense.Models.Discord;
+using Kadense.Models.Discord.ResponseBuilders;
 
 namespace Kadense.Malleable.Workflow.Discord.Tests {
     public class ModelsSerializationTests
@@ -18,15 +19,13 @@ namespace Kadense.Malleable.Workflow.Discord.Tests {
         [Fact]
         public void TestInteractionResponse()
         {
-            var response = new DiscordInteractionResponse
-            {
-                Type = 4,
-                Data = new DiscordInteractionResponseData
-                {
-                    Tts = false,
-                    Content = "This is a test response",
-                }
-            };
+            var response = new DiscordInteractionResponseBuilder()
+                .WithResponseType(DiscordInteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE)
+                .WithData()
+                    .WithTTS(false)
+                    .WithContent("This is a test response")
+                .End()
+                .Build();
 
             string json = JsonSerializer.Serialize(response);
             string expected = KadenseTestUtils.GetEmbeddedResourceAsString("Kadense.Malleable.Workflow.Discord.Tests.Resources.interaction-response.json");

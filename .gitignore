@@ -7,3 +7,6 @@ c-sharp/cli/**/*-CRD.yaml
 c-sharp/cli/**/*-Model.yaml
 **.tar
 **/node_modules/
+AzuriteConfig
+**/*azurite**
+__*/

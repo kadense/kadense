@@ -22,6 +22,6 @@ public class DiscordInteractionResponseData : MalleableBase
     [JsonPropertyName("attachments")]
     public List<DiscordAttachment>? Attachments { get; set; }
 
-    // [JsonPropertyName("components")]
-    // public List<DiscordComponent>? Components { get; set; }   
+    [JsonPropertyName("components")]
+    public List<DiscordComponent>? Components { get; set; }   
 }

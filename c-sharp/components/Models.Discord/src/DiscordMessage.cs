@@ -88,8 +88,9 @@ public class DiscordMessage : MalleableBase
     [JsonPropertyName("thread")]
     public DiscordChannel? Thread { get; set; }
 
-    //[JsonPropertyName("components")]
-    //public List<int>? Components { get; set; }
+    [JsonPropertyName("components")]
+    [JsonConverter(typeof(DiscordComponentListConverter))]
+    public List<DiscordComponent>? Components { get; set; }
 
     [JsonPropertyName("sticker_items")]
     public List<DiscordStickerItem>? StickerItems { get; set; }

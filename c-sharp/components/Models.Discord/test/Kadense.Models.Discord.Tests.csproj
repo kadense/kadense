@@ -24,5 +24,11 @@
     <ProjectReference Include="..\src\Kadense.Models.Discord.csproj" />
     <ProjectReference Include="..\..\..\components\Testing\src\Kadense.Testing.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Content Remove="Resources/*.json" />
+    <EmbeddedResource Include="Resources/*.json" />
+  </ItemGroup>
+
 
 </Project>

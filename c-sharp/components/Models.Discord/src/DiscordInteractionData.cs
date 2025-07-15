@@ -5,6 +5,7 @@ namespace Kadense.Models.Discord;
 public class DiscordInteractionData : MalleableBase
 {
     [JsonPropertyName("id")]
+    [JsonConverter(typeof(NumberOrStringConverter))]
     public string? Id { get; set; }
     
     [JsonPropertyName("name")]

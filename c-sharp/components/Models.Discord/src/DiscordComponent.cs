@@ -19,8 +19,13 @@ namespace Kadense.Models.Discord;
 [JsonDerivedType(typeof(DiscordSeparatorComponent), typeDiscriminator: 14)]
 [JsonDerivedType(typeof(DiscordContainerComponent), typeDiscriminator: 17)]
 
-public abstract class DiscordComponent : MalleableBase
+public class DiscordComponent : MalleableBase
 {
+    public DiscordComponent()
+    {
+    
+    }
+
     [JsonPropertyName("id")]
     public int Id { get; set; }
 }
@@ -30,20 +35,31 @@ public abstract class DiscordComponent : MalleableBase
 [JsonDerivedType(typeof(DiscordThumbnailComponent), typeDiscriminator: 11)]
 public abstract class DiscordAccessoryComponent : DiscordComponent
 {
+    public DiscordAccessoryComponent() : base()
+    {
 
+    }
 }
 
 public class DiscordActionRowComponent : DiscordComponent
 {
+    public DiscordActionRowComponent() : base()
+    {
+    }
+
     [JsonPropertyName("components")]
+    [JsonConverter(typeof(DiscordComponentListConverter))]
     public List<DiscordComponent>? Components { get; set; }
 }
 
 public class DiscordButtonComponent : DiscordAccessoryComponent
 {
+    public DiscordButtonComponent() : base()
+    {
+    }
 
     [JsonPropertyName("style")]
-    public int Style { get; set; } = 1; // Primary by default
+    public int? Style { get; set; } = 1; // Primary by default
 
     [JsonPropertyName("label")]
     public string? Label { get; set; }
@@ -61,11 +77,15 @@ public class DiscordButtonComponent : DiscordAccessoryComponent
     public string? SkuId { get; set; }
 
     [JsonPropertyName("disabled")]
-    public bool Disabled { get; set; } = false;
+    public bool? Disabled { get; set; } = false;
 }
 
 public class DiscordStringSelectComponent : DiscordComponent
 {
+    public DiscordStringSelectComponent() : base()
+    {
+    }
+
     [JsonPropertyName("custom_id")]
     public string? CustomId { get; set; }
 
@@ -73,25 +93,29 @@ public class DiscordStringSelectComponent : DiscordComponent
     public string? Placeholder { get; set; }
 
     [JsonPropertyName("min_values")]
-    public int MinValues { get; set; } = 1;
+    public int? MinValues { get; set; } = 1;
 
     [JsonPropertyName("max_values")]
-    public int MaxValues { get; set; } = 1;
+    public int? MaxValues { get; set; } = 1;
 
     [JsonPropertyName("options")]
     public List<DiscordCommandOptionChoice>? Options { get; set; }
 
     [JsonPropertyName("disabled")]
-    public bool Disabled { get; set; } = false;
+    public bool? Disabled { get; set; } = false;
 }
 
 public class DiscordTextInputComponent : DiscordComponent
 {
+    public DiscordTextInputComponent() : base()
+    {
+    }
+
     [JsonPropertyName("custom_id")]
     public string? CustomId { get; set; }
 
     [JsonPropertyName("style")]
-    public int Style { get; set; } = 1; // Short by default
+    public int? Style { get; set; } = 1; // Short by default
 
     [JsonPropertyName("label")]
     public string? Label { get; set; }
@@ -103,17 +127,21 @@ public class DiscordTextInputComponent : DiscordComponent
     public string? Value { get; set; }
 
     [JsonPropertyName("min_length")]
-    public int MinLength { get; set; } = 0;
+    public int? MinLength { get; set; } = 0;
 
     [JsonPropertyName("max_length")]
-    public int MaxLength { get; set; } = 4000;
+    public int? MaxLength { get; set; } = 4000;
 
     [JsonPropertyName("required")]
-    public bool Required { get; set; } = true;
+    public bool? Required { get; set; } = true;
 }
 
 public class DiscordUserSelectComponent : DiscordComponent
 {
+    public DiscordUserSelectComponent() : base()
+    {
+    }
+
     [JsonPropertyName("custom_id")]
     public string? CustomId { get; set; }
 
@@ -121,17 +149,21 @@ public class DiscordUserSelectComponent : DiscordComponent
     public string? Placeholder { get; set; }
 
     [JsonPropertyName("min_values")]
-    public int MinValues { get; set; } = 0;
+    public int? MinValues { get; set; } = 0;
 
     [JsonPropertyName("max_values")]
-    public int MaxValues { get; set; } = 25;
+    public int? MaxValues { get; set; } = 25;
 
     [JsonPropertyName("disabled")]
-    public bool Disabled { get; set; } = false;
+    public bool? Disabled { get; set; } = false;
 }
 
 public class DiscordRoleSelectComponent : DiscordComponent
 {
+    public DiscordRoleSelectComponent() : base()
+    {
+    }
+
     [JsonPropertyName("custom_id")]
     public string? CustomId { get; set; }
 
@@ -139,17 +171,21 @@ public class DiscordRoleSelectComponent : DiscordComponent
     public string? Placeholder { get; set; }
 
     [JsonPropertyName("min_values")]
-    public int MinValues { get; set; } = 0;
+    public int? MinValues { get; set; } = 0;
 
     [JsonPropertyName("max_values")]
-    public int MaxValues { get; set; } = 25;
+    public int? MaxValues { get; set; } = 25;
 
     [JsonPropertyName("disabled")]
-    public bool Disabled { get; set; } = false;
+    public bool? Disabled { get; set; } = false;
 }
 
 public class DiscordMentionableSelectComponent : DiscordComponent
 {
+    public DiscordMentionableSelectComponent() : base()
+    {
+    }
+
     [JsonPropertyName("custom_id")]
     public string? CustomId { get; set; }
 
@@ -157,17 +193,21 @@ public class DiscordMentionableSelectComponent : DiscordComponent
     public string? Placeholder { get; set; }
 
     [JsonPropertyName("min_values")]
-    public int MinValues { get; set; } = 0;
+    public int? MinValues { get; set; } = 0;
 
     [JsonPropertyName("max_values")]
-    public int MaxValues { get; set; } = 25;
+    public int? MaxValues { get; set; } = 25;
 
     [JsonPropertyName("disabled")]
-    public bool Disabled { get; set; } = false;
+    public bool? Disabled { get; set; } = false;
 }
 
 public class DiscordChannelSelectComponent : DiscordComponent
 {
+    public DiscordChannelSelectComponent() : base()
+    {
+    }
+
     [JsonPropertyName("custom_id")]
     public string? CustomId { get; set; }
 
@@ -178,18 +218,23 @@ public class DiscordChannelSelectComponent : DiscordComponent
     public List<int>? ChannelTypes { get; set; }
 
     [JsonPropertyName("min_values")]
-    public int MinValues { get; set; } = 0;
+    public int? MinValues { get; set; } = 0;
 
     [JsonPropertyName("max_values")]
-    public int MaxValues { get; set; } = 25;
+    public int? MaxValues { get; set; } = 25;
 
     [JsonPropertyName("disabled")]
-    public bool Disabled { get; set; } = false;
+    public bool? Disabled { get; set; } = false;
 }
 
 public class DiscordSectionComponent : DiscordComponent
 {
+    public DiscordSectionComponent() : base()
+    {
+    }
+
     [JsonPropertyName("components")]
+    [JsonConverter(typeof(DiscordComponentListConverter))]
     public List<DiscordComponent>? Components { get; set; }
 
     [JsonPropertyName("accessory")]
@@ -198,12 +243,20 @@ public class DiscordSectionComponent : DiscordComponent
 
 public class DiscordTextDisplayComponent : DiscordComponent
 {
+    public DiscordTextDisplayComponent() : base()
+    {
+    }
+
     [JsonPropertyName("content")]
     public string? Content { get; set; }
 }
 
 public class DiscordThumbnailComponent : DiscordAccessoryComponent
 {
+    public DiscordThumbnailComponent() : base()
+    {
+    }
+
     [JsonPropertyName("url")]
     public string? Url { get; set; }
 
@@ -213,7 +266,7 @@ public class DiscordThumbnailComponent : DiscordAccessoryComponent
 }
 
 public class DiscordUnfurledMediaItem : MalleableBase
-{
+{   
     [JsonPropertyName("url")]
     public string? Url { get; set; }
 
@@ -235,6 +288,10 @@ public class DiscordUnfurledMediaItem : MalleableBase
 
 public class DiscordMediaGalleryComponent : DiscordComponent
 {
+    public DiscordMediaGalleryComponent() : base()
+    {
+    }
+
     [JsonPropertyName("items")]
     public List<DiscordMediaGalleryItem>? Items { get; set; }
 }
@@ -253,6 +310,10 @@ public class DiscordMediaGalleryItem : MalleableBase
 
 public class DiscordFileComponent : DiscordComponent
 {
+    public DiscordFileComponent() : base()
+    {
+    }
+
     [JsonPropertyName("file")]
     public DiscordUnfurledMediaItem? File { get; set; }
 
@@ -263,27 +324,36 @@ public class DiscordFileComponent : DiscordComponent
     public int? Size { get; set; }
 
     [JsonPropertyName("spoiler")]
-    public bool Spoiler { get; set; } = false;
+    public bool? Spoiler { get; set; } = false;
 
 }
 
 public class DiscordSeparatorComponent : DiscordComponent
 {
+    public DiscordSeparatorComponent() : base()
+    {
+    }
+
     [JsonPropertyName("divider")]
-    public bool Divider { get; set; } = true;
+    public bool? Divider { get; set; } = true;
 
     [JsonPropertyName("spacing")]
-    public int Spacing { get; set; } = 1; // Default spacing is
+    public int? Spacing { get; set; } = 1; // Default spacing is
 }
 
 public class DiscordContainerComponent : DiscordComponent
 {
+    public DiscordContainerComponent() : base()
+    {
+    }
+
     [JsonPropertyName("components")]
-    public List<DiscordComponent>? Components { get; set; }
+    [JsonConverter(typeof(DiscordComponentListConverter))]
+    public List<DiscordComponent>? Components { get; set; } = new List<DiscordComponent>();
 
     [JsonPropertyName("accent_color")]
     public int? AccentColor { get; set; }
 
     [JsonPropertyName("spoiler")]
-    public bool Spoiler { get; set; } = false;
+    public bool? Spoiler { get; set; } = false;
 }

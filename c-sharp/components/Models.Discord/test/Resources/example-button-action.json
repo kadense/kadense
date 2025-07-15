@@ -1,0 +1,182 @@
+{
+    "app_permissions": "562949953863680",
+    "application_id": "1383834653982462002",
+    "attachment_size_limit": 10485760,
+    "authorizing_integration_owners": {
+        "0": "1252273878433267784"
+    },
+    "channel": {
+        "flags": 0,
+        "guild_id": "1252273878433267784",
+        "id": "1256186568172113930",
+        "last_message_id": "1394667975650312233",
+        "name": "tom-servo",
+        "nsfw": false,
+        "parent_id": "1252273878433267785",
+        "permissions": "4503599627370495",
+        "position": 11,
+        "rate_limit_per_user": 0,
+        "topic": null,
+        "type": 0
+    },
+    "channel_id": "1256186568172113930",
+    "context": 0,
+    "data": {
+        "component_type": 2,
+        "custom_id": "regenerate_world",
+        "id": 4
+    },
+    "entitlement_sku_ids": [],
+    "entitlements": [],
+    "guild": {
+        "features": [],
+        "id": "1252273878433267784",
+        "locale": "en-US"
+    },
+    "guild_id": "1252273878433267784",
+    "guild_locale": "en-US",
+    "id": "1394672496837660742",
+    "locale": "en-GB",
+    "member": {
+        "avatar": null,
+        "banner": null,
+        "communication_disabled_until": null,
+        "deaf": false,
+        "flags": 0,
+        "joined_at": "2024-06-17T14:49:18.757000+00:00",
+        "mute": false,
+        "nick": "Shaun",
+        "pending": false,
+        "permissions": "4503599627370495",
+        "premium_since": null,
+        "roles": [],
+        "unusual_dm_activity_until": null,
+        "user": {
+            "avatar": "290640f9947b869999218031137714ff",
+            "avatar_decoration_data": null,
+            "clan": null,
+            "collectibles": null,
+            "discriminator": "0",
+            "display_name_styles": null,
+            "global_name": "deus.ex.0451",
+            "id": "1130524771059249203",
+            "primary_guild": null,
+            "public_flags": 0,
+            "username": "wearenotinvisible"
+        }
+    },
+    "message": {
+        "application_id": "1383834653982462002",
+        "attachments": [],
+        "author": {
+            "avatar": "d1fb0a94bd9e507307179e8835231ae8",
+            "avatar_decoration_data": null,
+            "bot": true,
+            "clan": null,
+            "collectibles": null,
+            "discriminator": "3581",
+            "display_name_styles": null,
+            "global_name": null,
+            "id": "1383834653982462002",
+            "primary_guild": null,
+            "public_flags": 524288,
+            "username": "Kadense-RPG"
+        },
+        "channel_id": "1256186568172113930",
+        "components": [
+            {
+                "accent_color": null,
+                "components": [
+                    {
+                        "content": "```\n |- State: Kinda magical\n |- Location: Frontier town\n |- Big Treasure: Wagon full of garbage\n |- Guarded by: Wizard and her familiars\n```",
+                        "id": 2,
+                        "type": 10
+                    },
+                    {
+                        "components": [
+                            {
+                                "custom_id": "regenerate_world",
+                                "emoji": {
+                                    "name": "🌍"
+                                },
+                                "id": 4,
+                                "label": "Regenerate World",
+                                "style": 1,
+                                "type": 2
+                            },
+                            {
+                                "custom_id": "generate_description",
+                                "id": 5,
+                                "label": "Create Description",
+                                "style": 1,
+                                "type": 2
+                            }
+                        ],
+                        "id": 3,
+                        "type": 1
+                    }
+                ],
+                "id": 1,
+                "spoiler": false,
+                "type": 17
+            }
+        ],
+        "content": "",
+        "edited_timestamp": null,
+        "embeds": [],
+        "flags": 32768,
+        "id": "1394667975650312233",
+        "interaction": {
+            "id": "1394667973427462145",
+            "name": "world",
+            "type": 2,
+            "user": {
+                "avatar": "290640f9947b869999218031137714ff",
+                "avatar_decoration_data": null,
+                "clan": null,
+                "collectibles": null,
+                "discriminator": "0",
+                "display_name_styles": null,
+                "global_name": "deus.ex.0451",
+                "id": "1130524771059249203",
+                "primary_guild": null,
+                "public_flags": 0,
+                "username": "wearenotinvisible"
+            }
+        },
+        "interaction_metadata": {
+            "authorizing_integration_owners": {
+                "0": "1252273878433267784"
+            },
+            "command_type": 1,
+            "id": "1394667973427462145",
+            "name": "world",
+            "type": 2,
+            "user": {
+                "avatar": "290640f9947b869999218031137714ff",
+                "avatar_decoration_data": null,
+                "clan": null,
+                "collectibles": null,
+                "discriminator": "0",
+                "display_name_styles": null,
+                "global_name": "deus.ex.0451",
+                "id": "1130524771059249203",
+                "primary_guild": null,
+                "public_flags": 0,
+                "username": "wearenotinvisible"
+            }
+        },
+        "mention_everyone": false,
+        "mention_roles": [],
+        "mentions": [],
+        "pinned": false,
+        "position": 0,
+        "timestamp": "2025-07-15T13:12:37.073000+00:00",
+        "tts": false,
+        "type": 20,
+        "webhook_id": "1383834653982462002"
+    },
+    "token": "redacted",
+    "type": 3,
+    "version": 1
+}

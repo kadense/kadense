@@ -14,7 +14,7 @@ public class DiscordInteractionMetadata : MalleableBase
     public DiscordUser? User { get; set; }
 
     [JsonPropertyName("authorizing_integration_owners")]
-    public Dictionary<int, int>? AuthorizingIntegrationOwners { get; set; }
+    public Dictionary<string, string>? AuthorizingIntegrationOwners { get; set; }
 
     [JsonPropertyName("original_response_message_id")]
     public string? OriginalResponseMessageId { get; set; }

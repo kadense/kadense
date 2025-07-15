@@ -7,6 +7,10 @@ public class DiscordInteractionData : MalleableBase
     [JsonPropertyName("id")]
     [JsonConverter(typeof(NumberOrStringConverter))]
     public string? Id { get; set; }
+
+    
+    [JsonPropertyName("custom_id")]
+    public string? CustomId { get; set; }
     
     [JsonPropertyName("name")]
     public string? Name { get; set; }

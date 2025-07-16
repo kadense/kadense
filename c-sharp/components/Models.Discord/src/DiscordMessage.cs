@@ -90,7 +90,7 @@ public class DiscordMessage : MalleableBase
 
     [JsonPropertyName("components")]
     [JsonConverter(typeof(DiscordComponentListConverter))]
-    public List<DiscordComponent>? Components { get; set; }
+    public DiscordComponentList? Components { get; set; }
 
     [JsonPropertyName("sticker_items")]
     public List<DiscordStickerItem>? StickerItems { get; set; }

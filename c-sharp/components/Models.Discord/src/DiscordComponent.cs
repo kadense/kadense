@@ -2,6 +2,43 @@ using System.Text.Json.Serialization;
 
 namespace Kadense.Models.Discord;
 
+public class DiscordComponentList : List<DiscordComponent>
+{
+    public T? GetByCustomId<T>(string customId)
+        where T : DiscordComponent, ICustomId
+    {
+        foreach (var component in this)
+        {
+            if (component is T discoveredComponent)
+            {
+                if (discoveredComponent.CustomId!.ToLowerInvariant() == customId.ToLowerInvariant())
+                {
+                    return discoveredComponent;
+                }
+            }
+            else if (component is DiscordContainerComponent containerComponent)
+            {
+                var result = containerComponent.Components!.GetByCustomId<T>(customId);
+                if (result != null)
+                    return result;
+            }
+            else if (component is DiscordActionRowComponent actionRowComponent)
+            {
+                var result = actionRowComponent.Components!.GetByCustomId<T>(customId);
+                if (result != null)
+                    return result;
+            }
+        }
+
+        return null;
+    }
+}
+
+public interface ICustomId
+{
+    public string? CustomId { get; set; }
+}
+
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(DiscordActionRowComponent), typeDiscriminator: 1)]
 [JsonDerivedType(typeof(DiscordButtonComponent), typeDiscriminator: 2)]
@@ -49,10 +86,10 @@ public class DiscordActionRowComponent : DiscordComponent
 
     [JsonPropertyName("components")]
     [JsonConverter(typeof(DiscordComponentListConverter))]
-    public List<DiscordComponent>? Components { get; set; }
+    public DiscordComponentList? Components { get; set; }
 }
 
-public class DiscordButtonComponent : DiscordAccessoryComponent
+public class DiscordButtonComponent : DiscordAccessoryComponent, ICustomId
 {
     public DiscordButtonComponent() : base()
     {
@@ -80,7 +117,7 @@ public class DiscordButtonComponent : DiscordAccessoryComponent
     public bool? Disabled { get; set; } = false;
 }
 
-public class DiscordStringSelectComponent : DiscordComponent
+public class DiscordStringSelectComponent : DiscordComponent, ICustomId
 {
     public DiscordStringSelectComponent() : base()
     {
@@ -105,7 +142,7 @@ public class DiscordStringSelectComponent : DiscordComponent
     public bool? Disabled { get; set; } = false;
 }
 
-public class DiscordTextInputComponent : DiscordComponent
+public class DiscordTextInputComponent : DiscordComponent, ICustomId
 {
     public DiscordTextInputComponent() : base()
     {
@@ -136,7 +173,7 @@ public class DiscordTextInputComponent : DiscordComponent
     public bool? Required { get; set; } = true;
 }
 
-public class DiscordUserSelectComponent : DiscordComponent
+public class DiscordUserSelectComponent : DiscordComponent, ICustomId
 {
     public DiscordUserSelectComponent() : base()
     {
@@ -158,7 +195,7 @@ public class DiscordUserSelectComponent : DiscordComponent
     public bool? Disabled { get; set; } = false;
 }
 
-public class DiscordRoleSelectComponent : DiscordComponent
+public class DiscordRoleSelectComponent : DiscordComponent, ICustomId
 {
     public DiscordRoleSelectComponent() : base()
     {
@@ -180,7 +217,7 @@ public class DiscordRoleSelectComponent : DiscordComponent
     public bool? Disabled { get; set; } = false;
 }
 
-public class DiscordMentionableSelectComponent : DiscordComponent
+public class DiscordMentionableSelectComponent : DiscordComponent, ICustomId
 {
     public DiscordMentionableSelectComponent() : base()
     {
@@ -202,7 +239,7 @@ public class DiscordMentionableSelectComponent : DiscordComponent
     public bool? Disabled { get; set; } = false;
 }
 
-public class DiscordChannelSelectComponent : DiscordComponent
+public class DiscordChannelSelectComponent : DiscordComponent, ICustomId
 {
     public DiscordChannelSelectComponent() : base()
     {
@@ -235,7 +272,7 @@ public class DiscordSectionComponent : DiscordComponent
 
     [JsonPropertyName("components")]
     [JsonConverter(typeof(DiscordComponentListConverter))]
-    public List<DiscordComponent>? Components { get; set; }
+    public DiscordComponentList? Components { get; set; }
 
     [JsonPropertyName("accessory")]
     public DiscordAccessoryComponent? Accessory { get; set; }
@@ -349,7 +386,7 @@ public class DiscordContainerComponent : DiscordComponent
 
     [JsonPropertyName("components")]
     [JsonConverter(typeof(DiscordComponentListConverter))]
-    public List<DiscordComponent>? Components { get; set; } = new List<DiscordComponent>();
+    public DiscordComponentList? Components { get; set; } = new DiscordComponentList();
 
     [JsonPropertyName("accent_color")]
     public int? AccentColor { get; set; }

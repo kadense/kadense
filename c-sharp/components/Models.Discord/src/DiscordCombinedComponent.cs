@@ -2,11 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace Kadense.Models.Discord;
 
-public class DiscordCombinedComponent
+public class DiscordCombinedComponent : ICustomId
 {
     [JsonPropertyName("components")]
     [JsonConverter(typeof(DiscordComponentListConverter))]
-    public List<DiscordComponent>? Components { get; set; }
+    public DiscordComponentList? Components { get; set; }
 
     [JsonPropertyName("style")]
     public int? Style { get; set; }

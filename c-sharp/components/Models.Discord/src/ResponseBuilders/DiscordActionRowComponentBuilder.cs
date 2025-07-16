@@ -10,7 +10,7 @@ public class DiscordActionRowComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordButtonComponentBuilder<DiscordActionRowComponentBuilder<TParent>> WithButtonComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var button = new DiscordButtonComponent();
         Component.Components.Add(button);
@@ -21,7 +21,7 @@ public class DiscordActionRowComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordStringSelectComponentBuilder<DiscordActionRowComponentBuilder<TParent>> WithStringSelectComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var component = new DiscordStringSelectComponent();
         Component.Components.Add(component);
@@ -31,7 +31,7 @@ public class DiscordActionRowComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordTextInputComponentBuilder<DiscordActionRowComponentBuilder<TParent>> WithTextInputComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var component = new DiscordTextInputComponent();
         Component.Components.Add(component);
@@ -41,7 +41,7 @@ public class DiscordActionRowComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordUserSelectComponentBuilder<DiscordActionRowComponentBuilder<TParent>> WithUserSelectComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var component = new DiscordUserSelectComponent();
         Component.Components.Add(component);
@@ -51,7 +51,7 @@ public class DiscordActionRowComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordRoleSelectComponentBuilder<DiscordActionRowComponentBuilder<TParent>> WithRoleSelectComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var component = new DiscordRoleSelectComponent();
         Component.Components.Add(component);
@@ -61,7 +61,7 @@ public class DiscordActionRowComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordMentionableSelectComponentBuilder<DiscordActionRowComponentBuilder<TParent>> WithMentionableSelectComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var component = new DiscordMentionableSelectComponent();
         Component.Components.Add(component);
@@ -71,7 +71,7 @@ public class DiscordActionRowComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordChannelSelectComponentBuilder<DiscordActionRowComponentBuilder<TParent>> WithChannelSelectComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var component = new DiscordChannelSelectComponent();
         Component.Components.Add(component);

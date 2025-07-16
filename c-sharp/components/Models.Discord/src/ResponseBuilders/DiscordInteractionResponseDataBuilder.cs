@@ -53,7 +53,7 @@ public class DiscordInteractionResponseDataBuilder
     public DiscordActionRowComponentBuilder<DiscordInteractionResponseDataBuilder> WithActionRowComponent()
     {
         if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
+            Data.Components = new DiscordComponentList();
 
         var component = new DiscordActionRowComponent();
         Data.Components.Add(component);
@@ -62,7 +62,7 @@ public class DiscordInteractionResponseDataBuilder
     public DiscordStringSelectComponentBuilder<DiscordInteractionResponseDataBuilder> WithStringSelectComponent()
     {
         if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
+            Data.Components = new DiscordComponentList();
 
         var component = new DiscordStringSelectComponent();
         Data.Components.Add(component);
@@ -72,7 +72,7 @@ public class DiscordInteractionResponseDataBuilder
     public DiscordSectionComponentBuilder<DiscordInteractionResponseDataBuilder> WithSectionComponent()
     {
         if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
+            Data.Components = new DiscordComponentList();
 
         var component = new DiscordSectionComponent();
         Data.Components.Add(component);
@@ -82,7 +82,7 @@ public class DiscordInteractionResponseDataBuilder
     public DiscordTextDisplayComponentBuilder<DiscordInteractionResponseDataBuilder> WithTextDisplayComponent()
     {
         if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
+            Data.Components = new DiscordComponentList();
 
         var component = new DiscordTextDisplayComponent();
         Data.Components.Add(component);
@@ -92,7 +92,7 @@ public class DiscordInteractionResponseDataBuilder
     public DiscordThumbnailComponentBuilder<DiscordInteractionResponseDataBuilder> WithThumbnailComponent()
     {
         if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
+            Data.Components = new DiscordComponentList();
 
         var component = new DiscordThumbnailComponent();
         Data.Components.Add(component);
@@ -102,7 +102,7 @@ public class DiscordInteractionResponseDataBuilder
     public DiscordMediaGalleryComponentBuilder<DiscordInteractionResponseDataBuilder> WithMediaGalleryComponent()
     {
         if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
+            Data.Components = new DiscordComponentList();
 
         var component = new DiscordMediaGalleryComponent();
         Data.Components.Add(component);
@@ -112,7 +112,7 @@ public class DiscordInteractionResponseDataBuilder
     public DiscordFileComponentBuilder<DiscordInteractionResponseDataBuilder> WithFileComponent()
     {
         if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
+            Data.Components = new DiscordComponentList();
 
         var component = new DiscordFileComponent();
         Data.Components.Add(component);
@@ -122,7 +122,7 @@ public class DiscordInteractionResponseDataBuilder
     public DiscordSeparatorComponentBuilder<DiscordInteractionResponseDataBuilder> WithSeparatorComponent()
     {
         if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
+            Data.Components = new DiscordComponentList();
 
         var component = new DiscordSeparatorComponent();
         Data.Components.Add(component);
@@ -132,7 +132,7 @@ public class DiscordInteractionResponseDataBuilder
     public DiscordContainerComponentBuilder<DiscordInteractionResponseDataBuilder> WithContainerComponent()
     {
         if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
+            Data.Components = new DiscordComponentList();
 
         var component = new DiscordContainerComponent();
         Data.Components.Add(component);

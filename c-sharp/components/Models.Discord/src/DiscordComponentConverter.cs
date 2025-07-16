@@ -3,19 +3,22 @@ using System.Text.Json.Serialization;
 
 namespace Kadense.Models.Discord;
 
-public class DiscordComponentListConverter : JsonConverter<List<DiscordComponent>>
+public class DiscordComponentListConverter : JsonConverter<DiscordComponentList>
 {
-    public override List<DiscordComponent>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override DiscordComponentList? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var combinedComponents = (List<DiscordCombinedComponent>?)JsonSerializer.Deserialize(ref reader, typeof(List<DiscordCombinedComponent>), options);
 
         if (combinedComponents == null)
             return null;
 
-        return combinedComponents.Select(c => DiscordComponentConverter.Convert(c)).ToList();
+
+        var result = new DiscordComponentList();
+        result.AddRange(combinedComponents.Select(c => DiscordComponentConverter.Convert(c)).ToArray());
+        return result;
     }
 
-    public override void Write(Utf8JsonWriter writer, List<DiscordComponent> value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, DiscordComponentList value, JsonSerializerOptions options)
     {
         JsonSerializer.Serialize(writer, value, options);
     }

@@ -23,20 +23,15 @@ namespace Kadense.Models.Discord.Tests {
             Assert.NotNull(textDisplayComponent.Content);
             Assert.Equal("```\n |- State: Kinda magical\n |- Location: Frontier town\n |- Big Treasure: Wagon full of garbage\n |- Guarded by: Wizard and her familiars\n```", textDisplayComponent.Content);
 
-            var actionRowComponent = containerComponent.Components.Last() as DiscordActionRowComponent;
-            Assert.NotNull(actionRowComponent);
-            Assert.NotNull(actionRowComponent.Components);
-            Assert.NotEmpty(actionRowComponent.Components);
 
-            var buttonComponent = actionRowComponent.Components.First() as DiscordButtonComponent;
+            var buttonComponent = interaction.Message.Components.GetByCustomId<DiscordButtonComponent>("regenerate_world");
             Assert.NotNull(buttonComponent);
             Assert.Equal("regenerate_world", buttonComponent.CustomId);
 
-            buttonComponent = actionRowComponent.Components.Last() as DiscordButtonComponent;
+            buttonComponent = interaction.Message.Components.GetByCustomId<DiscordButtonComponent>("generate_description");
             Assert.NotNull(buttonComponent);
             Assert.Equal("generate_description", buttonComponent.CustomId);
 
-            
         }
     }
 }

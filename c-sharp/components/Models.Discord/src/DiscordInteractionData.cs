@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Kadense.Models.Discord;
 
-public class DiscordInteractionData : MalleableBase
+public class DiscordInteractionData : MalleableBase, ICustomId
 {
     [JsonPropertyName("id")]
     [JsonConverter(typeof(NumberOrStringConverter))]

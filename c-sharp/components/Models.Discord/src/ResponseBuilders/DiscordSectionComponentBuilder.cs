@@ -9,7 +9,7 @@ public class DiscordSectionComponentBuilder<TParent> : DiscordComponentBuilder<T
     public DiscordTextDisplayComponentBuilder<DiscordSectionComponentBuilder<TParent>> WithTextDisplayComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var textDisplay = new DiscordTextDisplayComponent();
         Component.Components.Add(textDisplay);
@@ -19,7 +19,7 @@ public class DiscordSectionComponentBuilder<TParent> : DiscordComponentBuilder<T
     public DiscordSectionComponentBuilder<TParent> WithTextDisplayComponent(string content)
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var textDisplay = new DiscordTextDisplayComponent();
         textDisplay.Content = content;

@@ -9,7 +9,7 @@ public class DiscordContainerComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordSectionComponentBuilder<DiscordContainerComponentBuilder<TParent>> WithSectionComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var section = new DiscordSectionComponent();
         Component.Components.Add(section);
@@ -20,7 +20,7 @@ public class DiscordContainerComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordActionRowComponentBuilder<DiscordContainerComponentBuilder<TParent>> WithActionRowComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var actionRow = new DiscordActionRowComponent();
         Component.Components.Add(actionRow);
@@ -30,7 +30,7 @@ public class DiscordContainerComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordTextDisplayComponentBuilder<DiscordContainerComponentBuilder<TParent>> WithTextDisplayComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var textDisplay = new DiscordTextDisplayComponent();
         Component.Components.Add(textDisplay);
@@ -40,7 +40,7 @@ public class DiscordContainerComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordMediaGalleryComponentBuilder<DiscordContainerComponentBuilder<TParent>> WithMediaGalleryComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var mediaGallery = new DiscordMediaGalleryComponent();
         Component.Components.Add(mediaGallery);
@@ -50,7 +50,7 @@ public class DiscordContainerComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordSeparatorComponentBuilder<DiscordContainerComponentBuilder<TParent>> WithSeparatorComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var separator = new DiscordSeparatorComponent();
         Component.Components.Add(separator);
@@ -60,7 +60,7 @@ public class DiscordContainerComponentBuilder<TParent> : DiscordComponentBuilder
     public DiscordFileComponentBuilder<DiscordContainerComponentBuilder<TParent>> WithFileComponent()
     {
         if (Component.Components == null)
-            Component.Components = new List<DiscordComponent>();
+            Component.Components = new DiscordComponentList();
 
         var file = new DiscordFileComponent();
         Component.Components.Add(file);

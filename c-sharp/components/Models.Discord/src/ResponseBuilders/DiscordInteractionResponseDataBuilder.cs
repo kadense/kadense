@@ -44,6 +44,18 @@ public class DiscordInteractionResponseDataBuilder
         return this;
     }
 
+    public DiscordInteractionResponseDataBuilder WithCustomId(string value)
+    {
+        Data.CustomId = value;
+        return this;
+    }
+
+    public DiscordInteractionResponseDataBuilder WithTitle(string value)
+    {
+        Data.Title = value;
+        return this;
+    }
+
     public DiscordInteractionResponseDataBuilder WithAttachments(List<DiscordAttachment> attachments)
     {
         Data.Attachments = attachments;

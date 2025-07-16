@@ -69,56 +69,6 @@ public class DiscordInteractionResponseDataBuilder
         return new DiscordStringSelectComponentBuilder<DiscordInteractionResponseDataBuilder>(this, component);
     }
 
-    public DiscordTextInputComponentBuilder<DiscordInteractionResponseDataBuilder> WithTextInputComponent()
-    {
-        if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
-
-        var component = new DiscordTextInputComponent();
-        Data.Components.Add(component);
-        return new DiscordTextInputComponentBuilder<DiscordInteractionResponseDataBuilder>(this, component);
-    }
-
-    public DiscordUserSelectComponentBuilder<DiscordInteractionResponseDataBuilder> WithUserSelectComponent()
-    {
-        if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
-
-        var component = new DiscordUserSelectComponent();
-        Data.Components.Add(component);
-        return new DiscordUserSelectComponentBuilder<DiscordInteractionResponseDataBuilder>(this, component);
-    }
-
-    public DiscordRoleSelectComponentBuilder<DiscordInteractionResponseDataBuilder> WithRoleSelectComponent()
-    {
-        if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
-
-        var component = new DiscordRoleSelectComponent();
-        Data.Components.Add(component);
-        return new DiscordRoleSelectComponentBuilder<DiscordInteractionResponseDataBuilder>(this, component);
-    }
-
-    public DiscordMentionableSelectComponentBuilder<DiscordInteractionResponseDataBuilder> WithMentionableSelectComponent()
-    {
-        if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
-
-        var component = new DiscordMentionableSelectComponent();
-        Data.Components.Add(component);
-        return new DiscordMentionableSelectComponentBuilder<DiscordInteractionResponseDataBuilder>(this, component);
-    }
-
-    public DiscordChannelSelectComponentBuilder<DiscordInteractionResponseDataBuilder> WithChannelSelectComponent()
-    {
-        if (Data.Components == null)
-            Data.Components = new List<DiscordComponent>();
-
-        var component = new DiscordChannelSelectComponent();
-        Data.Components.Add(component);
-        return new DiscordChannelSelectComponentBuilder<DiscordInteractionResponseDataBuilder>(this, component);
-    }
-
     public DiscordSectionComponentBuilder<DiscordInteractionResponseDataBuilder> WithSectionComponent()
     {
         if (Data.Components == null)

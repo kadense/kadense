@@ -1,7 +1,7 @@
 namespace Kadense.Models.Discord.ResponseBuilders;
 
 public class DiscordMentionableSelectComponentBuilder<TParent> : DiscordComponentBuilder<TParent, DiscordMentionableSelectComponent>
-    where TParent : DiscordInteractionResponseDataBuilder
+    where TParent : DiscordComponentBuilder
 {
     public DiscordMentionableSelectComponentBuilder(TParent parent, DiscordMentionableSelectComponent component) : base(parent, component)
     {

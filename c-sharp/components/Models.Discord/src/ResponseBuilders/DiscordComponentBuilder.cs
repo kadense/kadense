@@ -1,6 +1,11 @@
 namespace Kadense.Models.Discord.ResponseBuilders;
 
-public class DiscordComponentBuilder<TParent,T>
+public abstract class DiscordComponentBuilder
+{
+
+} 
+
+public class DiscordComponentBuilder<TParent, T> : DiscordComponentBuilder
     where T : DiscordComponent
 {
     public DiscordComponentBuilder(TParent parent, T component)

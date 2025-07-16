@@ -1,7 +1,7 @@
 namespace Kadense.Models.Discord.ResponseBuilders;
 
 public class DiscordChannelSelectComponentBuilder<TParent> : DiscordComponentBuilder<TParent, DiscordChannelSelectComponent>
-    where TParent : DiscordInteractionResponseDataBuilder
+    where TParent : DiscordComponentBuilder
 {
     public DiscordChannelSelectComponentBuilder(TParent parent, DiscordChannelSelectComponent component) : base(parent, component)
     {

@@ -10,6 +10,9 @@ public class DiscordUser : MalleableBase
     [JsonPropertyName("username")]
     public string? Username { get; set; }
 
+    [JsonPropertyName("nick")]
+    public string? Nick { get; set; }
+
     [JsonPropertyName("discriminator")]
     public string? Discriminator { get; set; }
 

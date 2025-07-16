@@ -23,4 +23,8 @@ public class DiscordInteractionData : MalleableBase, ICustomId
 
     [JsonPropertyName("options")]
     public List<DiscordInteractionOptions>? Options { get; set; }
+
+    [JsonPropertyName("components")]
+    [JsonConverter(typeof(DiscordComponentListConverter))]
+    public DiscordComponentList? Components { get; set; }
 }
